@@ -1,0 +1,84 @@
+services:
+  # api:
+  #   build:
+  #     context: ./api
+  #     dockerfile: Dockerfile
+  #   container_name: hyve-storage-api
+  #   environment:
+  #     PORT: 4022
+  #     NODE_ENV: "production"
+  #     AUTH_TOKEN: "Q3AM3UQ867SPQQA43P2F"
+
+  #     MINIO_PORT: 9000
+  #     MINIO_USE_SSL: false
+  #     MINIO_ENDPOINT: "minio"
+  #     MINIO_ACCESS_KEY: "admin"
+  #     MINIO_SECRET_KEY: "password123"
+
+  #     MONGO_USERNAME: ""
+  #     MONGO_PASSWORD: ""
+  #     MONGO_URI: "mongodb://localhost:27017/hyve-storage"
+  #   ports:
+  #     - "4022:4022"
+  #   depends_on:
+  #     - minio
+  #   networks:
+  #     - minio-net
+
+  # webapp:
+  #   build:
+  #     context: ./webapp
+  #     dockerfile: Dockerfile
+  #   container_name: webapp
+  #   environment:
+  #     PORT: 3022
+  #     API_VERSION: "v1"
+  #     NODE_ENV: "production"
+  #     API_URL: "http://api:4022"
+  #     API_AUTH_TOKEN: "2sOm7HFC5Yg6VaNb"
+
+  #     NEXT_PUBLIC_STORAGE_PREFIX: "__minio"
+  #     NEXT_PUBLIC_BASE_URL: "http://webapp:3022"
+  #   ports:
+  #     - "3022:3022"
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - minio-net
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: hyve-storage-minio
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password123
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - minio-net
+
+  nginx:
+    build:
+      context: ./ssl
+      dockerfile: Dockerfile
+    container_name: hyve-storage-nginx
+    volumes:
+      - ./ssl/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./ssl/nginx/certs:/etc/nginx/certs
+    ports:
+      - "443:443"
+    depends_on:
+      - minio
+    networks:
+      - minio-net
+    restart: always
+
+volumes:
+  minio_data:
+
+networks:
+  minio-net:
