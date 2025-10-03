@@ -8,9 +8,10 @@ export default async (data: Partial<Company>): Promise<ApiResponse> => {
 
   try {
     const existingDoc = await companyExists(name);
+    if (existingDoc.error) return existingDoc;
     if (existingDoc.data) return { ...response_BAD, message: `Company ${name} already exists` };
 
-    const newDoc = new Model({ name, userIds });
+    const newDoc = new Model({ name, userIds, bucketIds: [] });
     if (!newDoc) return { ...response_BAD, message: "Company not created" };
 
     const createdDoc = await newDoc.save();

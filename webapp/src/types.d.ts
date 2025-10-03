@@ -43,6 +43,13 @@ type FormError = {
 };
 
 /* M */
+type MinioObject = {
+  etag: string;
+  name: string;
+  size: number;
+  lastModified: Date;
+};
+
 type MongoDoc = {
   _id: string;
   __v: number;
@@ -60,6 +67,12 @@ type Option = {
 type StorageValue = {
   value: any;
   timeStamp: number;
+};
+
+/* T */
+type TableHeader = Option & {
+  visible?: boolean;
+  sortable?: boolean;
 };
 
 /* U */

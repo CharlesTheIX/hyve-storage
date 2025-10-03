@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Navigation from "./Navigation";
 import AdminHeaderOptions from "./AdminHeaderOptions";
 
 const Header: React.FC = () => {
@@ -14,27 +15,7 @@ const Header: React.FC = () => {
         </div>
 
         <div className="content-container">
-          <ul>
-            <li>
-              <p>
-                <Link href={"/users"} className="active">
-                  Users
-                </Link>
-              </p>
-            </li>
-
-            <li>
-              <p>
-                <Link href={"/companies"}>Companies</Link>
-              </p>
-            </li>
-
-            <li>
-              <p>
-                <Link href={"/buckets"}>Buckets</Link>
-              </p>
-            </li>
-          </ul>
+          <Navigation />
 
           <AdminHeaderOptions />
         </div>

@@ -4,6 +4,75 @@ $placeholder: #808080;
 $table-row-dark: #222629;
 $table-row-light: #3b3c3c;
 
+.hyve-accordion {
+  @apply flex flex-col;
+
+  .accordion-head {
+    @apply px-4 py-2 w-full flex flex-row gap-1 items-center justify-between;
+    background-color: $table-row-light;
+    border-bottom: 2px solid vars.$grey;
+    cursor: pointer;
+
+    p {
+      @apply text-lg font-bold;
+    }
+
+    svg,
+    svg path {
+      transition: all vars.$transition_time ease-in-out;
+    }
+
+    &:hover {
+      svg path {
+        stroke: vars.$green;
+      }
+    }
+  }
+
+  .accordion-body {
+    max-height: 0px;
+    overflow: hidden;
+    transition: all vars.$transition_time ease-in-out;
+
+    ul {
+      @apply flex flex-row gap-2 items-start px-4 py-4;
+      flex-wrap: wrap;
+      opacity: 0;
+      transition: all vars.$transition_time ease-in-out;
+
+      li {
+        @apply px-4 py-1 w-auto text-center;
+        background-color: vars.$black;
+        border: vars.$border_width solid vars.$green;
+        color: vars.$green;
+        cursor: pointer;
+        font-weight: bold;
+        min-width: 150px;
+        transition: all vars.$transition_time ease-in-out;
+
+        &.visible {
+          background-color: vars.$green;
+          color: vars.$black;
+        }
+      }
+    }
+  }
+
+  &.open {
+    .accordion-head svg {
+      rotate: 180deg;
+    }
+
+    .accordion-body {
+      max-height: 1000px;
+
+      ul {
+        opacity: 1;
+      }
+    }
+  }
+}
+
 .hyve-button {
   @apply px-4 py-1 w-auto text-center;
   cursor: pointer;
@@ -313,10 +382,13 @@ $table-row-light: #3b3c3c;
 }
 
 .hyve-table {
+  @apply flex flex-col gap-2;
+
   > table {
     @apply w-full text-left;
 
     > thead {
+      border-bottom: 2px solid vars.$grey;
       left: 0;
       position: sticky;
       top: 0;
@@ -325,7 +397,7 @@ $table-row-light: #3b3c3c;
         background-color: $table-row-light;
 
         th {
-          @apply py-1 px-2;
+          @apply py-1 px-2 text-lg;
 
           p {
             font-weight: bold;

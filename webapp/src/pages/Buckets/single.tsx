@@ -33,9 +33,16 @@ const BucketPage: React.FC<Props> = (props: Props) => {
       </section>
 
       <section className="w-full">
-        <div>
-          <div className="flex flex-row gap-2 items-center">
-            <h2>Objects</h2>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2 items-center justify-between">
+            <div className="flex flex-row gap-2 items-center">
+              <Document primaryColor={colors.white} width={50} height={50} />
+              <h2>Objects</h2>
+            </div>
+
+            <Link href={`/buckets/${data._id}/upload`} className="hyve-button link">
+              Upload
+            </Link>
           </div>
 
           <BucketObjectsTable bucketId={data._id || ""} />

@@ -1,16 +1,53 @@
 "use client";
+import Storage from "@/lib/Storage";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import handleError from "@/lib/handleError";
 import getCompanies from "@/lib/getCompanies";
-import { defaultTableNullValue } from "@/globals";
+import Chevron from "@/components/svgs/Chevron";
+import { colors, defaultTableNullValue } from "@/globals";
 import LoadingContainer from "@/components/LoadingContainer";
+
+const storageKey: string = "companies_table_headers";
+const companyTableHeaders = [
+  {
+    value: "name",
+    label: "Company Name",
+    sortable: false,
+    visible: true,
+  },
+  {
+    value: "userIdCount",
+    label: "User Count",
+    sortable: false,
+    visible: true,
+  },
+  {
+    value: "bucketIdCount",
+    label: "Bucket Count",
+    sortable: false,
+    visible: true,
+  },
+  {
+    value: "createdAt",
+    label: "Creation Date",
+    sortable: false,
+    visible: true,
+  },
+  {
+    value: "updatedAt",
+    label: "Last Updated",
+    sortable: false,
+    visible: true,
+  },
+];
 
 const CompaniesTable: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [list, setList] = useState<Partial<Company>[]>([]);
-  const [tableHeaders, setTableHeaders] = useState<string[]>(["Company Name", "User Count", "Bucket Count", "Creation Date", "Last Updated"]);
+  const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
+  const [tableHeaders, setTableHeaders] = useState<TableHeader[]>(companyTableHeaders);
 
   const errorCallback = () => {
     setLoading(false);
@@ -23,6 +60,9 @@ const CompaniesTable: React.FC = () => {
   };
 
   useEffect(() => {
+    const savedData = Storage.getStorageValue(storageKey);
+    if (savedData && savedData.value) setTableHeaders(savedData.value);
+
     (async () => {
       setLoading(true);
       const populate: string[] = [];
@@ -45,50 +85,102 @@ const CompaniesTable: React.FC = () => {
       {loading && <LoadingContainer />}
       {!loading && list.length === 0 && <p>No data to display.</p>}
       {!loading && list.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              {tableHeaders.map((th: string, key: number) => (
-                <th key={key}>
-                  <p>{th}</p>
-                </th>
-              ))}
-            </tr>
-          </thead>
+        <>
+          <div className="column-filter-container">
+            <div className={`hyve-accordion ${accordionOpen ? "open" : ""}`}>
+              <div
+                className="accordion-head"
+                onClick={() => {
+                  setAccordionOpen(!accordionOpen);
+                }}
+              >
+                <p>Filter Columns</p>
+                <Chevron primaryColor={colors.white} direction="down" />
+              </div>
 
-          <tbody>
-            {list.map((td: Partial<Company>, key: number) => {
-              return (
-                <tr
-                  key={key}
-                  onClick={() => {
-                    navigateTo(`/companies/${td._id}`);
-                  }}
-                >
-                  <td>
-                    <p>{td.name ? td.name : defaultTableNullValue}</p>
-                  </td>
+              <div className="accordion-body">
+                <ul>
+                  {tableHeaders.map((th) => {
+                    return (
+                      <li
+                        key={th.value}
+                        className={`${th.visible ? "visible" : ""}`}
+                        onClick={() => {
+                          setTableHeaders((prevValue) => {
+                            const newValue = prevValue.map((h) => (h.value === th.value ? { ...h, visible: !h.visible } : h));
+                            Storage.setStorageValue(storageKey, newValue);
+                            return newValue;
+                          });
+                        }}
+                      >
+                        <p>{th.label}</p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          </div>
 
-                  <td>
-                    <p>{td.userIds ? td.userIds.length : defaultTableNullValue}</p>
-                  </td>
+          <table>
+            <thead>
+              <tr>
+                {tableHeaders.map((th: TableHeader, key: number) => {
+                  if (th.visible) {
+                    return (
+                      <th key={key}>
+                        <p>{th.label}</p>
+                      </th>
+                    );
+                  }
+                })}
+              </tr>
+            </thead>
 
-                  <td>
-                    <p>{td.bucketIds ? td.bucketIds.length : defaultTableNullValue}</p>
-                  </td>
+            <tbody>
+              {list.map((td: Partial<Company>, key: number) => {
+                return (
+                  <tr
+                    key={key}
+                    onClick={() => {
+                      navigateTo(`/companies/${td._id}`);
+                    }}
+                  >
+                    {tableHeaders[0].visible && (
+                      <td>
+                        <p>{td.name ? td.name : defaultTableNullValue}</p>
+                      </td>
+                    )}
 
-                  <td>
-                    <p>{td.createdAt ? new Date(td.createdAt).toLocaleDateString() : defaultTableNullValue}</p>
-                  </td>
+                    {tableHeaders[1].visible && (
+                      <td>
+                        <p>{td.userIds ? td.userIds.length : defaultTableNullValue}</p>
+                      </td>
+                    )}
 
-                  <td>
-                    <p>{td.updatedAt ? new Date(td.updatedAt).toLocaleDateString() : defaultTableNullValue}</p>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    {tableHeaders[2].visible && (
+                      <td>
+                        <p>{td.bucketIds ? td.bucketIds.length : defaultTableNullValue}</p>
+                      </td>
+                    )}
+
+                    {tableHeaders[3].visible && (
+                      <td>
+                        <p>{td.createdAt ? new Date(td.createdAt).toLocaleDateString() : defaultTableNullValue}</p>
+                      </td>
+                    )}
+
+                    {tableHeaders[4].visible && (
+                      <td>
+                        <p>{td.updatedAt ? new Date(td.updatedAt).toLocaleDateString() : defaultTableNullValue}</p>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   );

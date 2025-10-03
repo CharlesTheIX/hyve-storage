@@ -1,17 +1,21 @@
+import fs from "fs";
+import multer from "multer";
 import listBuckets from "../lib/minio/listBuckets";
 import bucketExists from "../lib/minio/bucketExists";
 import createBucket from "../lib/minio/createBucket";
 import removeBucket from "../lib/minio/removeBucket";
-import { isValidBucketName } from "../lib/validation";
 import getBucketSize from "../lib/minio/getBucketSize";
 import getMinioClient from "../lib/minio/getMinioClient";
 import getBucketByName from "../lib/minio/getBucketByName";
 import express, { Router, Request, Response } from "express";
-import listBucketObjects from "../lib/minio/listBucketObjects";
+import uploadFormObject from "../lib/minio/uploadFormObject";
+import listBucketObjects from "../lib/minio/lisObjects";
+import { isValidBucketName, isValidMimeType } from "../lib/validation";
 import { response_SERVER_ERROR, response_BAD, status } from "../globals";
 
 const client = getMinioClient();
 const router: Router = express.Router();
+const upload = multer({ dest: "/tmp" });
 
 router.route("/buckets").post(async (_, response: Response) => {
   try {
@@ -109,6 +113,34 @@ router.route("/objects").post(async (request: Request, response: Response) => {
     return response.status(res.status).json(res);
   } catch (err: any) {
     return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+  }
+});
+
+router.route("/objects/form-upload").put(upload.single("file"), async (request: Request, response: Response): Promise<any> => {
+  const { bucketName, objectName, fromSource } = request.body;
+  const file = request.file;
+  if (!bucketName || !file) {
+    return response.status(status.BAD).json({ ...response_BAD, message: "Missing Required value(s): bucketName, file." });
+  }
+
+  const validBucketName = isValidBucketName(bucketName);
+  if (validBucketName.error) {
+    return response.status(status.BAD).json({ ...response_BAD, message: validBucketName.message });
+  }
+
+  const validMimeType = isValidMimeType(file);
+  if (validMimeType.error) {
+    fs.unlinkSync(file.path);
+    return response.status(status.BAD).json({ ...response_BAD, message: validMimeType.message });
+  }
+
+  try {
+    const res = await uploadFormObject({ client, bucketName, objectName, file, fromSource });
+    fs.unlinkSync(file.path);
+    return response.json(res);
+  } catch (err: any) {
+    console.error(`Minio upload form object error: ${err.message}`);
+    return response.status(status.SERVER_ERROR).json(response_SERVER_ERROR);
   }
 });
 

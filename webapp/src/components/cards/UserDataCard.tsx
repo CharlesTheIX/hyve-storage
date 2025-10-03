@@ -40,9 +40,13 @@ const UserDataCard: React.FC<Props> = (props: Props) => {
           <li>
             <p>
               <strong>Company:</strong>{" "}
-              <Link href={`/companies/${typeof companyId === "string" ? companyId : companyId?._id}`}>
-                {companyId ? (typeof companyId === "string" ? companyId : companyId.name) : defaultTableNullValue}
-              </Link>
+              {companyId ? (
+                <Link href={`/companies/${typeof companyId === "string" ? companyId : companyId?._id}`}>
+                  {typeof companyId === "string" ? companyId : companyId.name}
+                </Link>
+              ) : (
+                defaultTableNullValue
+              )}
             </p>
           </li>
 

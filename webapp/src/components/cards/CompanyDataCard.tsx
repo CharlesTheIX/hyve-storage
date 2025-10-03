@@ -27,7 +27,7 @@ const CompanyDataCard: React.FC<Props> = (props: Props) => {
 
           <li>
             <p>
-              <strong>Users:</strong>
+              <strong>Users:</strong> {userIds?.length === 0 && defaultTableNullValue}
             </p>
 
             <ul className="indent">

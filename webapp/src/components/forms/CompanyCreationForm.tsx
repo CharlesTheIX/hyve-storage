@@ -2,14 +2,13 @@
 import Link from "next/link";
 import Storage from "@/lib/Storage";
 import { useRouter } from "next/navigation";
+import { defaultFormError } from "@/globals";
 import Button from "@/components/buttons/Button";
 import { useRef, useState, useEffect } from "react";
 import getInputHasError from "@/lib/getInputHasError";
 import TextInput from "@/components/inputs/TextInput";
+import UserDropdown from "@/components/inputs/UserDropdown";
 import LoadingContainer from "@/components/LoadingContainer";
-import { apiPermissions, defaultFormError } from "@/globals";
-import PasswordInput from "@/components/inputs/PasswordInput";
-import UserDropdown from "../inputs/UserDropdown";
 
 const storageKey = "company_creation_form_data";
 const CompanyCreationForm: React.FC = () => {

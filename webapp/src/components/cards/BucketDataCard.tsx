@@ -31,21 +31,22 @@ const BucketDataCard: React.FC<Props> = (props: Props) => {
 
           <li>
             <p>
-              <strong>Max Size (GB):</strong> {maxSize_bytes ? formatBytes(maxSize_bytes, "GB") : defaultTableNullValue}
+              <strong>Max Size (KB):</strong> {maxSize_bytes ? formatBytes(maxSize_bytes, "KB") : defaultTableNullValue}
             </p>
           </li>
 
           <li>
             <div className="flex flex-row gap-1 items-start">
               <p>
-                <strong>Consumption (GB):</strong>
+                <strong>Consumption (KB):</strong>
               </p>
 
               {maxSize_bytes && consumption_bytes ? (
-                <div className="flex flex-row items-center justify-between w-full">
+                <div className="flex flex-row gap-1 items-center">
                   <p>
                     {formatBytes(consumption_bytes || 0, "KB")}/{formatBytes(maxSize_bytes || 0, "KB")}
                   </p>
+
                   <PercentageRing percentage={consumptionPercentage} size_rem={1} />
                 </div>
               ) : (
@@ -57,9 +58,13 @@ const BucketDataCard: React.FC<Props> = (props: Props) => {
           <li>
             <p>
               <strong>Owning Company:</strong>{" "}
-              <Link href={`/companies/${typeof companyId === "string" ? companyId : companyId?._id}`}>
-                {companyId ? (typeof companyId === "string" ? companyId : companyId.name) : defaultTableNullValue}
-              </Link>
+              {companyId ? (
+                <Link href={`/companies/${typeof companyId === "string" ? companyId : companyId?._id}`}>
+                  {typeof companyId === "string" ? companyId : companyId.name}
+                </Link>
+              ) : (
+                defaultTableNullValue
+              )}
             </p>
           </li>
 

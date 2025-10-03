@@ -130,7 +130,7 @@ const BucketCreationForm: React.FC = () => {
     >
       <div className="content-container">
         <div className="w-full">
-          <TextInput name="name" required={true} label="name" error={!!inputErrors.name} defaultValue={storageValue?.value?.name} />
+          <TextInput name="name" required={true} label="Name" error={!!inputErrors.name} defaultValue={storageValue?.value?.name} />
         </div>
 
         <div className="w-full flex flex-row gap-2 items-center justify-between">

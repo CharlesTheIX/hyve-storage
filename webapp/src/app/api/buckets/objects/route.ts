@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
       headers: header_external,
       body: JSON.stringify({ bucketId }),
     }).then((res) => res.json());
-    console.log(response);
     return NextResponse.json(response);
   } catch (err: any) {
     return NextResponse.json({ ...response_SERVER_ERROR, data: err });

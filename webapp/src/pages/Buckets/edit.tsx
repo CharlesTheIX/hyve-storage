@@ -1,12 +1,12 @@
-import UserEditForm from "@/components/forms/UserEditForm";
-import Edit from "@/components/svgs/Edit";
 import { colors } from "@/globals";
+import Edit from "@/components/svgs/Edit";
+import BucketEditForm from "@/components/forms/BucketEditForm";
 
 type Props = {
-  data: Partial<User>;
+  data: Partial<Bucket>;
 };
 
-const UserEditPage: React.FC<Props> = (props: Props) => {
+const BucketEditPage: React.FC<Props> = (props: Props) => {
   const { data } = props;
 
   return (
@@ -15,16 +15,16 @@ const UserEditPage: React.FC<Props> = (props: Props) => {
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
             <Edit primaryColor={colors.white} width={50} height={50} />
-            <h1>Edit User</h1>
+            <h1>Edit Bucket</h1>
           </div>
         </div>
       </section>
 
       <section className="w-full">
-        <UserEditForm data={data} />
+        <BucketEditForm data={data} />
       </section>
     </main>
   );
 };
 
-export default UserEditPage;
+export default BucketEditPage;
