@@ -1,15 +1,15 @@
 "use client";
-type ButtonType = "default" | "cancel" | "submission" | "link";
+type ButtonType = "default" | "cancel" | "submission" | "link" | "remove";
 
 type Props = {
   type?: ButtonType;
   disabled?: boolean;
-  onClick?: () => void;
+  callback?: () => void;
   children: React.ReactNode;
 };
 
 const Button: React.FC<Props> = (props: Props) => {
-  const { type = "default", disabled = false, children, onClick = () => {} } = props;
+  const { type = "default", disabled = false, children, callback = () => {} } = props;
 
   return (
     <button
@@ -18,7 +18,8 @@ const Button: React.FC<Props> = (props: Props) => {
       type={type === "submission" ? "submit" : "button"}
       onClick={(event: any) => {
         event.preventDefault();
-        onClick();
+        event.stopPropagation();
+        callback();
       }}
     >
       {children}

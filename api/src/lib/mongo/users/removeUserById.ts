@@ -13,8 +13,11 @@ export default async (_id: string): Promise<ApiResponse> => {
     const deletedDoc = await Model.deleteOne({ _id: objectId });
     if (!deletedDoc) return { ...response_BAD, message: "User not deleted" };
 
-    const companyUpdated = await removeCompanyUser(user.data.companyId, _id);
-    if (companyUpdated.error) return companyUpdated;
+    if (user.data.companyId) {
+      const companyUpdated = await removeCompanyUser(user.data.companyId, _id);
+      if (companyUpdated.error) return companyUpdated;
+    }
+
     return { ...response_DB_UPDATED };
   } catch (err: any) {
     return { ...response_SERVER_ERROR, message: err.message };

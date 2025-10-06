@@ -1,11 +1,11 @@
 import { Metadata } from "next";
-import { defaultMetadata } from "@/globals";
+import { defaultMetadata, siteName } from "@/globals";
 import CompanyCreationPage from "@/pages/Companies/create";
 
-//TODO: update the metadata dor this page
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: "Company Creation | Hyve Storage",
+  title: `Company Creation | ${siteName}`,
+  //TODO
   description: "Some description here.",
 };
 

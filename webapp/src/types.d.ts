@@ -15,9 +15,9 @@ type ApiResponse = {
 type Bucket = MongoDoc & {
   name: string;
   objectCount: number;
+  permissions: number[];
   maxSize_bytes: number;
   consumption_bytes: number;
-  permissions: BucketPermission[];
   companyId: string | Partial<Company>;
 };
 
@@ -35,8 +35,11 @@ type Company = MongoDoc & {
   bucketIds: string[] | Partial<Bucket>[];
 };
 
+/* D */
+type DataType = "user" | "company" | "bucket" | "object";
+
 /* F */
-type FormError = {
+type SimpleError = {
   error: boolean;
   title?: string;
   message: string;
@@ -48,6 +51,13 @@ type MinioObject = {
   name: string;
   size: number;
   lastModified: Date;
+};
+
+type MinioObjectUploadRequest = {
+  file: File;
+  bucketName: string;
+  fromSource: string;
+  objectName: string;
 };
 
 type MongoDoc = {
@@ -75,11 +85,13 @@ type TableHeader = Option & {
   sortable?: boolean;
 };
 
+type TableType = "users" | "buckets" | "companies" | "objects";
+
 /* U */
 type User = MongoDoc & {
   surname: string;
   username: string;
   firstName: string;
-  permissions: BucketPermission[];
+  permissions: number[];
   companyId: string | Partial<Company>;
 };

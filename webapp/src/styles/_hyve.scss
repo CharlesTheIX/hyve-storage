@@ -1,0 +1,793 @@
+/* Colors */
+$black: #222629;
+$blue: #03c1de;
+$green: #8ac53f;
+$grey: #4d5154;
+$red: #d02b2b;
+$white: #b5b5b5;
+
+$placeholder: #808080;
+$table-row-dark: #222629;
+$table-row-light: #3b3c3c;
+
+/* Sizes */
+$border_width: 2px;
+$border_width_lg: 4px;
+$screen_max_width: 1500px;
+
+/* Timings */
+$transition_time: 300ms;
+
+/* Hover Values */
+$hover_opacity: 0.5;
+
+/* Keyframes */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes show {
+  0% {
+    max-height: 0px;
+    opacity: 0;
+  }
+
+  100% {
+    max-height: 1000px;
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  0% {
+    opacity: 0;
+    translate: 120% 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    translate: 0;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mixins */
+@mixin hyve-error-container() {
+  @apply w-full;
+  animation: show $transition_time ease-in-out forwards;
+  overflow: hidden;
+
+  > div {
+    @apply p-2 flex flex-col gap-2 w-full;
+    border: $border_width_lg solid $green;
+
+    p {
+      @apply text-sm;
+      white-space: pre-wrap;
+    }
+  }
+}
+
+@mixin hyve-link-text() {
+  color: $green;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: bold;
+  transition: all $transition_time ease-in-out;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+@mixin hyve-scrollbar($direction: both) {
+  overflow: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: $green $grey;
+
+  @if $direction == y {
+    overflow-y: scroll;
+  }
+  @if $direction == x {
+    overflow-x: scroll;
+  }
+  @if $direction == both {
+    overflow: scroll;
+  }
+}
+
+/* Elements */
+body {
+  background-color: $black;
+  color: $white;
+  height: 100vh;
+  width: 100vw;
+  @include hyve-scrollbar(y);
+}
+
+header {
+  @apply px-8 py-4;
+  background-color: $black;
+  border-bottom: $border_width solid $white;
+  left: 0;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+
+  > nav {
+    @apply flex flex-row justify-between items-center gap-1;
+    margin: 0 auto;
+    max-width: $screen_max_width;
+
+    .logo-container > a {
+      @apply flex flex-row gap-1 items-center;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .content-container {
+      @apply flex flex-row justify-end gap-1;
+
+      ul {
+        @apply flex flex-row gap-4 items-center;
+
+        li p a.active {
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+main {
+  @apply px-8 py-8 flex flex-col gap-2 items-center justify-start;
+  animation: fade-in $transition_time ease-in-out forwards;
+  min-height: 100vh;
+  width: 100%;
+}
+
+footer {
+  @apply px-8 py-4;
+  border-top: $border_width solid $white;
+
+  > div {
+    @apply flex flex-col items-center justify-center;
+    margin: 0 auto;
+    max-width: $screen_max_width;
+  }
+
+  .copyright {
+    @apply text-sm;
+    font-weight: normal;
+  }
+}
+
+section {
+  @apply w-full;
+  margin: 0 auto;
+  max-width: $screen_max_width;
+}
+
+a {
+  @include hyve-link-text();
+}
+
+/* Classes */
+/* H */
+.highlight {
+  color: $blue;
+  font-weight: bold;
+}
+
+.hyve-accordion {
+  @apply flex flex-col;
+
+  .accordion-head {
+    @apply px-4 py-2 w-full flex flex-row gap-1 items-center justify-between;
+    background-color: $table-row-light;
+    border-bottom: 2px solid $grey;
+    cursor: pointer;
+    opacity: 1;
+    transition: all $transition_time ease-in-out;
+
+    p {
+      @apply text-lg font-bold;
+    }
+
+    svg {
+      transition: all $transition_time ease-in-out;
+    }
+
+    &:hover {
+      opacity: $hover_opacity;
+    }
+  }
+
+  .accordion-body {
+    max-height: 0px;
+    overflow: hidden;
+    transition: all $transition_time ease-in-out;
+
+    ul {
+      @apply flex flex-row gap-2 items-start px-4 py-4;
+      flex-wrap: wrap;
+      opacity: 0;
+      transition: all $transition_time ease-in-out;
+
+      li {
+        @apply px-4 py-1 w-auto text-center;
+        background-color: $black;
+        border: $border_width solid $green;
+        color: $green;
+        cursor: pointer;
+        font-weight: bold;
+        min-width: 150px;
+        transition: all $transition_time ease-in-out;
+
+        &.visible {
+          background-color: $green;
+          color: $black;
+        }
+      }
+    }
+  }
+
+  &.open {
+    .accordion-head svg {
+      rotate: 180deg;
+    }
+
+    .accordion-body {
+      max-height: 1000px;
+
+      ul {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.hyve-button {
+  @apply px-4 py-1 w-auto text-center;
+  background-color: $black;
+  border: $border_width solid $green;
+  color: $green;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 150px;
+  opacity: 1;
+  transition: all $transition_time ease-in-out;
+
+  &:hover {
+    background-color: $green;
+    color: $black;
+    opacity: $hover_opacity;
+  }
+
+  &:disabled:hover {
+    background-color: $black;
+    color: $green;
+  }
+
+  &.remove {
+    border-color: $red;
+    color: $red;
+
+    &:hover {
+      background-color: $red;
+      color: $black;
+    }
+
+    &:disabled:hover {
+      color: $red;
+    }
+  }
+
+  &.cancel {
+    border-color: $grey;
+    color: $white;
+
+    &:hover {
+      background-color: $grey;
+      color: $white;
+    }
+
+    &:disabled:hover {
+      color: $white;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: $hover_opacity;
+  }
+}
+
+.hyve-card {
+  @apply w-full;
+  border: 2px solid $grey;
+
+  .card-head {
+    @apply px-4 py-2 w-full flex flex-row gap-1 items-center;
+    background-color: $table-row-light;
+    border-bottom: 2px solid $grey;
+
+    p {
+      @apply text-lg font-bold;
+    }
+  }
+
+  .card-body {
+    @apply px-4 py-2 w-full;
+
+    .indent {
+      @apply ml-4;
+    }
+  }
+}
+
+.hyve-form {
+  @apply flex flex-col gap-4 w-full relative;
+
+  .button-container {
+    @apply w-full flex flex-row gap-2;
+  }
+
+  .content-container,
+  .inputs {
+    @apply flex flex-col gap-2 items-center w-full;
+  }
+
+  .completion-container,
+  .error-container {
+    @include hyve-error-container();
+  }
+
+  .error-container > div {
+    border: $border_width_lg solid $red;
+  }
+
+  &.loading {
+    .content-container {
+      filter: blur(5);
+    }
+  }
+}
+
+.hyve-input {
+  @apply w-full flex flex-col relative;
+  background-color: $grey;
+
+  input,
+  textarea {
+    @apply px-2 pb-2 pt-4 w-full relative;
+    opacity: 1;
+    transition: all $transition_time ease-in-out;
+    z-index: 2;
+
+    &::placeholder {
+      color: $placeholder;
+    }
+
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0px 1000px $grey inset;
+      -webkit-text-fill-color: $white;
+    }
+
+    &:disabled {
+      opacity: $hover_opacity;
+      background-color: $black;
+    }
+  }
+
+  label,
+  .label {
+    @apply px-2 pb-2 pt-3 w-full absolute;
+    left: 0;
+    top: 0;
+    transition: all $transition_time ease-in-out;
+
+    sup {
+      top: -0.3em;
+    }
+  }
+
+  .password-icon {
+    @apply absolute bottom-2 right-2;
+    cursor: pointer;
+    transition: opacity $transition_time ease-in-out;
+    z-index: 3;
+
+    &:hover {
+      opacity: $hover_opacity;
+    }
+  }
+
+  &.active {
+    &::after {
+      background-color: $blue;
+    }
+
+    &.focused::after {
+      background-color: $green;
+    }
+  }
+
+  &.error {
+    &::after {
+      background-color: $red;
+    }
+
+    &.focused::after {
+      background-color: $green;
+    }
+  }
+
+  &.select,
+  &.file {
+    @apply pt-1;
+    cursor: pointer;
+
+    label,
+    .label {
+      cursor: pointer;
+    }
+
+    .select-value {
+      @apply px-2 pb-2 pt-3 w-full relative flex flex-row gap-2 justify-between items-center;
+      min-height: 44px;
+      z-index: 2;
+
+      p {
+        @apply w-full;
+      }
+
+      svg {
+        transition: all $transition_time ease-in-out;
+      }
+    }
+
+    .options-container {
+      @apply absolute w-full;
+      top: 100%;
+      left: 0;
+      max-height: calc(3 * 2rem);
+      overflow: hidden;
+      overflow-y: scroll;
+      z-index: 11;
+      @include hyve-scrollbar(y);
+
+      ul {
+        @apply flex flex-col w-full;
+        animation: show $transition_time ease-in-out forwards;
+        background-color: $black;
+
+        li {
+          @apply px-2 py-1 w-full;
+          background-color: $grey;
+          cursor: pointer;
+          transition: all $transition_time ease-in-out;
+
+          &:nth-child(1) {
+            cursor: initial;
+          }
+
+          &:hover {
+            opacity: $hover_opacity;
+          }
+        }
+      }
+    }
+
+    .options-background {
+      @apply fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      z-index: 10;
+    }
+
+    &.focused .select-value svg {
+      rotate: 180deg;
+    }
+  }
+
+  &.active,
+  &.error,
+  &.focused {
+    label,
+    .label {
+      z-index: 3;
+    }
+
+    &::after {
+      left: 0%;
+      width: 100%;
+    }
+  }
+
+  &.active,
+  &.focused {
+    label,
+    .label {
+      @apply text-xs;
+      padding-top: 0;
+      top: 0.2em;
+    }
+  }
+
+  &::after {
+    background-color: $green;
+    bottom: 0px;
+    content: "";
+    height: $border_width;
+    left: 0%;
+    position: absolute;
+    transform-origin: left;
+    transition: all $transition_time ease-in-out;
+    width: 0;
+    z-index: 2;
+  }
+}
+
+.hyve-modal {
+  @apply w-screen h-screen z-10 fixed top-0 left-0 flex flex-col items-center justify-center;
+  cursor: default;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity $transition_time ease-in-out;
+
+  .modal-background {
+    @apply absolute top-0 left-0 w-full h-full;
+    background-color: $black;
+    opacity: $hover_opacity;
+  }
+
+  .content-container {
+    @apply z-2 p-4;
+    background-color: $black;
+    border: 2px solid $white;
+    width: clamp(400px, 80%, 800px);
+  }
+
+  .error-container {
+    @include hyve-error-container();
+
+    > div {
+      border: none;
+    }
+  }
+
+  .hyve-loading-icon {
+    position: relative;
+  }
+
+  &.open {
+    opacity: 1;
+    max-height: unset;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.hyve-table {
+  @apply flex flex-col gap-2;
+
+  table {
+    @apply w-full text-left;
+
+    thead {
+      border-bottom: 2px solid $grey;
+      left: 0;
+      position: sticky;
+      top: 0;
+
+      tr {
+        background-color: $table-row-light;
+
+        th {
+          @apply py-1 px-2 text-lg;
+
+          p {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        @apply relative;
+        cursor: pointer;
+        transition: all $transition_time ease-in-out;
+
+        &:nth-child(even) {
+          background-color: $table-row-light;
+        }
+
+        &:nth-child(odd) {
+          background-color: $table-row-dark;
+        }
+
+        &.hover {
+          opacity: $hover_opacity;
+        }
+
+        td {
+          @apply py-1 px-2;
+
+          .delete-button > .hyve-button {
+            background-color: unset;
+            border: unset;
+            padding: unset;
+            min-width: unset;
+          }
+        }
+      }
+    }
+  }
+
+  .accordion-body ul {
+    @apply flex flex-row gap-2 items-start px-4 py-4;
+    flex-wrap: wrap;
+    opacity: 0;
+    transition: all $transition_time ease-in-out;
+
+    li {
+      @apply px-4 py-1 w-auto text-center;
+      background-color: $black;
+      border: $border_width solid $white;
+      color: $white;
+      cursor: pointer;
+      font-weight: bold;
+      min-width: 150px;
+      opacity: 1;
+      transition: all $transition_time ease-in-out;
+
+      &.visible {
+        background-color: $white;
+        color: $black;
+      }
+
+      &:hover {
+        opacity: $hover_opacity;
+      }
+    }
+  }
+
+  .hyve-loading-icon {
+    position: relative;
+  }
+}
+
+.hyve-toast-container {
+  @apply fixed right-0 flex flex-col gap-2 pr-4 pt-4;
+  bottom: 0;
+  height: 0;
+  overflow: visible;
+  translate: 0 -500%;
+  z-index: 12;
+
+  .hyve-toast {
+    @apply py-2 px-4 pr-10 flex flex-col gap-0 relative;
+    animation: slide-in-right $transition_time ease-in-out forwards;
+    color: $black;
+    width: 320px;
+
+    .close-container {
+      @apply absolute top-3 right-4;
+      cursor: pointer;
+      transition: opacity $transition_time ease-in-out;
+
+      &:hover {
+        opacity: $hover_opacity;
+      }
+    }
+
+    &.error {
+      background-color: $red;
+    }
+
+    &.success {
+      background-color: $green;
+    }
+  }
+}
+
+.hyve-loading-icon {
+  @apply absolute flex flex-col items-center justify-center h-full w-full top-0 left-0;
+  z-index: 10;
+
+  > div {
+    animation: spin $transition_time linear infinite;
+    border: $border_width_lg solid $grey;
+    border-radius: 50%;
+    border-top: $border_width_lg solid $green;
+    height: 75px;
+    width: 75px;
+  }
+}
+
+/* L */
+.link-text {
+  @include hyve-link-text();
+}
+
+/* P */
+.percentage-ring-container {
+  @apply relative;
+  background-color: $black;
+  border-radius: 50%;
+  max-height: 100%;
+  max-width: 100%;
+
+  .percentage-ring {
+    @apply relative w-full h-full;
+    background: conic-gradient($blue 0% 0%, $grey 0% 100%);
+    border-radius: 50%;
+    transition: all 300ms ease-in-out;
+
+    &::after {
+      @apply absolute;
+      background-color: $black;
+      border-radius: 50%;
+      content: "";
+      display: block;
+      height: calc(100% - 5px);
+      left: 50%;
+      top: 50%;
+      translate: -50% -50%;
+      width: calc(100% - 5px);
+    }
+  }
+}
+
+/* T */
+.text-black {
+  color: $black;
+}
+
+.text-blue {
+  color: $blue;
+}
+
+.text-green {
+  color: $green;
+}
+
+.text-grey {
+  color: $grey;
+}
+
+.text-red {
+  color: $red;
+}
+
+.text-white {
+  color: $white;
+}

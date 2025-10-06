@@ -1,14 +1,13 @@
 type Props = {
-  width?: number;
-  height?: number;
+  size?: number;
   primaryColor?: string;
 };
 
 const Document: React.FC<Props> = (props: Props) => {
-  const { width = 24, height = 24, primaryColor = "inherit" } = props;
+  const { size = 24, primaryColor = "inherit" } = props;
 
   return (
-    <svg fill={"none"} width={width} height={height} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <svg fill={"none"} width={size} height={size} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M8 12H9M16 12H12" stroke={primaryColor} strokeWidth={1.5} strokeLinecap="round" />
       <path d="M16 8H15M12 8H8" stroke={primaryColor} strokeWidth={1.5} strokeLinecap="round" />
       <path d="M8 16H13" stroke={primaryColor} strokeWidth={1.5} strokeLinecap="round" />

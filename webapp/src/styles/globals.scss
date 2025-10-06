@@ -1,6 +1,5 @@
 @use "tailwindcss";
-@use "./hyve-components";
-@use "./variables" as vars;
+@use "./hyve";
 
 *,
 ::after,
@@ -8,74 +7,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-body {
-  @apply flex flex-col justify-start;
-  background-color: vars.$black;
-  color: vars.$white;
-  height: 100vh;
-  overflow: hidden;
-  width: 100vw;
-}
-
-header {
-  @apply px-8 py-4;
-  background-color: vars.$black;
-  border-bottom: vars.$border_width solid vars.$white;
-  left: 0;
-  overflow: hidden;
-  top: 0;
-
-  > nav {
-    @apply flex flex-row justify-between items-center gap-1;
-    margin: 0 auto;
-    max-width: vars.$screen_max_width;
-
-    .logo-container {
-      > a {
-        @apply flex flex-row gap-1 items-center;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
-
-    .content-container {
-      @apply flex flex-row justify-end gap-1;
-
-      ul {
-        @apply flex flex-row gap-4 items-center;
-
-        li p a {
-          &.active {
-            color: vars.$white;
-          }
-        }
-      }
-    }
-  }
-}
-
-footer {
-  @apply px-4;
-
-  > div {
-    margin: 0 auto;
-    max-width: vars.$screen_max_width;
-  }
-}
-
-main {
-  @apply px-8 py-2;
-  height: 100%;
-  width: 100%;
-}
-
-section {
-  margin: 0 auto;
-  max-width: vars.$screen_max_width;
 }
 
 button,
@@ -127,44 +58,12 @@ h6 {
   font-size: 1rem;
 }
 
-a,
-.link-text {
-  color: vars.$green;
-  cursor: pointer;
-  display: inline-block;
-  font-weight: bold;
-  transition: all vars.$transition_time ease-in-out;
+input[type="number"] {
+  -moz-appearance: textfield;
 
-  &:hover {
-    opacity: 0.5;
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
-}
-
-.text-black {
-  color: vars.$black;
-}
-
-.text-blue {
-  color: vars.$blue;
-}
-
-.text-green {
-  color: vars.$green;
-}
-
-.text-grey {
-  color: vars.$grey;
-}
-
-.text-red {
-  color: vars.$red;
-}
-
-.text-white {
-  color: vars.$white;
-}
-
-.highlight {
-  color: vars.$blue;
-  font-weight: bold;
 }

@@ -24,7 +24,6 @@ const schema = new Schema(
     companyId: {
       type: Schema.Types.ObjectId,
       ref: "Company",
-      required: [true, "Please provide a companyId"],
     },
   },
   { timestamps: true }

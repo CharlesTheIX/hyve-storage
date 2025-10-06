@@ -1,11 +1,11 @@
 import { Metadata } from "next";
-import { defaultMetadata } from "@/globals";
 import UserCreationPage from "@/pages/Users/create";
+import { defaultMetadata, siteName } from "@/globals";
 
-//TODO: update the metadata dor this page
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: "User Creation | Hyve Storage",
+  title: `User Creation | ${siteName}`,
+  //TODO
   description: "Some description here.",
 };
 

@@ -1,25 +1,28 @@
 import Link from "next/link";
 import { colors } from "@/globals";
 import Document from "@/components/svgs/Document";
-import BucketsTable from "@/components/tables/BucketsTable";
+import PermissionsWrapper from "@/components/PermissionsWrapper";
+import BucketsTable from "@/components/tables/buckets/BucketsTable";
 
 const BucketsPage: React.FC = () => {
   return (
-    <main className="flex flex-col gap-2 items-center justify-start">
-      <section className="w-full">
+    <main>
+      <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Document primaryColor={colors.white} width={50} height={50} />
+            <Document primaryColor={colors.white} size={50} />
             <h1>Buckets</h1>
           </div>
 
-          <Link href="/buckets/create" className="hyve-button link">
-            Create New
-          </Link>
+          <PermissionsWrapper permissionLevel={9}>
+            <Link href="/buckets/create" className="hyve-button">
+              Create New
+            </Link>
+          </PermissionsWrapper>
         </div>
       </section>
 
-      <section className="w-full">
+      <section>
         <BucketsTable />
       </section>
     </main>

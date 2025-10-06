@@ -5,12 +5,12 @@ import { defaultMetadata, siteName } from "@/globals";
 //TODO: update the metadata dor this page
 export const metadata: Metadata = {
   ...defaultMetadata,
+  description: "Page not found",
   title: `Not found - 404 | ${siteName}`,
-  description: "",
   robots: {
     index: false,
-    follow: false
-  }
+    follow: false,
+  },
 };
 
 const Page: React.FC = () => <NotFoundPage />;

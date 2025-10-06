@@ -67,7 +67,10 @@ const SelectInput: React.FC<Props> = (props: Props) => {
 
           <div className={`options-container`}>
             <ul>
-              <li className="blank-option">{placeholder}</li>
+              <li className="blank-option" style={{ opacity: 0.8 }}>
+                {placeholder}
+              </li>
+
               {options.map((option) => {
                 return (
                   <li

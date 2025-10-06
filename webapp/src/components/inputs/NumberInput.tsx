@@ -11,14 +11,26 @@ type Props = {
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  defaultValue?: string;
+  defaultValue?: number;
   onInput?: (event: any) => void;
 };
 
 const NumberInput: React.FC<Props> = (props: Props) => {
-  var { name, label, error = false, required = false, placeholder = "", defaultValue = "", onInput = () => {}, disabled = false, min = 0, max = 100, step = 1 } = props;
+  var {
+    name,
+    label,
+    min = 0,
+    step = 1,
+    max = 100,
+    error = false,
+    required = false,
+    placeholder = "",
+    disabled = false,
+    defaultValue = 0,
+    onInput = () => {},
+  } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<string>(defaultValue);
+  const [value, setValue] = useState<number>(defaultValue);
 
   return (
     <div className={`hyve-input ${focused ? "focused" : ""} ${error ? "error" : ""} ${!!value ? "active" : ""}`}>
@@ -48,7 +60,7 @@ const NumberInput: React.FC<Props> = (props: Props) => {
         }}
         onInput={(evt: any) => {
           const target = (evt.currentTarget || evt.target) as HTMLInputElement;
-          setValue(target.value);
+          setValue(parseInt(target.value));
           onInput(evt);
         }}
       />

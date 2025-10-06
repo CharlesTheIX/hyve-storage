@@ -22,7 +22,7 @@ router.route("/").post(async (request: Request, response: Response) => {
   }
 });
 
-router.route("/by-company").post(async (request: Request, response: Response) => {
+router.route("/by-company-id").post(async (request: Request, response: Response) => {
   const { companyId, options } = request.body;
   if (!companyId) return response.status(400).json({ ...response_BAD, message: "Missing required value(s): companyId" });
 
@@ -72,7 +72,7 @@ router.route("/by-id").post(async (request: Request, response: Response) => {
 
 router.route("/create").put(async (request: Request, response: Response) => {
   const { username, permissions, companyId, firstName, surname } = request.body;
-  if (!surname || !username || !firstName || !companyId) {
+  if (!surname || !username || !firstName) {
     return response.status(400).json({ ...response_BAD, message: `Missing required value(s): surname, firstName, companyId, username` });
   }
 

@@ -8,14 +8,16 @@ const NotFoundPage: React.FC = () => {
   return (
     <main>
       <section>
-        <div>
+        <div className="flex flex-col gap-2 items-start">
           <h1>404 Page</h1>
+
           <p>
             The page <span className="highlight">{pathname}</span> could not be found.
           </p>
-          <p>
-            <Link href={"/"}>Home</Link>.
-          </p>
+
+          <Link href={"/"} className="hyve-button">
+            Home
+          </Link>
         </div>
       </section>
     </main>

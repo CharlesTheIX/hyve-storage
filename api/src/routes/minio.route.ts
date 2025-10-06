@@ -5,11 +5,11 @@ import bucketExists from "../lib/minio/bucketExists";
 import createBucket from "../lib/minio/createBucket";
 import removeBucket from "../lib/minio/removeBucket";
 import getBucketSize from "../lib/minio/getBucketSize";
+import listBucketObjects from "../lib/minio/lisObjects";
 import getMinioClient from "../lib/minio/getMinioClient";
 import getBucketByName from "../lib/minio/getBucketByName";
 import express, { Router, Request, Response } from "express";
 import uploadFormObject from "../lib/minio/uploadFormObject";
-import listBucketObjects from "../lib/minio/lisObjects";
 import { isValidBucketName, isValidMimeType } from "../lib/validation";
 import { response_SERVER_ERROR, response_BAD, status } from "../globals";
 
@@ -116,7 +116,7 @@ router.route("/objects").post(async (request: Request, response: Response) => {
   }
 });
 
-router.route("/objects/form-upload").put(upload.single("file"), async (request: Request, response: Response): Promise<any> => {
+router.route("/objects/upload").put(upload.single("file"), async (request: Request, response: Response): Promise<any> => {
   const { bucketName, objectName, fromSource } = request.body;
   const file = request.file;
   if (!bucketName || !file) {

@@ -1,4 +1,5 @@
 "use client";
+import { colors } from "@/globals";
 import CrossSVG from "@/components/svgs/Cross";
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 
@@ -55,7 +56,7 @@ export const ToastContextProvider = (props: { children: React.ReactNode }) => {
       {children}
 
       {toastItems.length > 0 && (
-        <div className="hyve-toast-container">
+        <div className="hyve-toast-container" style={{ translate: `0 ${-400 - toastItems.length * 250}%` }}>
           {toastItems.reverse().map((item: ToastItem, key: number) => {
             if (!item.visible) return <></>;
             return (
@@ -66,7 +67,7 @@ export const ToastContextProvider = (props: { children: React.ReactNode }) => {
                     item.visible = false;
                   }}
                 >
-                  <CrossSVG primaryColor="#222629" width={16} height={16} />
+                  <CrossSVG primaryColor={colors.black} size={16} />
                 </div>
 
                 <h6>{item.title}</h6>

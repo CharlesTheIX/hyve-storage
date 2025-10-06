@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 import BucketsPage from "@/pages/Buckets";
-import { defaultMetadata } from "@/globals";
+import { defaultMetadata, siteName } from "@/globals";
 
-//TODO: update the metadata dor this page
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: "Buckets | Hyve Storage",
+  title: `Buckets | ${siteName}`,
+  //TODO
   description: "Some description here.",
 };
 

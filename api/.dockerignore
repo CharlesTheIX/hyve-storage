@@ -1,4 +1,6 @@
-./dist
-./.env*
-./node_modules
-./.prettierrc.yml
+dist
+node_modules
+.dockerignore
+.env.example
+.env.local
+Dockerfile

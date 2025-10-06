@@ -1,40 +1,32 @@
 import { Metadata } from "next";
-import getUsers from "@/lib/getUsers";
 import { notFound } from "next/navigation";
+import getUsers from "@/lib/users/getUsers";
 import UserPage from "@/pages/Users/single";
-import getUserById from "@/lib/getUserById";
+import getUserById from "@/lib/users/getUserById";
+import { default404Metadata, siteName } from "@/globals";
 
 type Params = Promise<{ _id: string }>;
 
 export const generateMetadata = async ({ params }: { params: Params }): Promise<Metadata> => {
   const { _id } = await params;
-  const fields = ["_id"];
-  const options = { fields };
   try {
-    const response = await getUserById(_id, options);
-    if (response.error) throw new Error();
+    const response = await getUserById(_id);
+    if (response.error) return default404Metadata;
     return {
-      title: `${response.data._id} | Users`,
+      title: `${response.data._id} | Users | ${siteName}`,
+      //TODO
       description: `Some description here.`,
     };
   } catch (error: any) {
-    return {
-      title: "404",
-      robots: "noindex, nofollow",
-      description: "User not found",
-    };
+    return default404Metadata;
   }
 };
 
 export const generateStaticParams = async (): Promise<{ _id: string }[]> => {
-  const fields = ["_id"];
-  const options = { fields };
   try {
-    const response = await getUsers(options);
-    if (response.error) throw new Error();
-    return response.data.map((user: Partial<User>) => {
-      return { _id: user._id };
-    });
+    const response = await getUsers();
+    if (response.error) return [];
+    return response.data.map((user: Partial<User>) => ({ _id: user._id }));
   } catch (error: any) {
     return [];
   }

@@ -6,8 +6,8 @@ export async function POST(request: NextRequest) {
     const { name } = await request.json();
     const response = await fetch(`${process.env.API_ENDPOINT}/v1/buckets/exists`, {
       method: "POST",
-      body: JSON.stringify({ name }),
       headers: header_external,
+      body: JSON.stringify({ name }),
     }).then((res) => res.json());
     return NextResponse.json(response);
   } catch (err: any) {

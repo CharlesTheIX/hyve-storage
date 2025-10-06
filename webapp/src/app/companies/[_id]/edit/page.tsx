@@ -1,40 +1,32 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import getCompanies from "@/lib/getCompanies";
-import getCompanyById from "@/lib/getCompanyById";
 import CompanyEditPage from "@/pages/Companies/edit";
+import getCompanies from "@/lib/companies/getCompanies";
+import { default404Metadata, siteName } from "@/globals";
+import getCompanyById from "@/lib/companies/getCompanyById";
 
 type Params = Promise<{ _id: string }>;
 
 export const generateMetadata = async ({ params }: { params: Params }): Promise<Metadata> => {
   const { _id } = await params;
-  const fields = ["_id"];
-  const options = { fields };
   try {
-    const response = await getCompanyById(_id, options);
-    if (response.error) throw new Error();
+    const response = await getCompanyById(_id);
+    if (response.error) return default404Metadata;
     return {
-      title: `${response.data._id} | Edit`,
+      title: `${response.data._id} | Edit | ${siteName}`,
+      //TODO
       description: `Some description here.`,
     };
   } catch (error: any) {
-    return {
-      title: "404",
-      robots: "noindex, nofollow",
-      description: "Country not found",
-    };
+    return default404Metadata;
   }
 };
 
 export const generateStaticParams = async (): Promise<{ _id: string }[]> => {
-  const fields = ["_id"];
-  const options = { fields };
   try {
-    const response = await getCompanies(options);
-    if (response.error) throw new Error();
-    return response.data.map((company: Partial<Company>) => {
-      return { _id: company._id };
-    });
+    const response = await getCompanies();
+    if (response.error) return [];
+    return response.data.map((company: Partial<Company>) => ({ _id: company._id }));
   } catch (error: any) {
     return [];
   }

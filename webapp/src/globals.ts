@@ -1,6 +1,7 @@
 import { Metadata, Viewport } from "next";
 const defaultError = { data: null, error: true };
 const defaultSuccess = { data: null, error: false };
+export const siteName = "Hyve Storage";
 export const status = {
   OK: 200,
   DB_UPDATED: 201,
@@ -15,15 +16,6 @@ export const status = {
   SERVER_ERROR: 500,
 };
 
-/* A */
-export const apiPermissions: { [key: string]: BucketPermission } = {
-  read: 1,
-  write: 2,
-  update: 3,
-  delete: 4,
-  full: 9,
-};
-
 /* C */
 export const colors = {
   black: "#222629",
@@ -35,10 +27,16 @@ export const colors = {
 };
 
 /* D */
-export const defaultFormError = { error: false, message: "" };
+export const default404Metadata: Metadata = {
+  title: `404 | ${siteName}`,
+  robots: "noindex, nofollow",
+  description: "Data not found",
+};
+
+export const defaultSimpleError = { error: false, message: "" };
 
 export const defaultMetadata: Metadata = {
-  title: "Hyve Storage",
+  title: siteName,
   description: "A microsite to host the Hyve Storage service.",
   icons: {
     // apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
@@ -68,7 +66,7 @@ export const defaultViewport: Viewport = {
   userScalable: true,
   viewportFit: "cover",
   width: "device-width",
-  themeColor: "#222831",
+  themeColor: colors.black,
 };
 
 /* H */
@@ -113,6 +111,4 @@ export const response_UNAUTHORISED: ApiResponse = {
 };
 
 /* S */
-export const siteName = "Hyve Storage";
-
 export const storagePrefix = "__hyve_storage";

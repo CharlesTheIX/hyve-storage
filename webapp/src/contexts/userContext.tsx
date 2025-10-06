@@ -1,31 +1,29 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type UserContextData = {
-  userData: UserData;
-  setUserData: React.Dispatch<React.SetStateAction<UserData>>;
-};
-export type UserData = {
-  _id: string | null;
-  token: string | null;
-  username: string | null;
+  userData: Partial<User>;
+  setUserData: React.Dispatch<React.SetStateAction<Partial<User>>>;
 };
 
-const defaultUserData: UserData = { _id: null, username: null, token: null };
 const defaultValue: UserContextData = {
+  userData: {},
   setUserData: () => {},
-  userData: defaultUserData,
 };
 
 const UserContext = createContext<UserContextData>(defaultValue);
 
 export const UserContextProvider = (props: { children: React.ReactNode }) => {
   const { children } = props;
-  const [userData, setUserData] = useState<UserData>(defaultUserData);
+  const [userData, setUserData] = useState<Partial<User>>({});
   const value: UserContextData = {
     userData,
     setUserData,
   };
+
+  useEffect(() => {
+    setUserData({ permissions: [9] });
+  }, []);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

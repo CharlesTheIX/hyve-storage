@@ -16,15 +16,6 @@ export const status = {
   SERVER_ERROR: 500,
 };
 
-/* A */
-export const apiPermissions: { [key: string]: BucketPermission } = {
-  read: 1,
-  write: 2,
-  update: 3,
-  delete: 4,
-  full: 9,
-};
-
 /* R */
 export const response_BAD: ApiResponse = {
   ...defaultError,

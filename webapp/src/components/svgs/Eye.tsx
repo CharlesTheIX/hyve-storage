@@ -1,15 +1,13 @@
 type Props = {
-  width?: number;
-  height?: number;
+  size?: number;
   primaryColor?: string;
-  secondaryColor?: string;
 };
 
-const EyeSVG: React.FC<Props> = (props: Props) => {
-  const { width = 24, height = 24, primaryColor = "inherit" } = props;
+const Eye: React.FC<Props> = (props: Props) => {
+  const { size = 24, primaryColor = "inherit" } = props;
 
   return (
-    <svg fill="none" viewBox="0 0 24 24" width={`${width}px`} height={`${height}px`} xmlns="http://www.w3.org/2000/svg">
+    <svg fill="none" viewBox="0 0 24 24" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
       <path
         strokeWidth="2"
         stroke={primaryColor}
@@ -28,4 +26,4 @@ const EyeSVG: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default EyeSVG;
+export default Eye;

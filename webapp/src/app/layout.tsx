@@ -1,7 +1,7 @@
 import "@/styles/globals.scss";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import PtSans from "@/styles/fonts/PtSans";
+import Header from "@/components/sections/Header";
+import Footer from "@/components/sections/Footer";
 import { defaultMetadata, defaultViewport } from "@/globals";
 import { UserContextProvider } from "@/contexts/userContext";
 import { ToastContextProvider } from "@/contexts/toastContext";

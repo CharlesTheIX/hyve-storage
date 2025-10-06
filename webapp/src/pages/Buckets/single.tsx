@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { colors } from "@/globals";
 import Document from "@/components/svgs/Document";
-import BucketDataCard from "@/components/cards/BucketDataCard";
-import BucketObjectsTable from "@/components/tables/BucketObjectsTable";
+import PermissionsWrapper from "@/components/PermissionsWrapper";
+import DeleteDataButton from "@/components/buttons/DeleteDataButton";
+import BucketDataCard from "@/components/cards/buckets/BucketDataCard";
+import BucketObjectsTable from "@/components/tables/buckets/BucketObjectsTable";
 
 type Props = {
   data: Partial<Bucket>;
@@ -12,37 +14,43 @@ const BucketPage: React.FC<Props> = (props: Props) => {
   const { data } = props;
 
   return (
-    <main className="flex flex-col gap-2 items-center justify-start">
-      <section className="w-full">
+    <main>
+      <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Document primaryColor={colors.white} width={50} height={50} />
+            <Document primaryColor={colors.white} size={50} />
             <h1>{data.name ? data.name : data._id}</h1>
           </div>
 
-          <Link href={`/buckets/${data._id}/edit`} className="hyve-button link">
-            Edit
-          </Link>
+          <div className="flex flex-row gap-2 items-center">
+            <Link href={`/buckets/${data._id}/edit`} className="hyve-button">
+              Edit
+            </Link>
+
+            <DeleteDataButton dataKey={data._id || ""} type="bucket" redirect="/buckets">
+              <p>Delete</p>
+            </DeleteDataButton>
+          </div>
         </div>
       </section>
 
-      <section className="w-full">
-        <div>
-          <BucketDataCard data={data} />
-        </div>
+      <section>
+        <BucketDataCard data={data} />
       </section>
 
-      <section className="w-full">
+      <section>
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-2 items-center justify-between">
             <div className="flex flex-row gap-2 items-center">
-              <Document primaryColor={colors.white} width={50} height={50} />
+              <Document primaryColor={colors.white} size={50} />
               <h2>Objects</h2>
             </div>
 
-            <Link href={`/buckets/${data._id}/upload`} className="hyve-button link">
-              Upload
-            </Link>
+            <PermissionsWrapper permissionLevel={9}>
+              <Link href={`/buckets/${data._id}/upload`} className="hyve-button">
+                Upload
+              </Link>
+            </PermissionsWrapper>
           </div>
 
           <BucketObjectsTable bucketId={data._id || ""} />

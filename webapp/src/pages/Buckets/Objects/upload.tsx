@@ -1,6 +1,6 @@
 import { colors } from "@/globals";
 import Create from "@/components/svgs/Create";
-import ObjectUploadForm from "@/components/forms/ObjectUploadForm";
+import ObjectUploadForm from "@/components/forms/buckets/objects/ObjectUploadForm";
 
 type Props = {
   data: Partial<Bucket>;
@@ -10,17 +10,17 @@ const ObjectUploadPage: React.FC<Props> = (props: Props) => {
   const { data } = props;
 
   return (
-    <main className="flex flex-col gap-2 items-center justify-start">
-      <section className="w-full">
+    <main>
+      <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Create primaryColor={colors.white} width={50} height={50} />
+            <Create primaryColor={colors.white} size={50} />
             <h1>Object Upload</h1>
           </div>
         </div>
       </section>
 
-      <section className="w-full">
+      <section>
         <ObjectUploadForm data={data} />
       </section>
     </main>

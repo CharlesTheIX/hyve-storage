@@ -1,11 +1,11 @@
 import { Metadata } from "next";
-import { defaultMetadata } from "@/globals";
 import CompaniesPage from "@/pages/Companies";
+import { defaultMetadata, siteName } from "@/globals";
 
-//TODO: update the metadata dor this page
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: "Companies | Hyve Storage",
+  title: `Companies | ${siteName}`,
+  //TODO
   description: "Some description here.",
 };
 

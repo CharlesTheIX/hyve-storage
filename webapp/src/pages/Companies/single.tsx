@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { colors } from "@/globals";
 import Cog from "@/components/svgs/Cog";
-import CompanyDataCard from "@/components/cards/CompanyDataCard";
+import DeleteDataButton from "@/components/buttons/DeleteDataButton";
+import CompanyDataCard from "@/components/cards/companies/CompanyDataCard";
 
 type Props = {
   data: Partial<Company>;
@@ -11,24 +12,28 @@ const CompanyPage: React.FC<Props> = (props: Props) => {
   const { data } = props;
 
   return (
-    <main className="flex flex-col gap-2 items-center justify-start">
-      <section className="w-full">
+    <main>
+      <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Cog primaryColor={colors.white} width={50} height={50} />
+            <Cog primaryColor={colors.white} size={50} />
             <h1>{data.name}</h1>
           </div>
 
-          <Link href={`/companies/${data._id}/edit`} className="hyve-button link">
-            Edit
-          </Link>
+          <div className="flex flex-row gap-2 items-center">
+            <Link href={`/companies/${data._id}/edit`} className="hyve-button">
+              Edit
+            </Link>
+
+            <DeleteDataButton dataKey={data._id || ""} type="company" redirect="/companies">
+              <p>Delete</p>
+            </DeleteDataButton>
+          </div>
         </div>
       </section>
 
-      <section className="w-full">
-        <div>
-          <CompanyDataCard data={data} />
-        </div>
+      <section>
+        <CompanyDataCard data={data} />
       </section>
     </main>
   );

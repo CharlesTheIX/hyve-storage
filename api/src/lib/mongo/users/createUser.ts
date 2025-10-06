@@ -5,23 +5,25 @@ import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../
 
 export default async (data: Partial<User>): Promise<ApiResponse> => {
   const { username, permissions = 0, companyId, firstName, surname } = data;
-  if (!surname) return { ...response_BAD, message: "surname required" };
-  if (!username) return { ...response_BAD, message: "username required" };
-  if (!firstName) return { ...response_BAD, message: "firstName required" };
-  if (!companyId) return { ...response_BAD, message: "companyId required" };
+  if (!surname) return { ...response_BAD, message: "A surname is required" };
+  if (!username) return { ...response_BAD, message: "A username is required" };
+  if (!firstName) return { ...response_BAD, message: "A first name is required" };
 
   try {
     const existingDoc = await userExists(username);
-    if (existingDoc.data) return { ...response_BAD, message: `User ${username} already exists` };
+    if (existingDoc.data) return { ...response_BAD, message: `A User with username ${username} already exists` };
 
-    const newDoc = new Model({ username, permissions, companyId, firstName, surname });
-    if (!newDoc) return { ...response_BAD, message: "User not created" };
+    const newDoc = new Model({ username, permissions, companyId: companyId || undefined, firstName, surname });
+    if (!newDoc) return { ...response_BAD, message: "User could not be created" };
 
     const createdDoc = await newDoc.save();
-    if (!createdDoc) return { ...response_BAD, message: "User not created" };
+    if (!createdDoc) return { ...response_BAD, message: "User could not be created" };
 
-    const companyUpdated = await addCompanyUser(companyId, createdDoc._id.toString());
-    if (companyUpdated.error) return companyUpdated;
+    if (companyId) {
+      const companyUpdated = await addCompanyUser(companyId, createdDoc._id.toString());
+      if (companyUpdated.error) return companyUpdated;
+    }
+
     return { ...response_DB_UPDATED };
   } catch (err: any) {
     return { ...response_SERVER_ERROR, data: err };
