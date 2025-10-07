@@ -1,6 +1,7 @@
 import { Query, SortOrder } from "mongoose";
 
 export default (query: Query<any[] | any, any>, filters?: Partial<ApiRequestFilters>): Query<any[], any> => {
+  const skip = filters?.skip || 0;
   const limit = filters?.limit || 100;
   var fields: MongoProjection = { _id: 1 };
   var sort: { [key: string]: SortOrder } = filters?.sort ? { [filters.sort.field]: filters?.sort?.order } : { createdAt: "desc" };
@@ -10,6 +11,7 @@ export default (query: Query<any[] | any, any>, filters?: Partial<ApiRequestFilt
   filters?.populate?.forEach((p) => query.populate(p));
 
   if ((query as any).op === "find") {
+    query.skip(skip);
     query.sort(sort);
     query.limit(limit);
   }

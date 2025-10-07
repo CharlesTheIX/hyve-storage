@@ -1,5 +1,6 @@
 /* A */
 type ApiRequestFilters = {
+  skip: number;
   limit: number;
   fields: string[];
   populate: string[];

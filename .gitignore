@@ -11,8 +11,9 @@
 
 **/**/.env*
 !**/**/.env.example
+**/**/.postman_environment.json
 
 **/**/yarn.lock
 **/**/package-lock.json
 
-next-env.d.ts
+**/**/next-env.d.ts

@@ -1,0 +1,1181 @@
+{
+	"info": {
+		"_postman_id": "32cd1784-9a76-49a0-b87c-b7d355599904",
+		"name": "Hyve-Storage",
+		"description": "This suite of api endpoints available from the hyve storage api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39609913"
+	},
+	"item": [
+		{
+			"name": "Buckets",
+			"item": [
+				{
+					"name": "API Only",
+					"item": [
+						{
+							"name": "By Name",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"options\": {},\n    \"name\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/buckets/by-name",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"buckets",
+										"by-name"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Objects",
+					"item": []
+				},
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"options\": {}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/buckets",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"buckets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Company Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"options\": {},\n    \"companyId\": \"68ded6205bab7ca9ea8df16d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/buckets/by-company-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"buckets",
+								"by-company-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"options\": {},\n    \"_id\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/buckets/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"buckets",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"options\": {},\n    \"_id\": \"\",\n    \"update\": {}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/buckets/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"buckets",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"68e137594db73662d4a9b662\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/buckets/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"buckets",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"\",\n    \"companyId\": \"\",\n    \"maxSize_bytes\": 1000000000,\n    \"permissions\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/buckets/create",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"buckets",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exists",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"davidc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/buckets/exists",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"buckets",
+								"exists"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "API Only",
+					"item": []
+				},
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"filters\": {\n        \"fields\": [\n            \"name\",\n            \"bucket_ids\",\n            \"user_ids\"\n        ],\n        \"populate\": [\n            \"bucket_ids\",\n            \"user_ids\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/companies",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"68e55fd87afe0cae6cdfd05c\",\n    \"filters\": {\n        \"fields\": [\n            \"name\",\n            \"bucket_ids\",\n            \"user_ids\"\n        ],\n        \"populate\": [\n            \"bucket_ids\",\n            \"user_ids\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/companies/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"companies",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"68e55fd87afe0cae6cdfd05c\",\n    \"update\": {},\n    \"filters\": {\n        \"fields\": [\n            \"name\",\n            \"bucket_ids\",\n            \"user_ids\"\n        ],\n        \"populate\": [\n            \"bucket_ids\",\n            \"user_ids\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/companies/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"companies",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"68e56a0c87af6beff517628c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/companies/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"companies",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test-Admin\",\n    \"user_ids\": [\"68e556288e38f6529de4ee16\"],\n    \"bucket_ids\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/companies/create",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"companies",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exists",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/companies/exists",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"companies",
+								"exists"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Minio",
+			"item": [
+				{
+					"name": "Buckets",
+					"item": [
+						{
+							"name": "All",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/buckets",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"buckets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Company",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"options\": {},\n    \"companyId\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/buckets/by-company",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"buckets",
+										"by-company"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Name",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/buckets/by-name",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"buckets",
+										"by-name"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Name",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"black\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/buckets/by-name",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"buckets",
+										"by-name"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/buckets/create",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"buckets",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Exists",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"davidc\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/buckets/exists",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"buckets",
+										"exists"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Size",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"davidc\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/buckets/size",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"buckets",
+										"size"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Objects",
+					"item": [
+						{
+							"name": "All",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/minio/objects",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"minio",
+										"objects"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "API Only",
+					"item": []
+				},
+				{
+					"name": "All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": \"sd\",\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/by-company-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"by-company-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"68e556288e38f6529de4ee16\",\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"68e55952e30c0273d0af0471\",\n    \"update\": {\n        \"permissions\": [9]\n    },\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"68e55952e30c0273d0af0471\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/by-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Tester\",\n    \"first_name\": \"Tester\",\n    \"surname\": \"Admin\",\n    \"company_id\": \"\",\n    \"permissions\": [1,2,3,4,5,6,7,8,9]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/create",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exists",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"davidc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/exists",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"exists"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This set of endpoints is related to the Mongo User model.\n\nThe 'API Only' directory contains endpoints that are only available to admin users.\n\nThe endpoints in the root of this directory are open to other Hyve services."
+		},
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
