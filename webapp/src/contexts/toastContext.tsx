@@ -1,5 +1,4 @@
 "use client";
-import { colors } from "@/globals";
 import CrossSVG from "@/components/svgs/Cross";
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 
@@ -16,16 +15,16 @@ export type ToastItem = {
 };
 type ToastType = "success" | "error";
 
-const defaultValue: ToastContextData = {
+const default_value: ToastContextData = {
   toastItems: [],
   setToastItems: () => {},
 };
 
-const ToastContext = createContext<ToastContextData>(defaultValue);
+const ToastContext = createContext<ToastContextData>(default_value);
 
 export const ToastContextProvider = (props: { children: React.ReactNode }) => {
   const { children } = props;
-  const timeoutCount = 500;
+  const timeout_count = 500;
   const interval = useRef<NodeJS.Timeout>(null);
   const [toastItems, setToastItems] = useState<ToastItem[]>([]);
   const value: ToastContextData = {
@@ -37,14 +36,14 @@ export const ToastContextProvider = (props: { children: React.ReactNode }) => {
     interval.current = setInterval(() => {
       if (toastItems.length === 0) return;
       setToastItems((prev) => {
-        const newItems = prev.filter((item) => {
-          if (item.timeout <= 0 || !item.visible) return;
-          item.timeout -= timeoutCount;
-          return item;
+        const new_items = prev.filter((i) => {
+          if (i.timeout <= 0 || !i.visible) return;
+          i.timeout -= timeout_count;
+          return i;
         });
-        return newItems;
+        return new_items;
       });
-    }, timeoutCount);
+    }, timeout_count);
 
     return () => {
       if (interval.current) clearInterval(interval.current);
@@ -56,22 +55,22 @@ export const ToastContextProvider = (props: { children: React.ReactNode }) => {
       {children}
 
       {toastItems.length > 0 && (
-        <div className="hyve-toast-container" style={{ translate: `0 ${-400 - toastItems.length * 250}%` }}>
-          {toastItems.reverse().map((item: ToastItem, key: number) => {
-            if (!item.visible) return <></>;
+        <div className="hyve-toast-container" style={{ translate: `0 ${-400 - toastItems.length * 300}%` }}>
+          {toastItems.reverse().map((i: ToastItem, key: number) => {
+            if (!i.visible) return <></>;
             return (
-              <div key={key} className={`hyve-toast ${item.type}`}>
+              <div key={key} className={`hyve-toast ${i.type}`}>
                 <div
                   className="close-container"
                   onClick={() => {
-                    item.visible = false;
+                    i.visible = false;
                   }}
                 >
-                  <CrossSVG primaryColor={colors.black} size={16} />
+                  <CrossSVG size={16} />
                 </div>
 
-                <h6>{item.title}</h6>
-                <p>{item.content}</p>
+                <h6>{i.title}</h6>
+                <p>{i.content}</p>
               </div>
             );
           })}

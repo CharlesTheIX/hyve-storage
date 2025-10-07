@@ -1,4 +1,4 @@
-import { header_internal, response_SERVER_ERROR } from "@/globals";
+import { header_internal, SERVER_ERROR } from "@/globals";
 
 export default async (_id: string): Promise<ApiResponse> => {
   try {
@@ -9,6 +9,6 @@ export default async (_id: string): Promise<ApiResponse> => {
     }).then((r) => r.json());
     return res;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    return { ...SERVER_ERROR, data: err };
   }
 };

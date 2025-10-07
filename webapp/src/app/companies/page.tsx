@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import CompaniesPage from "@/pages/Companies";
-import { defaultMetadata, siteName } from "@/globals";
+import { default_metadata, site_name } from "@/globals";
 
 export const metadata: Metadata = {
-  ...defaultMetadata,
-  title: `Companies | ${siteName}`,
+  ...default_metadata,
+  title: `Companies | ${site_name}`,
   //TODO
   description: "Some description here.",
 };

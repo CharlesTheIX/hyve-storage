@@ -2,12 +2,12 @@ import "@/styles/globals.scss";
 import PtSans from "@/styles/fonts/PtSans";
 import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
-import { defaultMetadata, defaultViewport } from "@/globals";
 import { UserContextProvider } from "@/contexts/userContext";
+import { default_metadata, default_viewport } from "@/globals";
 import { ToastContextProvider } from "@/contexts/toastContext";
 
-export const metadata = defaultMetadata;
-export const viewport = defaultViewport;
+export const metadata = default_metadata;
+export const viewport = default_viewport;
 
 type Props = {
   children: React.ReactNode;

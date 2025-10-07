@@ -2,8 +2,8 @@
 import parseJSON from "@/lib/parseJSON";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { defaultSimpleError } from "@/globals";
 import getInputError from "@/lib/getInputError";
+import { default_simple_error } from "@/globals";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
 import ButtonContainer from "@/components/forms/ButtonContainer";
@@ -18,34 +18,34 @@ type Props = {
 const CompanyDeletionForm: React.FC<Props> = (props: Props) => {
   const { redirect = "/companies" } = props;
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
     setComplete(false);
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const companyId = parseJSON(formData.get("companyId")?.toString()) ?? "";
-    const requestData: Partial<Company> = {
-      _id: companyId?.value,
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const company_id = parseJSON(form_data.get("company_id")?.toString()) ?? "";
+    const request_data: Partial<Company> = {
+      _id: company_id?.value,
     };
 
-    const validationError = validateRequest(requestData);
-    if (validationError.error) {
+    const validation_error = validateRequest(request_data);
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
-      const response = await deleteCompanyById(requestData._id || "");
+      const response = await deleteCompanyById(request_data._id || "");
       if (response.error) {
         setLoading(false);
         return setError({ error: true, message: response.message, title: "Error" });
@@ -62,14 +62,14 @@ const CompanyDeletionForm: React.FC<Props> = (props: Props) => {
 
   const validateRequest = (data: Partial<Company>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
     Object.keys(data).map((key: string) => {
       switch (key) {
         case "_id":
-          invalid = getInputError("mongoId", data[key], true);
+          invalid = getInputError("mongo_id", data[key], true);
           if (invalid.error) {
-            inputsInvalid.companyId = invalid.error;
+            inputs_invalid.company_id = invalid.error;
             message += `- Company: ${invalid.message}\n`;
           }
           break;
@@ -77,15 +77,15 @@ const CompanyDeletionForm: React.FC<Props> = (props: Props) => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""}`}
       onSubmit={(event: any) => {
         event.preventDefault();
@@ -94,7 +94,7 @@ const CompanyDeletionForm: React.FC<Props> = (props: Props) => {
       <div className="content-container">
         <div className="inputs">
           <div className="w-full flex flex-row gap-2 items-center justify-between">
-            <CompanyDropdown label="Company" name="companyId" required={true} error={!!inputErrors.companyId} />
+            <CompanyDropdown label="Company" name="company_id" required={true} error={!!inputErrors.company_id} />
           </div>
         </div>
 

@@ -16,8 +16,8 @@ const CompanyPage: React.FC<Props> = (props: Props) => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Cog primaryColor={colors.white} size={50} />
-            <h1>{data.name}</h1>
+            <Cog primary_color={colors.white} size={50} />
+            <h1>{data?.name || ""}</h1>
           </div>
 
           <div className="flex flex-row gap-2 items-center">
@@ -25,7 +25,7 @@ const CompanyPage: React.FC<Props> = (props: Props) => {
               Edit
             </Link>
 
-            <DeleteDataButton dataKey={data._id || ""} type="company" redirect="/companies">
+            <DeleteDataButton data_key={data._id || ""} type="company" redirect="/companies">
               <p>Delete</p>
             </DeleteDataButton>
           </div>

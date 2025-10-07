@@ -10,11 +10,11 @@ const BucketsPage: React.FC = () => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Document primaryColor={colors.white} size={50} />
+            <Document primary_color={colors.white} size={50} />
             <h1>Buckets</h1>
           </div>
 
-          <PermissionsWrapper permissionLevel={9}>
+          <PermissionsWrapper permission_level={9}>
             <Link href="/buckets/create" className="hyve-button">
               Create New
             </Link>

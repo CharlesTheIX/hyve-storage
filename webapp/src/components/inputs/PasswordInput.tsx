@@ -9,14 +9,14 @@ type Props = {
   error?: boolean;
   required?: boolean;
   placeholder?: string;
-  defaultValue?: string;
+  default_value?: string;
   onInput?: (event: any) => void;
 };
 
 const PasswordInput: React.FC<Props> = (props: Props) => {
-  var { name, label, error = false, required = false, placeholder = "", defaultValue = "", onInput = () => {} } = props;
+  var { name, label, error = false, required = false, placeholder = "", default_value = "", onInput = () => {} } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<string>(defaultValue);
+  const [value, setValue] = useState<string>(default_value);
   const [hidePassword, setHidePassword] = useState<boolean>(true);
 
   return (
@@ -54,7 +54,7 @@ const PasswordInput: React.FC<Props> = (props: Props) => {
           setHidePassword(!hidePassword);
         }}
       >
-        {hidePassword ? <EyeSVG primaryColor="#b5b5b5" /> : <EyeClosedSVG primaryColor="#b5b5b5" />}
+        {hidePassword ? <EyeSVG primary_color="#b5b5b5" /> : <EyeClosedSVG primary_color="#b5b5b5" />}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+import { null_option } from "@/globals";
 import getUsers from "@/lib/users/getUsers";
 import { useEffect, useState } from "react";
 
@@ -9,8 +10,7 @@ type Props = {
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  defaultValue?: Option;
-  customSelect?: boolean;
+  default_value?: Option;
   onChange?: (event: any) => void;
 };
 
@@ -22,20 +22,20 @@ const UserDropdown: React.FC<Props> = (props: Props) => {
     disabled = false,
     required = false,
     onChange = () => {},
+    default_value = null_option,
     placeholder = "Select an option",
-    defaultValue = { value: "", label: "" },
   } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<Option[]>([]);
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<Option>(defaultValue);
+  const [value, setValue] = useState<Option>(default_value);
 
   useEffect(() => {
     (async () => {
       const fields = ["username"];
-      const options = { fields };
+      const filters = { fields };
       try {
-        const res = await getUsers(options);
+        const res = await getUsers(filters);
         if (res.error) return;
         if (res.data.length > 0) setOptions(res.data.map((i: Partial<User>) => ({ value: i._id, label: i.username })));
       } catch (err: any) {
@@ -84,9 +84,20 @@ const UserDropdown: React.FC<Props> = (props: Props) => {
 
           <div className={`options-container`}>
             <ul>
-              <li className="blank-option" style={{ opacity: 0.8 }}>
-                {placeholder}
-              </li>
+              {required ? (
+                <li style={{ opacity: 0.8, cursor: "default" }}>{placeholder}</li>
+              ) : (
+                <li
+                  onClick={(event: any) => {
+                    setOpen(false);
+                    onChange(event);
+                    setFocused(false);
+                    setValue(null_option);
+                  }}
+                >
+                  None
+                </li>
+              )}
 
               {options.map((option, key: number) => {
                 return (

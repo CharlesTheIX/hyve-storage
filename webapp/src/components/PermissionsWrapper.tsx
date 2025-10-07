@@ -2,14 +2,14 @@
 import { useUserContext } from "@/contexts/userContext";
 
 type Props = {
-  permissionLevel: number;
+  permission_level: number;
   children: React.ReactNode;
 };
 
 const PermissionsWrapper: React.FC<Props> = (props: Props) => {
-  const { children, permissionLevel } = props;
+  const { children, permission_level } = props;
   const { userData } = useUserContext();
-  if (!userData.permissions?.includes(permissionLevel)) return <></>;
+  if (!userData.permissions?.includes(permission_level)) return <></>;
   return <>{children}</>;
 };
 

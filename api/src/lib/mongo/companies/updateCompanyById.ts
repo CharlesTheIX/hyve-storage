@@ -1,36 +1,32 @@
 import mongoose from "mongoose";
 import getCompanyById from "./getCompanyById";
 import Model from "../../../models/Company.model";
-import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../../globals";
+import applyMongoFilters from "../applyMongoFilters";
+import { NO_CONTENT, SERVER_ERROR } from "../../../globals";
 
 type Props = {
   _id: string;
   update: Partial<Company>;
-  options?: Partial<ApiRequestOptions>;
+  filters?: Partial<ApiRequestFilters>;
 };
 
 export default async (props: Props): Promise<ApiResponse> => {
-  const { _id, update, options } = props;
+  const { _id, update, filters } = props;
 
   try {
-    const existingDoc = await getCompanyById(_id, { fields: ["userIds", "name", "bucketIds"] });
-    if (existingDoc.error) return { ...response_BAD, message: "Company not found" };
+    const existing_doc = await getCompanyById(_id);
+    if (existing_doc.error) return existing_doc;
 
-    const objectId = new mongoose.Types.ObjectId(_id);
-    const docUpdate: Partial<Company> = {
-      updatedAt: new Date(),
-      name: update.name || existingDoc.data.name,
-      userIds: update.userIds || existingDoc.data.userIds,
-      bucketIds: update.bucketIds || existingDoc.data.bucketIds,
-    };
-    if (docUpdate.userIds && docUpdate.userIds.length <= 0) return { ...response_BAD, message: "A company must have at least one user." };
+    const object_id = new mongoose.Types.ObjectId(_id);
+    const query: any = { $set: { updatedAt: new Date() }, $unset: {} };
+    const updated_doc = await applyMongoFilters(Model.findByIdAndUpdate(object_id, query, { new: true }), filters)
+      .lean()
+      .exec();
+    if (!updated_doc) throw new Error("Company not updated");
 
-    const updatedDoc = await Model.updateOne({ _id: objectId }, docUpdate);
-    if (!updatedDoc || updatedDoc?.modifiedCount === 0) return { ...response_BAD, message: "Company not updated" };
-
-    const response = await getCompanyById(_id, options);
-    return { ...response_DB_UPDATED, data: response.data };
+    return NO_CONTENT;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, message: err.message };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

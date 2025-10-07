@@ -4,41 +4,41 @@ import getInputError from "@/lib/getInputError";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
-import { defaultSimpleError, header_internal } from "@/globals";
 import ButtonContainer from "@/components/forms/ButtonContainer";
+import { default_simple_error, header_internal } from "@/globals";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 
 const CompanyExistsForm: React.FC = () => {
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [exists, setExists] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
     setComplete(false);
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const name = formData.get("name")?.toString() || "";
-    const requestData: Partial<Company> = { name };
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const name = form_data.get("name")?.toString() || "";
+    const request_data: Partial<Company> = { name };
 
-    const validationError = validateRequest(requestData);
-    if (validationError.error) {
+    const validation_error = validateRequest(request_data);
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/companies/exists`, {
         method: "POST",
         headers: header_internal,
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(request_data),
       }).then((res: any) => res.json());
 
       if (response.error) {
@@ -57,14 +57,14 @@ const CompanyExistsForm: React.FC = () => {
 
   const validateRequest = (data: Partial<Company>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
     Object.keys(data).map((key: string) => {
       switch (key) {
         case "name":
           invalid = getInputError("username", data[key], true);
           if (invalid.error) {
-            inputsInvalid.name = invalid.error;
+            inputs_invalid.name = invalid.error;
             message += `- Company name: ${invalid.message}\n`;
           }
           break;
@@ -72,15 +72,15 @@ const CompanyExistsForm: React.FC = () => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""}`}
       onSubmit={(event: any) => {
         event.preventDefault();

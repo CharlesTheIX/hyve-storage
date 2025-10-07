@@ -1,43 +1,56 @@
-import mongoose from "mongoose";
 import getUserById from "./getUserById";
 import Model from "../../../models/User.model";
-import companyExists from "../companies/companyExists";
-import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../../globals";
+import mongoose, { isValidObjectId } from "mongoose";
+import applyMongoFilters from "../applyMongoFilters";
+import addCompanyUser from "../companies/addCompanyUser";
+import getCompanyById from "../companies/getCompanyById";
+import removeCompanyUser from "../companies/removeCompanyUser";
+import { BAD, NO_CONTENT, SERVER_ERROR } from "../../../globals";
 
 type Props = {
   _id: string;
   update: Partial<User>;
-  options?: Partial<ApiRequestOptions>;
+  filters?: Partial<ApiRequestFilters>;
 };
 
 export default async (props: Props): Promise<ApiResponse> => {
-  const { _id, update, options } = props;
+  const { _id, update, filters } = props;
+  const _id_validation = isValidObjectId(_id);
+  if (!_id_validation) return { ...BAD, message: "Invalid _id" };
+
+  const company_id_validation = isValidObjectId(update.company_id);
+  if (update.company_id && !company_id_validation) return { ...BAD, message: "Invalid company_id" };
 
   try {
-    const existingDoc = await getUserById(_id, { fields: ["surname", "firstName"] });
-    if (existingDoc.error) return { ...response_BAD, message: "User not found" };
+    const existing_doc = await getUserById(_id);
+    if (existing_doc.error) return existing_doc;
 
-    if (update.companyId) {
-      const existingCompany = await companyExists(update.companyId);
-      if (!existingCompany.data) return { ...response_BAD, message: `Company does not exist` };
+    if (update.company_id) {
+      const existing_company = await getCompanyById(update.company_id);
+      if (!existing_company.data) return existing_company;
     }
 
-    const objectId = new mongoose.Types.ObjectId(_id);
-    const docUpdate: Partial<User> = {
-      updatedAt: new Date(),
-      surname: update.surname || existingDoc.data.surname,
-      // username: update.username || existingDoc.data.username,
-      firstName: update.firstName || existingDoc.data.firstName,
-      // companyId: update.companyId || existingDoc.data.companyId,
-      // permissions: update.permissions || existingDoc.data.permissions,
-    };
+    const object_id = new mongoose.Types.ObjectId(_id);
+    const query: any = { $set: { updatedAt: new Date() }, $unset: {} };
 
-    const updatedDoc = await Model.updateOne({ _id: objectId }, docUpdate);
-    if (!updatedDoc || updatedDoc?.modifiedCount === 0) return { ...response_BAD, message: "User not updated" };
+    if (update.surname) query.$set.surname = update.surname;
+    if (update.first_name) query.$set.first_name = update.first_name;
+    if (update.permissions) query.$set.permissions = update.permissions;
 
-    const response = await getUserById(_id, options);
-    return { ...response_DB_UPDATED, data: response.data };
+    if (update.company_id === "") query.$unset.company_id = 1;
+    else query.$set.company_id = update.company_id;
+
+    const updated_doc = await applyMongoFilters(Model.findByIdAndUpdate(object_id, query, { new: true }), filters)
+      .lean()
+      .exec();
+    if (!updated_doc) throw new Error("User not updated");
+
+    if (update.company_id === "") await removeCompanyUser(update.company_id, _id);
+    else if (update.company_id) await addCompanyUser(update.company_id, _id);
+
+    return NO_CONTENT;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, message: err.message };
+    //TODO: handle error
+    return { ...SERVER_ERROR, data: err };
   }
 };

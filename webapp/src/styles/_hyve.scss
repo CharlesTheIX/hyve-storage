@@ -171,15 +171,22 @@ footer {
   @apply px-8 py-4;
   border-top: $border_width solid $white;
 
-  > div {
+  nav {
     @apply flex flex-col items-center justify-center;
-    margin: 0 auto;
-    max-width: $screen_max_width;
-  }
 
-  .copyright {
-    @apply text-sm;
-    font-weight: normal;
+    ul {
+      @apply flex flex-row gap-2 items-center justify-center;
+    }
+
+    a,
+    .delimiter {
+      @apply text-xs;
+      font-weight: normal;
+    }
+
+    .delimiter {
+      color: $white;
+    }
   }
 }
 
@@ -489,10 +496,6 @@ a {
           cursor: pointer;
           transition: all $transition_time ease-in-out;
 
-          &:nth-child(1) {
-            cursor: initial;
-          }
-
           &:hover {
             opacity: $hover_opacity;
           }
@@ -690,14 +693,20 @@ a {
   bottom: 0;
   height: 0;
   overflow: visible;
+  transition: all $transition_time ease-in-out;
   translate: 0 -500%;
   z-index: 12;
 
   .hyve-toast {
     @apply py-2 px-4 pr-10 flex flex-col gap-0 relative;
     animation: slide-in-right $transition_time ease-in-out forwards;
-    color: $black;
+    border: $border_width solid $green;
+    color: $green;
     width: 320px;
+
+    svg {
+      fill: $green;
+    }
 
     .close-container {
       @apply absolute top-3 right-4;
@@ -710,11 +719,16 @@ a {
     }
 
     &.error {
-      background-color: $red;
+      border-color: $red;
+      color: $red;
+
+      svg {
+        fill: $red;
+      }
     }
 
     &.success {
-      background-color: $green;
+      border-color: $green;
     }
   }
 }

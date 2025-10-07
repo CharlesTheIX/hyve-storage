@@ -1,4 +1,4 @@
-import mimeTypes from "./mimeTypes";
+import MimeTypes from "./MimeTypes";
 
 export const isValidBucketName = (name: string): SimpleError => {
   const valid: SimpleError = { error: false, message: "" };
@@ -42,9 +42,9 @@ export const isValidCompanyName = (name: string): SimpleError => {
 };
 
 export const isValidMimeType = (file: Express.Multer.File): SimpleError => {
-  const mimeType = file.mimetype;
+  const mime_type = file.mimetype;
   const valid: SimpleError = { error: false, message: "" };
-  if (!mimeType || !mimeTypes.includes(mimeType)) valid.message = `Mime type for file ${file.filename} is invalid`;
+  if (!mime_type || !MimeTypes.includes(mime_type)) valid.message = `Mimetype for file ${file.filename} is invalid`;
   if (valid.message) valid.error = true;
   return valid;
 };
@@ -67,16 +67,16 @@ export const isValidName = (name: string): SimpleError => {
 
 export const isValidObjectName = (name: string): SimpleError => {
   const valid: SimpleError = { error: false, message: "" };
-  const byteLength = Buffer.byteLength(name, "utf8");
-  const unsafeCharsPattern = new RegExp(/[\x00-\x1F\x7F]/);
+  const byte_length = Buffer.byteLength(name, "utf8");
+  const unsafe_chars_pattern = new RegExp(/[\x00-\x1F\x7F]/);
 
   if (!name || typeof name !== "string") valid.message = "Object name must be a non-empty string";
 
-  if (byteLength < 1 || byteLength > 1024) {
+  if (byte_length < 1 || byte_length > 1024) {
     valid.message = `Object name "${name}" must be between 1 & 1024 bytes`;
   }
 
-  if (unsafeCharsPattern.test(name)) {
+  if (unsafe_chars_pattern.test(name)) {
     valid.message = `Object name "${name}" contains unsafe or non-printable characters`;
   }
 

@@ -4,7 +4,7 @@ import DeleteDataButton from "@/components/buttons/DeleteDataButton";
 import CompanyEditForm from "@/components/forms/companies/CompanyEditForm";
 
 type Props = {
-  data: Partial<User>;
+  data: Partial<Company>;
 };
 
 const CompanyEditPage: React.FC<Props> = (props: Props) => {
@@ -15,11 +15,11 @@ const CompanyEditPage: React.FC<Props> = (props: Props) => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Edit primaryColor={colors.white} size={50} />
+            <Edit primary_color={colors.white} size={50} />
             <h1>Edit Company</h1>
           </div>
 
-          <DeleteDataButton dataKey={data._id || ""} type="user" redirect="/users">
+          <DeleteDataButton data_key={data._id || ""} type="user" redirect="/companies">
             <p>Delete</p>
           </DeleteDataButton>
         </div>

@@ -5,7 +5,7 @@ type InputError = {
 };
 export default (type: InputRegexPatternType, value: any, required?: boolean): InputError => {
   if (!value) return { error: !!required, message: `${!!required ? "A value is required." : ""}` };
-  const regexPattern = getRegexPattern(type);
-  const error = !regexPattern.regex.test(value);
-  return { error, message: error ? regexPattern.message : "" };
+  const regex_pattern = getRegexPattern(type);
+  const error = !regex_pattern.regex.test(value);
+  return { error, message: error ? regex_pattern.message : "" };
 };

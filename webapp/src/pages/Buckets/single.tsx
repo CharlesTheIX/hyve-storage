@@ -18,8 +18,8 @@ const BucketPage: React.FC<Props> = (props: Props) => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Document primaryColor={colors.white} size={50} />
-            <h1>{data.name ? data.name : data._id}</h1>
+            <Document primary_color={colors.white} size={50} />
+            <h1>{data?.name || ""}</h1>
           </div>
 
           <div className="flex flex-row gap-2 items-center">
@@ -27,7 +27,7 @@ const BucketPage: React.FC<Props> = (props: Props) => {
               Edit
             </Link>
 
-            <DeleteDataButton dataKey={data._id || ""} type="bucket" redirect="/buckets">
+            <DeleteDataButton data_key={data._id || ""} type="bucket" redirect="/buckets">
               <p>Delete</p>
             </DeleteDataButton>
           </div>
@@ -42,18 +42,18 @@ const BucketPage: React.FC<Props> = (props: Props) => {
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-2 items-center justify-between">
             <div className="flex flex-row gap-2 items-center">
-              <Document primaryColor={colors.white} size={50} />
+              <Document primary_color={colors.white} size={50} />
               <h2>Objects</h2>
             </div>
 
-            <PermissionsWrapper permissionLevel={9}>
+            <PermissionsWrapper permission_level={9}>
               <Link href={`/buckets/${data._id}/upload`} className="hyve-button">
                 Upload
               </Link>
             </PermissionsWrapper>
           </div>
 
-          <BucketObjectsTable bucketId={data._id || ""} />
+          <BucketObjectsTable bucket_id={data._id || ""} />
         </div>
       </section>
     </main>

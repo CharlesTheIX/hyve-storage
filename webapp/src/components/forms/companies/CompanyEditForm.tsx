@@ -5,8 +5,8 @@ import getInputError from "@/lib/getInputError";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
-import { defaultSimpleError, header_internal } from "@/globals";
 import ButtonContainer from "@/components/forms/ButtonContainer";
+import { default_simple_error, header_internal } from "@/globals";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 
 type Props = {
@@ -17,28 +17,28 @@ type Props = {
 const CompanyEditForm: React.FC<Props> = (props: Props) => {
   const { data, redirect = `/companies/${data._id}` } = props;
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
     setComplete(false);
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const name = formData.get("name")?.toString() || "";
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const name = form_data.get("name")?.toString() || "";
     const update: Partial<Company> = { name };
 
-    const validationError = validateRequest(update);
-    if (validationError.error) {
+    const validation_error = validateRequest(update);
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
@@ -64,14 +64,14 @@ const CompanyEditForm: React.FC<Props> = (props: Props) => {
 
   const validateRequest = (data: Partial<Company>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
     Object.keys(data).map((key: string) => {
       switch (key) {
         case "name":
           invalid = getInputError("username", data[key], true);
           if (invalid.error) {
-            inputsInvalid.name = invalid.error;
+            inputs_invalid.name = invalid.error;
             message += `- Company name: ${invalid.message}\n`;
           }
           break;
@@ -79,15 +79,15 @@ const CompanyEditForm: React.FC<Props> = (props: Props) => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""}`}
       onSubmit={(event: any) => {
         event.preventDefault();
@@ -96,13 +96,13 @@ const CompanyEditForm: React.FC<Props> = (props: Props) => {
       <div className="content-container">
         <div className="inputs">
           <div className="w-full flex flex-row gap-2 items-center justify-between">
-            <TextInput name="name" required={true} label="Company name" error={!!inputErrors.name} defaultValue={data.name} />
+            <TextInput name="name" required={true} label="Company name" error={!!inputErrors.name} default_value={data.name} />
 
             <TextInput
               label="User"
               name="user-id"
               disabled={true}
-              defaultValue={data.userIds ? (typeof data.userIds[0] === "string" ? data.userIds[0] : data.userIds[0].username) : undefined}
+              default_value={data.user_ids ? (typeof data.user_ids[0] === "string" ? data.user_ids[0] : data.user_ids[0].username) : undefined}
             />
           </div>
         </div>

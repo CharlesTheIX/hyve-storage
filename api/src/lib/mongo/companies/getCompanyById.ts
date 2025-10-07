@@ -1,18 +1,21 @@
-import mongoose from "mongoose";
-import applyPopulation from "../applyPopulation";
 import Model from "../../../models/Company.model";
-import getSelectionFields from "../getSelectionFields";
-import { response_BAD, response_OK, response_SERVER_ERROR } from "../../../globals";
+import mongoose, { isValidObjectId } from "mongoose";
+import applyMongoFilters from "../applyMongoFilters";
+import { BAD, NOT_FOUND, OK, SERVER_ERROR } from "../../../globals";
 
-export default async (_id: string, options?: Partial<ApiRequestOptions>): Promise<ApiResponse> => {
+export default async (_id: string, filters?: Partial<ApiRequestFilters>): Promise<ApiResponse> => {
+  const _id_validation = isValidObjectId(_id);
+  if (!_id_validation) return { ...BAD, message: "Invalid _id" };
+
   try {
-    const objectId = new mongoose.Types.ObjectId(_id);
-    const fields = getSelectionFields(options?.fields);
-    const query = Model.findById(objectId).select(fields);
-    const doc = await applyPopulation(query, options?.populate).lean();
-    if (!doc) return { ...response_BAD, message: `No company found with an _id of ${_id}` };
-    return { ...response_OK, data: doc };
+    const object_id = new mongoose.Types.ObjectId(_id);
+    const query = Model.findById(object_id);
+    const data = await applyMongoFilters(query, filters).lean().exec();
+    if (!data) return NOT_FOUND;
+
+    return { ...OK, data };
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, message: err.message };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

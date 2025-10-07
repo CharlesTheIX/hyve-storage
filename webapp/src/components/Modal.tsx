@@ -1,15 +1,15 @@
 "use client";
 type Props = {
   open: boolean;
-  className?: string;
+  class_name?: string;
   children: React.ReactNode;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Modal: React.FC<Props> = (props: Props) => {
-  const { open, children, setOpen, className = "" } = props;
+  const { open, children, setOpen, class_name = "" } = props;
   return (
-    <div className={`hyve-modal ${open ? "open" : ""} ${className}`}>
+    <div className={`hyve-modal ${open ? "open" : ""} ${class_name}`}>
       <div
         className="modal-background"
         onClick={(event: any) => {

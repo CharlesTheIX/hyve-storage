@@ -14,7 +14,7 @@ const ObjectUploadPage: React.FC<Props> = (props: Props) => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Create primaryColor={colors.white} size={50} />
+            <Create primary_color={colors.white} size={50} />
             <h1>Object Upload</h1>
           </div>
         </div>

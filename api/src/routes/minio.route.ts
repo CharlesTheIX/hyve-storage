@@ -1,146 +1,120 @@
 import fs from "fs";
 import multer from "multer";
+import { SERVER_ERROR, BAD } from "../globals";
 import listBuckets from "../lib/minio/listBuckets";
+import { isValidMimeType } from "../lib/validation";
 import bucketExists from "../lib/minio/bucketExists";
 import createBucket from "../lib/minio/createBucket";
 import removeBucket from "../lib/minio/removeBucket";
 import getBucketSize from "../lib/minio/getBucketSize";
 import listBucketObjects from "../lib/minio/lisObjects";
-import getMinioClient from "../lib/minio/getMinioClient";
 import getBucketByName from "../lib/minio/getBucketByName";
 import express, { Router, Request, Response } from "express";
 import uploadFormObject from "../lib/minio/uploadFormObject";
-import { isValidBucketName, isValidMimeType } from "../lib/validation";
-import { response_SERVER_ERROR, response_BAD, status } from "../globals";
 
-const client = getMinioClient();
 const router: Router = express.Router();
 const upload = multer({ dest: "/tmp" });
 
 router.route("/buckets").post(async (_, response: Response) => {
   try {
-    const res = await listBuckets(client);
+    const res = await listBuckets();
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/buckets/by-name").delete(async (request: Request, response: Response) => {
   const { name } = request.body;
-  if (!name) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name` });
-
-  const validation = isValidBucketName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  if (!name) return response.status(400).json({ ...BAD, message: `Missing required value(s): name` });
   try {
-    const res = await removeBucket({ client, name });
+    const res = await removeBucket(name);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/buckets/by-name").post(async (request: Request, response: Response) => {
   const { name } = request.body;
-  if (!name) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name` });
-
-  const validation = isValidBucketName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  if (!name) return response.status(400).json({ ...BAD, message: `Missing required value(s): name` });
   try {
-    const res = await getBucketByName({ client, name });
+    const res = await getBucketByName(name);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/buckets/create").put(async (request: Request, response: Response) => {
   const { name } = request.body;
-  if (!name) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name` });
-
-  const validation = isValidBucketName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  if (!name) return response.status(400).json({ ...BAD, message: `Missing required value(s): name` });
   try {
-    const res = await createBucket({ client, name, options: {} });
+    const res = await createBucket(name);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/buckets/exists").post(async (request: Request, response: Response) => {
   const { name } = request.body;
-  if (!name) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name` });
-
-  const validation = isValidBucketName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  if (!name) return response.status(400).json({ ...BAD, message: `Missing required value(s): name` });
   try {
-    const res = await bucketExists(client, name);
+    const res = await bucketExists(name);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/buckets/size").post(async (request: Request, response: Response) => {
   const { name } = request.body;
-  if (!name) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name` });
-
-  const validation = isValidBucketName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  if (!name) return response.status(400).json({ ...BAD, message: `Missing required value(s): name` });
   try {
-    const res = await getBucketSize(client, name);
+    const res = await getBucketSize(name);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/objects").post(async (request: Request, response: Response) => {
   const { name } = request.body;
-  if (!name) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name` });
-
-  const validation = isValidBucketName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  if (!name) return response.status(400).json({ ...BAD, message: `Missing required value(s): name` });
   try {
-    const res = await listBucketObjects({ client, name, options: {} });
+    const res = await listBucketObjects(name);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/objects/upload").put(upload.single("file"), async (request: Request, response: Response): Promise<any> => {
-  const { bucketName, objectName, fromSource } = request.body;
+  const { bucket_name, object_name, from_source } = request.body;
   const file = request.file;
-  if (!bucketName || !file) {
-    return response.status(status.BAD).json({ ...response_BAD, message: "Missing Required value(s): bucketName, file." });
+  if (!bucket_name || !file) {
+    return response.status(BAD.status).json({ ...BAD, message: "Missing Required value(s): bucket_name, file." });
   }
-
-  const validBucketName = isValidBucketName(bucketName);
-  if (validBucketName.error) {
-    return response.status(status.BAD).json({ ...response_BAD, message: validBucketName.message });
-  }
-
-  const validMimeType = isValidMimeType(file);
-  if (validMimeType.error) {
+  const valid_mimetype = isValidMimeType(file);
+  if (valid_mimetype.error) {
     fs.unlinkSync(file.path);
-    return response.status(status.BAD).json({ ...response_BAD, message: validMimeType.message });
+    return response.status(BAD.status).json({ ...BAD, message: valid_mimetype.message });
   }
-
   try {
-    const res = await uploadFormObject({ client, bucketName, objectName, file, fromSource });
+    const res = await uploadFormObject({ bucket_name, object_name, file, from_source });
     fs.unlinkSync(file.path);
     return response.json(res);
   } catch (err: any) {
-    console.error(`Minio upload form object error: ${err.message}`);
-    return response.status(status.SERVER_ERROR).json(response_SERVER_ERROR);
+    //TODO: handle errors
+    return response.status(SERVER_ERROR.status).json(SERVER_ERROR);
   }
 });
 

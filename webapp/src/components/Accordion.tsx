@@ -20,7 +20,7 @@ const Accordion: React.FC<Props> = (props: Props) => {
         }}
       >
         <p>{title}</p>
-        <Chevron primaryColor={colors.white} direction="down" />
+        <Chevron primary_color={colors.white} direction="down" />
       </div>
 
       <div className="accordion-body">{children}</div>

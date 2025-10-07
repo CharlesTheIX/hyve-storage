@@ -8,8 +8,8 @@ import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import NumberInput from "@/components/inputs/NumberInput";
 import ErrorContainer from "@/components/forms/ErrorContainer";
-import { defaultSimpleError, header_internal } from "@/globals";
 import ButtonContainer from "@/components/forms/ButtonContainer";
+import { default_simple_error, header_internal } from "@/globals";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 import CompanyDropdown from "@/components/inputs/dropdowns/CompanyDropdown";
 
@@ -17,50 +17,50 @@ type Props = {
   redirect?: string;
 };
 
-const storageKey = "bucket_creation_form_data";
+const storage_key = "bucket_creation_form_data";
 const BucketCreationForm: React.FC<Props> = (props: Props) => {
   const { redirect = `/buckets` } = props;
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [storageValue, setStorageValue] = useState<StorageValue | null>(null);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const name = formData.get("name")?.toString() || "";
-    const companyId = parseJSON(formData.get("companyId")?.toString()) ?? "";
-    const maxSize_bytes = parseInt(formData.get("maxSize_bytes")?.toString() || "0");
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const name = form_data.get("name")?.toString() || "";
+    const company_id = parseJSON(form_data.get("company_id")?.toString()) ?? "";
+    const max_size_bytes = parseInt(form_data.get("max_size_bytes")?.toString() || "0");
     //TODO: update for an array of values
-    const permissions = parseInt(formData.get("permissions")?.toString() || "1") as BucketPermission;
-    const requestData: Partial<Bucket> = {
+    const permissions = parseInt(form_data.get("permissions")?.toString() || "1") as BucketPermission;
+    const request_data: Partial<Bucket> = {
       name,
-      maxSize_bytes,
+      max_size_bytes,
       permissions: [permissions],
-      companyId: companyId?.value,
+      company_id: company_id?.value,
     };
 
-    Storage.setStorageValue(storageKey, { ...requestData, permissions, companyId });
+    Storage.setStorageValue(storage_key, { ...request_data, permissions, company_id });
 
-    const validationError = validateRequest(requestData);
-    if (validationError.error) {
+    const validation_error = validateRequest(request_data);
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/buckets/create`, {
         method: "PUT",
         headers: header_internal,
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(request_data),
       }).then((res: any) => res.json());
 
       if (response.error) {
@@ -68,7 +68,7 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
         return setError({ error: true, message: response.message, title: "Error" });
       }
 
-      Storage.clearStorageValue(storageKey);
+      Storage.clearStorageValue(storage_key);
       if (redirect) return router.push(redirect);
 
       setComplete(true);
@@ -81,21 +81,21 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
 
   const validateRequest = (data: Partial<Bucket>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
     Object.keys(data).map((key: string) => {
       switch (key) {
         case "name":
           invalid = getInputError("name", data[key], true);
           if (invalid.error) {
-            inputsInvalid.name = invalid.error;
+            inputs_invalid.name = invalid.error;
             message += `- Company name: ${invalid.message}\n`;
           }
           break;
-        case "maxSize_bytes":
+        case "max_size_bytes":
           invalid = getInputError("number", data[key], true);
           if (invalid.error) {
-            inputsInvalid.maxSize_bytes = invalid.error;
+            inputs_invalid.max_size_bytes = invalid.error;
             message += `- Max size: ${invalid.message}\n`;
           }
           break;
@@ -104,14 +104,14 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
           const value = data[key] || [0];
           invalid = getInputError("number", value[0], true);
           if (invalid.error) {
-            inputsInvalid.permissions = invalid.error;
+            inputs_invalid.permissions = invalid.error;
             message += `- Permissions: ${invalid.message}\n`;
           }
           break;
-        case "companyId":
-          invalid = getInputError("mongoId", data[key], true);
+        case "company_id":
+          invalid = getInputError("mongo_id", data[key], true);
           if (invalid.error) {
-            inputsInvalid.companyId = invalid.error;
+            inputs_invalid.company_id = invalid.error;
             message += `- Company: ${invalid.message}\n`;
           }
           break;
@@ -119,21 +119,21 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   useEffect(() => {
-    const savedData = Storage.getStorageValue(storageKey);
-    if (!savedData) return;
-    setStorageValue(savedData);
+    const saved_data = Storage.getStorageValue(storage_key);
+    if (!saved_data) return;
+    setStorageValue(saved_data);
   }, []);
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""}`}
       onSubmit={(event: any) => {
         event.preventDefault();
@@ -142,26 +142,26 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
       <div className="content-container">
         <div className="inputs">
           <div className="w-full">
-            <TextInput name="name" required={true} label="Bucket name" error={!!inputErrors.name} defaultValue={storageValue?.value?.name} />
+            <TextInput name="name" required={true} label="Bucket name" error={!!inputErrors.name} default_value={storageValue?.value?.name} />
           </div>
 
           <div className="w-full flex flex-row gap-2 items-center justify-between">
             <CompanyDropdown
               label="Company"
               required={true}
-              name="companyId"
-              error={!!inputErrors.companyId}
-              defaultValue={storageValue?.value?.companyId}
+              name="company_id"
+              error={!!inputErrors.company_id}
+              default_value={storageValue?.value?.company_id}
             />
 
             <NumberInput
               min={1}
               max={9}
               required={true}
-              name="maxSize_bytes"
+              name="max_size_bytes"
               label="Max Size (B)"
-              error={!!inputErrors.maxSize_bytes}
-              defaultValue={storageValue?.value?.maxSize_bytes || 1000000000}
+              error={!!inputErrors.max_size_bytes}
+              default_value={storageValue?.value?.max_size_bytes || 1000000000}
             />
 
             {/* //TODO: update for an array of values */}
@@ -172,7 +172,7 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
               name="permissions"
               label="Permissions"
               error={!!inputErrors.permissions}
-              defaultValue={storageValue?.value?.permissions[0] || 1}
+              default_value={storageValue?.value?.permissions[0] || 1}
             />
           </div>
         </div>

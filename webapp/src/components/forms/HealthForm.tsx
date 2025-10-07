@@ -2,23 +2,23 @@
 import { useRef, useState } from "react";
 import LoadingIcon from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
-import { defaultSimpleError, header_internal } from "@/globals";
 import ButtonContainer from "@/components/forms/ButtonContainer";
+import { default_simple_error, header_internal } from "@/globals";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 
 const Form: React.FC = () => {
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setComplete(false);
-    setError(defaultSimpleError);
+    setError(default_simple_error);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/health`, {
@@ -41,7 +41,7 @@ const Form: React.FC = () => {
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""} min-h-[75px] justify-center`}
       onSubmit={(event: any) => {
         event.preventDefault();

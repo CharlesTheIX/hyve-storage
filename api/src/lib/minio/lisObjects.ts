@@ -1,25 +1,19 @@
-import { Client } from "minio";
 import bucketExists from "./bucketExists";
+import getMinioClient from "./getMinioClient";
 import { isValidBucketName } from "../validation";
-import { response_BAD, response_OK, response_SERVER_ERROR } from "../../globals";
+import { BAD, NOT_FOUND, OK, SERVER_ERROR } from "../../globals";
 
-type Props = {
-  options: any;
-  name: string;
-  client: Client;
-};
-
-export default async (props: Props): Promise<ApiResponse> => {
-  const { client, name, options } = props;
+export default async (name: string, options: any = { prefix: "", recursive: false }): Promise<ApiResponse> => {
   const validation = isValidBucketName(name);
-  if (validation.error) return { ...response_BAD, message: validation.message };
+  if (validation.error) return { ...BAD, message: validation.message };
 
   try {
-    const exists = await bucketExists(client, name);
+    const exists = await bucketExists(name);
     if (exists.error) return exists;
-    if (!exists.data) return { ...response_BAD, message: `A bucket with the name ${name} does not exist` };
+    if (exists.status !== OK.status) return NOT_FOUND;
 
-    const { prefix = "", recursive = false } = options;
+    const client = getMinioClient();
+    const { prefix, recursive } = options;
     const data = await new Promise<any[]>((resolve, reject) => {
       const objects: any[] = [];
       const stream = client.listObjects(name, prefix, recursive);
@@ -28,8 +22,10 @@ export default async (props: Props): Promise<ApiResponse> => {
       stream.on("error", (err) => reject(err));
       stream.on("end", () => resolve(objects));
     });
-    return { ...response_OK, data, message: `Bucket objects listed successfully from ${name}` };
+
+    return { ...OK, data };
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

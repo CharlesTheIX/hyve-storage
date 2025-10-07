@@ -1,5 +1,5 @@
+import { SERVER_ERROR } from "@/globals";
 import { NextResponse } from "next/server";
-import { response_SERVER_ERROR } from "@/globals";
 
 export async function GET() {
   try {
@@ -8,6 +8,6 @@ export async function GET() {
     }).then((res) => res.json());
     return NextResponse.json(response);
   } catch (err: any) {
-    return NextResponse.json({ ...response_SERVER_ERROR, data: err });
+    return NextResponse.json({ ...SERVER_ERROR, data: err });
   }
 }

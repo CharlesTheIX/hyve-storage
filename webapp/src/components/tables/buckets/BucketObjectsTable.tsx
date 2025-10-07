@@ -18,16 +18,16 @@ import { getTableHeaders, getTableStorageKey } from "../helpers";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
 import { ToastItem, useToastContext } from "@/contexts/toastContext";
 import deleteBucketObjectById from "@/lib/buckets/deleteBucketObjectById";
-import { colors, defaultSimpleError, defaultTableNullValue } from "@/globals";
+import { colors, default_simple_error, default_null_label } from "@/globals";
 
 type Props = {
-  bucketId: string;
+  bucket_id: string;
 };
 
 const type = "objects";
-const storageKey = getTableStorageKey(type);
+const storage_key = getTableStorageKey(type);
 const BucketObjectsTable: React.FC<Props> = (props: Props) => {
-  const { bucketId } = props;
+  const { bucket_id } = props;
   const router = useRouter();
   const { setToastItems } = useToastContext();
   const [list, setList] = useState<MinioObject[]>([]);
@@ -37,7 +37,7 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
   const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [activeData, setActiveData] = useState<Partial<MinioObject>>({});
   const [headers, setHeaders] = useState<TableHeader[]>(getTableHeaders(type));
-  const [modalError, setModalError] = useState<SimpleError>(defaultSimpleError);
+  const [modalError, setModalError] = useState<SimpleError>(default_simple_error);
 
   const errorCallback = () => {
     setLoading(false);
@@ -47,7 +47,7 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
   const getTableData = async (): Promise<void> => {
     setLoading(true);
     try {
-      const res = await getBucketObjects(bucketId);
+      const res = await getBucketObjects(bucket_id);
       if (res.error) return handleError({ message: res.message, err: res.data, callback: errorCallback });
       if (res.data.length > 0) setList(res.data);
       setLoading(false);
@@ -61,11 +61,11 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
     router.push(uri);
   };
 
-  const removeData = async (dataKey: string): Promise<void> => {
+  const removeData = async (data_key: string): Promise<void> => {
     setModalLoading(true);
-    setModalError(defaultSimpleError);
+    setModalError(default_simple_error);
     try {
-      const res = await deleteBucketObjectById(dataKey);
+      const res = await deleteBucketObjectById(data_key);
       if (res.error) {
         setActiveData({});
         setModalLoading(false);
@@ -74,17 +74,17 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
       setActiveData({});
       setModalOpen(false);
       setModalLoading(false);
-      setModalError(defaultSimpleError);
-      setToastItems((prevValue) => {
-        const newItem: ToastItem = {
+      setModalError(default_simple_error);
+      setToastItems((prev) => {
+        const new_item: ToastItem = {
           content: "",
           timeout: 3000,
           visible: true,
           type: "success",
           title: "Object removed",
         };
-        const newValue = [...prevValue, newItem];
-        return newValue;
+        const new_value = [...prev, new_item];
+        return new_value;
       });
       await getTableData();
     } catch (err: any) {
@@ -95,8 +95,8 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    const savedData = Storage.getStorageValue(storageKey);
-    if (savedData && savedData.value) setHeaders(savedData.value);
+    const saved_data = Storage.getStorageValue(storage_key);
+    if (saved_data && saved_data.value) setHeaders(saved_data.value);
     (async () => await getTableData())();
   }, []);
 
@@ -115,10 +115,10 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
                       key={th.value}
                       className={`${th.visible ? "visible" : ""}`}
                       onClick={() => {
-                        setHeaders((prevValue) => {
-                          const newValue = prevValue.map((h, i) => (key === i ? { ...h, visible: !h.visible } : h));
-                          Storage.setStorageValue(storageKey, newValue);
-                          return newValue;
+                        setHeaders((prev) => {
+                          const new_value = prev.map((h, i) => (key === i ? { ...h, visible: !h.visible } : h));
+                          Storage.setStorageValue(storage_key, new_value);
+                          return new_value;
                         });
                       }}
                     >
@@ -158,7 +158,7 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
                       setHover(null);
                     }}
                     onClick={() => {
-                      navigateTo(`/buckets/${bucketId}/objects/${td.name}`);
+                      navigateTo(`/buckets/${bucket_id}/objects/${td.name}`);
                     }}
                   >
                     {headers[0].visible !== false && (
@@ -170,20 +170,20 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
                             event.preventDefault();
                             event.stopPropagation();
                             const copied = copyContentToClipboard(td.name || "");
-                            setToastItems((prevValue) => {
-                              const newItem: ToastItem = {
+                            setToastItems((prev) => {
+                              const new_item: ToastItem = {
                                 timeout: 3000,
                                 visible: true,
                                 content: copied.message,
                                 title: copied.title || "",
                                 type: copied.error ? "error" : "success",
                               };
-                              const newValue = [...prevValue, newItem];
-                              return newValue;
+                              const new_value = [...prev, new_item];
+                              return new_value;
                             });
                           }}
                         >
-                          <Copy size={16} primaryColor={colors.green} />
+                          <Copy size={16} primary_color={colors.green} />
                           <p>{td.name}</p>
                         </div>
                       </td>
@@ -191,23 +191,23 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
 
                     {headers[1].visible !== false && (
                       <td>
-                        <p>{td.size ? formatBytes(td.size, "KB") : defaultTableNullValue}</p>
+                        <p>{td.size ? formatBytes(td.size, "KB") : default_null_label}</p>
                       </td>
                     )}
 
                     {headers[2].visible !== false && (
                       <td>
-                        <p>{td.etag || defaultTableNullValue}</p>
+                        <p>{td.etag || default_null_label}</p>
                       </td>
                     )}
 
                     {headers[3].visible !== false && (
                       <td>
-                        <p>{td.lastModified ? new Date(td.lastModified).toLocaleDateString() : defaultTableNullValue}</p>
+                        <p>{td.lastModified ? new Date(td.lastModified).toLocaleDateString() : default_null_label}</p>
                       </td>
                     )}
 
-                    <PermissionsWrapper permissionLevel={9}>
+                    <PermissionsWrapper permission_level={9}>
                       {headers[4]?.visible && (
                         <td>
                           <div className="z-2 delete-button">
@@ -218,7 +218,7 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
                                 setModalOpen(true);
                               }}
                             >
-                              <Bin primaryColor={colors.red} size={16} />
+                              <Bin primary_color={colors.red} size={16} />
                             </Button>
                           </div>
                         </td>
@@ -239,7 +239,7 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
                   <Button
                     type="default"
                     callback={() => {
-                      setModalError(defaultSimpleError);
+                      setModalError(default_simple_error);
                     }}
                   >
                     Try Again

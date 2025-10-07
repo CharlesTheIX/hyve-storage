@@ -1,23 +1,37 @@
-import companyExists from "./companyExists";
+import { isValidObjectId } from "mongoose";
+import companyExists from "./getCompanyExists";
 import Model from "../../../models/Company.model";
-import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../../globals";
+import updateUserById from "../users/updateUserById";
+import { BAD, CONFLICT, DB_UPDATED, OK, SERVER_ERROR } from "../../../globals";
 
 export default async (data: Partial<Company>): Promise<ApiResponse> => {
-  const { name, userIds = [] } = data;
-  if (!name) return { ...response_BAD, message: "name required" };
+  const { name, user_ids = [] } = data;
+  const valid: SimpleError = { error: false, message: "" };
+  user_ids.forEach((i) => {
+    if (valid.error) return;
+    if (!isValidObjectId(i)) valid.error = true;
+  });
+
+  if (valid.error) return { ...BAD, message: "User ids contains and invalid id" };
 
   try {
-    const existingDoc = await companyExists(name);
-    if (existingDoc.error) return existingDoc;
-    if (existingDoc.data) return { ...response_BAD, message: `Company ${name} already exists` };
+    const existing_doc = await companyExists(name || "");
+    if (existing_doc.error) return existing_doc;
+    if (existing_doc.status === OK.status) return CONFLICT;
 
-    const newDoc = new Model({ name, userIds, bucketIds: [] });
-    if (!newDoc) return { ...response_BAD, message: "Company not created" };
+    const new_doc = new Model({ name, user_ids, bucket_ids: [] });
+    if (!new_doc) throw new Error("Company not created");
 
-    const createdDoc = await newDoc.save();
-    if (!createdDoc) return { ...response_BAD, message: "Company not created" };
-    return { ...response_DB_UPDATED };
+    const created_doc = await new_doc.save();
+    if (!created_doc) throw new Error("Company not created");
+
+    if (user_ids.length > 0) {
+      await Promise.all(user_ids.map((i: string) => updateUserById({ _id: i, update: { company_id: new_doc._id.toString() } })));
+    }
+
+    return DB_UPDATED;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

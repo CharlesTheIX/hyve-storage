@@ -5,10 +5,10 @@ const ClearStorageButton: React.FC = () => {
   const { setToastItems } = useToastContext();
   const callback = () => {
     Storage.clearAllStorage();
-    setToastItems((prevValue) => {
-      const newItem: ToastItem = { title: "Hyve Storage cache cleared", type: "success", content: "", timeout: 3000, visible: true };
-      const newItems: ToastItem[] = [...prevValue, newItem];
-      return newItems;
+    setToastItems((prev) => {
+      const new_item: ToastItem = { title: "Hyve Storage cache cleared", type: "success", content: "", timeout: 3000, visible: true };
+      const new_items: ToastItem[] = [...prev, new_item];
+      return new_items;
     });
   };
   return (

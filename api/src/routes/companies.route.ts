@@ -1,141 +1,84 @@
-import { isValidCompanyName } from "../lib/validation";
+import { SERVER_ERROR, BAD } from "../globals";
 import express, { Router, Request, Response } from "express";
 import createCompany from "../lib/mongo/companies/createCompany";
-import companyExists from "../lib/mongo/companies/companyExists";
 import getCompanyById from "../lib/mongo/companies/getCompanyById";
-import addCompanyUser from "../lib/mongo/companies/addCompanyUser";
+import companyExists from "../lib/mongo/companies/getCompanyExists";
 import getAllCompanies from "../lib/mongo/companies/getAllCompanies";
-import addCompanyBucket from "../lib/mongo/companies/addCompanyBucket";
-import { response_SERVER_ERROR, response_BAD, status } from "../globals";
 import removeCompanyById from "../lib/mongo/companies/removeCompanyById";
 import updateCompanyById from "../lib/mongo/companies/updateCompanyById";
-import removeCompanyUser from "../lib/mongo/companies/removeCompanyUser";
-import removeCompanyBucket from "../lib/mongo/companies/removeCompanyBucket";
 
 const router: Router = express.Router();
 
 router.route("/").post(async (request: Request, response: Response) => {
-  const { options } = request.body;
-
+  const { filters } = request.body;
   try {
-    const res = await getAllCompanies(options);
+    const res = await getAllCompanies(filters);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
-  }
-});
-
-router.route("/add-bucket").patch(async (request: Request, response: Response) => {
-  const { _id, bucketId } = request.body;
-  if (!_id || !bucketId) return response.status(400).json({ ...response_BAD, message: "Missing required value(s): _id, bucketId" });
-
-  try {
-    const res = await addCompanyBucket(_id, bucketId);
-    return response.status(res.status).json(res);
-  } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
-  }
-});
-
-router.route("/add-user").patch(async (request: Request, response: Response) => {
-  const { _id, userId } = request.body;
-  if (!_id || !userId) return response.status(400).json({ ...response_BAD, message: "Missing required value(s): _id, userId" });
-
-  try {
-    const res = await addCompanyUser(_id, userId);
-    return response.status(res.status).json(res);
-  } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    // TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/by-id").delete(async (request: Request, response: Response) => {
   const { _id } = request.body;
-  if (!_id) return response.status(400).json({ ...response_BAD, message: "Missing required value(s): _id" });
-
+  if (!_id) return response.status(BAD.status).json({ ...BAD, message: "Missing required value(s): _id" });
   try {
     const res = await removeCompanyById(_id);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    // TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/by-id").patch(async (request: Request, response: Response) => {
-  const { _id, update, options } = request.body;
-  if (!_id || !update) return response.status(400).json({ ...response_BAD, message: "Missing required value(s): _id, update" });
-
+  const { _id, update, filters } = request.body;
+  if (!_id || !update) return response.status(BAD.status).json({ ...BAD, message: "Missing required value(s): _id, update" });
   try {
-    const res = await updateCompanyById({ _id, update, options });
+    const res = await updateCompanyById({ _id, update, filters });
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    // TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/by-id").post(async (request: Request, response: Response) => {
-  const { _id, options } = request.body;
-  if (!_id) return response.status(400).json({ ...response_BAD, message: "Missing required value(s): _id" });
-
+  const { _id, filters } = request.body;
+  if (!_id) return response.status(BAD.status).json({ ...BAD, message: "Missing required value(s): _id" });
   try {
-    const res = await getCompanyById(_id, options);
+    const res = await getCompanyById(_id, filters);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    // TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/create").put(async (request: Request, response: Response) => {
-  const { name, userIds } = request.body;
-  if (!name || !userIds) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name, userIds` });
-
-  const validation = isValidCompanyName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  const { name, user_ids } = request.body;
+  if (!name || !user_ids || user_ids.length === 0) {
+    return response.status(BAD.status).json({ ...BAD, message: `Missing required value(s): name, user_ids` });
+  }
   try {
-    const res = await createCompany({ name, userIds });
+    const res = await createCompany({ name, user_ids });
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    // TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 
 router.route("/exists").post(async (request: Request, response: Response) => {
   const { name } = request.body;
-  if (!name) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): name` });
-
-  const validation = isValidCompanyName(name);
-  if (validation.error) return response.status(400).json({ ...response_BAD, message: validation.message });
-
+  if (!name) return response.status(BAD.status).json({ ...BAD, message: `Missing required value(s): name` });
   try {
     const res = await companyExists(name);
     return response.status(res.status).json(res);
   } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
-  }
-});
-
-router.route("/remove-bucket").patch(async (request: Request, response: Response) => {
-  const { _id, bucketId } = request.body;
-  if (!_id || !bucketId) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): _id, bucketId` });
-
-  try {
-    const res = await removeCompanyBucket(_id, bucketId);
-    return response.status(res.status).json(res);
-  } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
-  }
-});
-
-router.route("/remove-user").patch(async (request: Request, response: Response) => {
-  const { _id, userId } = request.body;
-  if (!_id || !userId) return response.status(400).json({ ...response_BAD, message: `Missing required value(s): _id, userId` });
-
-  try {
-    const res = await removeCompanyUser(_id, userId);
-    return response.status(res.status).json(res);
-  } catch (err: any) {
-    return response.status(status.SERVER_ERROR).json({ ...response_SERVER_ERROR, data: err });
+    // TODO: handle errors
+    return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
 

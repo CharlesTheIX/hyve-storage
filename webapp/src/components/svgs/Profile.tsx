@@ -1,15 +1,15 @@
 type Props = {
   size?: number;
-  primaryColor?: string;
+  primary_color?: string;
 };
 
 const Profile: React.FC<Props> = (props: Props) => {
-  const { size = 24, primaryColor = "inherit" } = props;
+  const { size = 24, primary_color = "inherit" } = props;
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 22 22">
-      <g stroke="none" strokeWidth={2} fill={primaryColor} fillRule="evenodd">
-        <g transform="translate(-260.000000, -2199.000000)" fill={primaryColor} strokeWidth={2}>
+      <g stroke="none" strokeWidth={2} fill={primary_color} fillRule="evenodd">
+        <g transform="translate(-260.000000, -2199.000000)" fill={primary_color} strokeWidth={2}>
           <g transform="translate(56.000000, 160.000000)" strokeWidth={2}>
             <path
               strokeWidth={2}

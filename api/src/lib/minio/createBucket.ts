@@ -1,34 +1,26 @@
-import { Client } from "minio";
 import getEnvVars from "../getEnvVars";
 import bucketExists from "./bucketExists";
+import getMinioClient from "./getMinioClient";
 import { isValidBucketName } from "../validation";
-import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../globals";
+import { BAD, CONFLICT, DB_UPDATED, OK, SERVER_ERROR } from "../../globals";
 
-type Props = {
-  options: any;
-  name: string;
-  client: Client;
-};
-
-export default async (props: Props): Promise<ApiResponse> => {
-  const { client, name, options } = props;
+const vars = getEnvVars();
+export default async (name: string, options: any = { region: vars.minio.region, makeOptions: { ObjectLocking: false } }): Promise<ApiResponse> => {
   const validation = isValidBucketName(name);
-  if (validation.error) return { ...response_BAD, message: validation.message };
+  if (validation.error) return { ...BAD, message: validation.message };
 
   try {
-    const exists = await bucketExists(client, name);
+    const exists = await bucketExists(name);
     if (exists.error) return exists;
-    if (exists.data) return { ...response_BAD, message: `A bucket with the name ${name} name already exists` };
+    if (exists.status === OK.status) return CONFLICT;
 
-    const vars = getEnvVars();
-    const { region = vars.minio.region, makeOptions = { ObjectLocking: false } } = options;
+    const client = getMinioClient();
+    const { region, makeOptions } = options;
     await client.makeBucket(name, region, makeOptions);
 
-    const newExists = await bucketExists(client, name);
-    if (newExists.error || !newExists.data) return { ...response_SERVER_ERROR, message: "Bucket creation failed" };
-
-    return { ...response_DB_UPDATED, message: `Bucket ${name} created` };
+    return DB_UPDATED;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

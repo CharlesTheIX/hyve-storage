@@ -10,11 +10,11 @@ const UsersPage: React.FC = () => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Users primaryColor={colors.white} size={50} />
+            <Users primary_color={colors.white} size={50} />
             <h1>Users</h1>
           </div>
 
-          <PermissionsWrapper permissionLevel={9}>
+          <PermissionsWrapper permission_level={9}>
             <Link href="/users/create" className="hyve-button">
               Create New
             </Link>

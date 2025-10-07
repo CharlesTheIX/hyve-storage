@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import Navigation from "./Navigation";
+import Hyve from "@/components/svgs/Hyve";
 
 const Header: React.FC = () => {
   return (
@@ -8,8 +8,7 @@ const Header: React.FC = () => {
       <nav>
         <div className="logo-container">
           <Link href={"/"}>
-            <Image width={30} height={35} alt="Hyve logo" src="/images/hyve-logo.svg" priority={true} />
-            <p className="text-2xl text-white">Hyve Storage</p>
+            <Hyve size={50} />
           </Link>
         </div>
 

@@ -1,14 +1,14 @@
-import { header_internal, response_SERVER_ERROR } from "@/globals";
+import { header_internal, SERVER_ERROR } from "@/globals";
 
-export default async (bucketId: string): Promise<ApiResponse> => {
+export default async (bucket_id: string): Promise<ApiResponse> => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/buckets/objects`, {
       method: "POST",
       headers: header_internal,
-      body: JSON.stringify({ bucketId }),
+      body: JSON.stringify({ bucket_id }),
     }).then((r) => r.json());
     return res;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    return { ...SERVER_ERROR, data: err };
   }
 };

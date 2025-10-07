@@ -21,18 +21,18 @@ import getPercentageFromRatio from "@/lib/getPercentageFromRatio";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
 import { ToastItem, useToastContext } from "@/contexts/toastContext";
 import getBucketsByCompanyId from "@/lib/buckets/getBucketsByCompanyId";
-import { colors, defaultSimpleError, defaultTableNullValue } from "@/globals";
+import { colors, default_simple_error, default_null_label } from "@/globals";
 import { getTableHeaders, getTableMongoData, getTableStorageKey } from "../helpers";
 
 type Props = {
-  companyId?: string;
-  sliceLimit?: number;
+  company_id?: string;
+  slice_limit?: number;
 };
 
 const type = "buckets";
-const storageKey = getTableStorageKey(type);
+const storage_key = getTableStorageKey(type);
 const BucketsTable: React.FC<Props> = (props: Props) => {
-  const { companyId, sliceLimit = 3 } = props;
+  const { company_id, slice_limit = 3 } = props;
   const router = useRouter();
   const { setToastItems } = useToastContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
   const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [activeData, setActiveData] = useState<Partial<Bucket>>({});
   const [headers, setHeaders] = useState<TableHeader[]>(getTableHeaders(type));
-  const [modalError, setModalError] = useState<SimpleError>(defaultSimpleError);
+  const [modalError, setModalError] = useState<SimpleError>(default_simple_error);
 
   const errorCallback = () => {
     setLoading(false);
@@ -51,11 +51,11 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
 
   const getTableData = async (): Promise<void> => {
     setLoading(true);
-    const options: Partial<ApiRequestOptions> = getTableMongoData(type);
+    const filters: Partial<ApiRequestFilters> = getTableMongoData(type);
     try {
       var res;
-      if (!companyId) res = await getBuckets(options);
-      else res = await getBucketsByCompanyId(companyId, options);
+      if (!company_id) res = await getBuckets(filters);
+      else res = await getBucketsByCompanyId(company_id, filters);
       if (res.error) return handleError({ message: res.message, err: res.data, callback: errorCallback });
       if (res.data.length > 0) setList(res.data);
       setLoading(false);
@@ -69,11 +69,11 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
     router.push(uri);
   };
 
-  const removeData = async (dataKey: string): Promise<void> => {
+  const removeData = async (data_key: string): Promise<void> => {
     setModalLoading(true);
-    setModalError(defaultSimpleError);
+    setModalError(default_simple_error);
     try {
-      const res = await deleteBucketById(dataKey);
+      const res = await deleteBucketById(data_key);
       if (res.error) {
         setActiveData({});
         setModalLoading(false);
@@ -82,17 +82,17 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
       setActiveData({});
       setModalOpen(false);
       setModalLoading(false);
-      setModalError(defaultSimpleError);
-      setToastItems((prevValue) => {
-        const newItem: ToastItem = {
+      setModalError(default_simple_error);
+      setToastItems((prev) => {
+        const new_item: ToastItem = {
           content: "",
           timeout: 3000,
           visible: true,
           type: "success",
           title: "Bucket removed",
         };
-        const newValue = [...prevValue, newItem];
-        return newValue;
+        const new_value = [...prev, new_item];
+        return new_value;
       });
       await getTableData();
     } catch (err: any) {
@@ -103,8 +103,8 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    const savedData = Storage.getStorageValue(storageKey);
-    if (savedData && savedData.value) setHeaders(savedData.value);
+    const saved_data = Storage.getStorageValue(storage_key);
+    if (saved_data && saved_data.value) setHeaders(saved_data.value);
     (async () => await getTableData())();
   }, []);
 
@@ -118,16 +118,16 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
             <Accordion title="Filter Columns">
               <ul>
                 {headers.map((th: TableHeader, key: number) => {
-                  if (!!companyId && th.value == "companyId") return <Fragment key={key} />;
+                  if (!!company_id && th.value == "company_id") return <Fragment key={key} />;
                   return (
                     <li
                       key={th.value}
                       className={`${th.visible ? "visible" : ""}`}
                       onClick={() => {
-                        setHeaders((prevValue) => {
-                          const newValue = prevValue.map((h, i) => (key === i ? { ...h, visible: !h.visible } : h));
-                          Storage.setStorageValue(storageKey, newValue);
-                          return newValue;
+                        setHeaders((prev) => {
+                          const new_value = prev.map((h, i) => (key === i ? { ...h, visible: !h.visible } : h));
+                          Storage.setStorageValue(storage_key, new_value);
+                          return new_value;
                         });
                       }}
                     >
@@ -143,7 +143,7 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
             <thead>
               <tr>
                 {headers.map((th: TableHeader, key: number) => {
-                  if (!!companyId && th.value == "companyId") return <Fragment key={key} />;
+                  if (!!company_id && th.value == "company_id") return <Fragment key={key} />;
                   if (th.visible) {
                     return (
                       <th key={key}>
@@ -157,7 +157,7 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
 
             <tbody>
               {list.map((td: Partial<Bucket>, key: number) => {
-                const consumptionPercentage = getPercentageFromRatio(td.consumption_bytes || 0, td.maxSize_bytes || 0);
+                const consumption_percentage = getPercentageFromRatio(td.consumption_bytes || 0, td.max_size_bytes || 0);
 
                 return (
                   <tr
@@ -175,41 +175,41 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
                   >
                     {headers[0].visible && (
                       <td>
-                        <p>{td.name ? td.name : defaultTableNullValue}</p>
+                        <p>{td.name ? td.name : default_null_label}</p>
                       </td>
                     )}
 
-                    {headers[1].visible && !companyId && (
+                    {headers[1].visible && !company_id && (
                       <td
                         className="z-2 relative"
                         onClick={(event: any) => {
-                          if (!td.companyId) return;
+                          if (!td.company_id) return;
                           event.stopPropagation();
-                          const uri = `/companies/${typeof td.companyId === "string" ? td.companyId : td.companyId._id}`;
+                          const uri = `/companies/${typeof td.company_id === "string" ? td.company_id : td.company_id._id}`;
                           navigateTo(uri);
                         }}
                       >
-                        {td.companyId ? (
-                          typeof td.companyId === "string" ? (
-                            <p className="link-text">{td.companyId}</p>
+                        {td.company_id ? (
+                          typeof td.company_id === "string" ? (
+                            <p className="link-text">{td.company_id}</p>
                           ) : (
-                            <p className="link-text">{td.companyId.name}</p>
+                            <p className="link-text">{td.company_id.name}</p>
                           )
                         ) : (
-                          <p>{defaultTableNullValue}</p>
+                          <p>{default_null_label}</p>
                         )}
                       </td>
                     )}
 
                     {headers[2].visible && (
                       <td>
-                        <p>{td.objectCount || defaultTableNullValue}</p>
+                        <p>{td.object_count || default_null_label}</p>
                       </td>
                     )}
 
                     {headers[3].visible && (
                       <td>
-                        <p>{td.maxSize_bytes ? formatBytes(td.maxSize_bytes, "KB") : defaultTableNullValue}</p>
+                        <p>{td.max_size_bytes ? formatBytes(td.max_size_bytes, "KB") : default_null_label}</p>
                       </td>
                     )}
 
@@ -217,10 +217,10 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
                       <td>
                         <div className="flex flex-row items-center gap-2 w-full">
                           <p>
-                            {formatBytes(td.consumption_bytes || 0, "KB")}/{formatBytes(td.maxSize_bytes || 0, "KB")}
+                            {formatBytes(td.consumption_bytes || 0, "KB")}/{formatBytes(td.max_size_bytes || 0, "KB")}
                           </p>
 
-                          <PercentageRing percentage={consumptionPercentage} size_rem={1} />
+                          <PercentageRing percentage={consumption_percentage} size_rem={1} />
                         </div>
                       </td>
                     )}
@@ -229,28 +229,28 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
                       <td>
                         {td.permissions ? (
                           <>
-                            {Permissions.getBucketPermissionLabels(td.permissions, [0, sliceLimit]).join(", ")}
-                            {td.permissions.length > sliceLimit && <span>{` +${td.permissions.length - sliceLimit}`}</span>}
+                            {Permissions.getBucketPermissionLabels(td.permissions, [0, slice_limit]).join(", ")}
+                            {td.permissions.length > slice_limit && <span>{` +${td.permissions.length - slice_limit}`}</span>}
                           </>
                         ) : (
-                          <p>{defaultTableNullValue}</p>
+                          <p>{default_null_label}</p>
                         )}
                       </td>
                     )}
 
                     {headers[6].visible && (
                       <td>
-                        <p>{td.createdAt ? new Date(td.createdAt).toLocaleDateString() : defaultTableNullValue}</p>
+                        <p>{td.createdAt ? new Date(td.createdAt).toLocaleDateString() : default_null_label}</p>
                       </td>
                     )}
 
                     {headers[7].visible && (
                       <td>
-                        <p>{td.updatedAt ? new Date(td.updatedAt).toLocaleDateString() : defaultTableNullValue}</p>
+                        <p>{td.updatedAt ? new Date(td.updatedAt).toLocaleDateString() : default_null_label}</p>
                       </td>
                     )}
 
-                    <PermissionsWrapper permissionLevel={9}>
+                    <PermissionsWrapper permission_level={9}>
                       {headers[8]?.visible && (
                         <td>
                           <div
@@ -260,21 +260,21 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
                               event.preventDefault();
                               event.stopPropagation();
                               const copied = copyContentToClipboard(td._id || "");
-                              setToastItems((prevValue) => {
-                                const newItem: ToastItem = {
+                              setToastItems((prev) => {
+                                const new_item: ToastItem = {
                                   timeout: 3000,
                                   visible: true,
                                   content: copied.message,
                                   title: copied.title || "",
                                   type: copied.error ? "error" : "success",
                                 };
-                                const newValue = [...prevValue, newItem];
-                                return newValue;
+                                const new_value = [...prev, new_item];
+                                return new_value;
                               });
                             }}
                           >
-                            <Copy size={16} primaryColor={colors.green} />
-                            <p>{td._id ? td._id : defaultTableNullValue}</p>
+                            <Copy size={16} primary_color={colors.green} />
+                            <p>{td._id ? td._id : default_null_label}</p>
                           </div>
                         </td>
                       )}
@@ -289,7 +289,7 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
                                 setModalOpen(true);
                               }}
                             >
-                              <Bin primaryColor={colors.red} size={16} />
+                              <Bin primary_color={colors.red} size={16} />
                             </Button>
                           </div>
                         </td>
@@ -310,7 +310,7 @@ const BucketsTable: React.FC<Props> = (props: Props) => {
                   <Button
                     type="default"
                     callback={() => {
-                      setModalError(defaultSimpleError);
+                      setModalError(default_simple_error);
                     }}
                   >
                     Try Again

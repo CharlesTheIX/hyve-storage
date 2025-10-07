@@ -1,19 +1,18 @@
 "use client";
-import { colors } from "@/globals";
 import { useEffect, useState } from "react";
+import { colors, null_option } from "@/globals";
 import Chevron from "@/components/svgs/Chevron";
-import getBucketsByCompany from "@/lib/buckets/getBucketsByCompanyId";
+import getBucketsByCompanyId from "@/lib/buckets/getBucketsByCompanyId";
 
 type Props = {
   name: string;
   label?: string;
   error?: boolean;
-  companyId: string;
+  company_id: string;
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  defaultValue?: Option;
-  customSelect?: boolean;
+  default_value?: Option;
   onChange?: (event: any) => void;
 };
 
@@ -21,25 +20,25 @@ const BucketDropdown: React.FC<Props> = (props: Props) => {
   var {
     name,
     label,
-    companyId,
+    company_id,
     error = false,
     disabled = false,
     required = false,
     onChange = () => {},
+    default_value = null_option,
     placeholder = "Select an option",
-    defaultValue = { value: "", label: "" },
   } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<Option[]>([]);
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<Option>(defaultValue);
+  const [value, setValue] = useState<Option>(default_value);
 
   useEffect(() => {
     (async () => {
       const fields = ["name"];
-      const options = { fields };
+      const filters = { fields };
       try {
-        const res = await getBucketsByCompany(companyId, options);
+        const res = await getBucketsByCompanyId(company_id, filters);
         if (res.error) return;
         if (res.data.length > 0) setOptions(res.data.map((i: Partial<Company>) => ({ value: i._id, label: i.name })));
       } catch (err: any) {
@@ -74,7 +73,7 @@ const BucketDropdown: React.FC<Props> = (props: Props) => {
         }}
       >
         <p>{value.label}</p>
-        <Chevron direction="down" size={16} primaryColor={colors.white} />
+        <Chevron direction="down" size={16} primary_color={colors.white} />
       </div>
 
       {open && (
@@ -89,9 +88,20 @@ const BucketDropdown: React.FC<Props> = (props: Props) => {
 
           <div className={`options-container`}>
             <ul>
-              <li className="blank-option" style={{ opacity: 0.8 }}>
-                {placeholder}
-              </li>
+              {required ? (
+                <li style={{ opacity: 0.8, cursor: "default" }}>{placeholder}</li>
+              ) : (
+                <li
+                  onClick={(event: any) => {
+                    setOpen(false);
+                    onChange(event);
+                    setFocused(false);
+                    setValue(null_option);
+                  }}
+                >
+                  None
+                </li>
+              )}
 
               {options.map((option, key: number) => {
                 return (

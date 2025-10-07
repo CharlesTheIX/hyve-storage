@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import BucketsPage from "@/pages/Buckets";
-import { defaultMetadata, siteName } from "@/globals";
+import { default_metadata, site_name } from "@/globals";
 
 export const metadata: Metadata = {
-  ...defaultMetadata,
-  title: `Buckets | ${siteName}`,
+  ...default_metadata,
+  title: `Buckets | ${site_name}`,
   //TODO
   description: "Some description here.",
 };

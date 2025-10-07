@@ -8,12 +8,12 @@ const schema = new Schema(
       unique: true,
       required: [true, "Please provide a username"],
     },
-    companyId: {
+    company_id: {
       type: Schema.Types.ObjectId,
       ref: "Company",
-      required: [true, "Please provide a companyId"],
+      required: [true, "Please provide a company_id"],
     },
-    maxSize_bytes: {
+    max_size_bytes: {
       type: Number,
       default: 1000000000,
     },
@@ -21,7 +21,7 @@ const schema = new Schema(
       type: Number,
       default: 0,
     },
-    objectCount: {
+    object_count: {
       type: Number,
       default: 0,
     },
@@ -38,6 +38,7 @@ schema.pre("save", async function (next: any) {
   try {
     next();
   } catch (err: any) {
+    //TODO: handle error
     console.error(`Mongo bucket pre save error: ${err.message}`);
     next(err);
   }

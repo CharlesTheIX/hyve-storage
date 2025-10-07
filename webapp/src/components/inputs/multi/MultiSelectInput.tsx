@@ -10,8 +10,7 @@ type Props = {
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  customSelect?: boolean;
-  defaultValue?: Option[];
+  default_value?: Option[];
   onChange?: (event: any) => void;
 };
 
@@ -23,26 +22,26 @@ const SelectInput: React.FC<Props> = (props: Props) => {
     error = false,
     disabled = false,
     required = false,
-    defaultValue = [],
+    default_value = [],
     onChange = () => {},
     placeholder = "Select an option",
   } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<Option[]>(defaultValue);
+  const [value, setValue] = useState<Option[]>(default_value);
   const [currentValue, setCurrentValue] = useState<Option>({ value: "", label: "" });
 
   const addItem = (): void => {
     if (disabled) return;
-    const newValue = [...value, currentValue];
-    setValue(newValue);
+    const new_value = [...value, currentValue];
+    setValue(new_value);
     setCurrentValue({ value: "", label: "" });
   };
 
   const removeItem = (index: number): void => {
     if (disabled) return;
-    const newValue = value.filter((_, key) => key === index);
-    setValue(newValue);
+    const new_value = value.filter((_, key) => key === index);
+    setValue(new_value);
   };
 
   return (

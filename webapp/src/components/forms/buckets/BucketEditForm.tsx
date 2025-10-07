@@ -6,8 +6,8 @@ import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import NumberInput from "@/components/inputs/NumberInput";
 import ErrorContainer from "@/components/forms/ErrorContainer";
-import { defaultSimpleError, header_internal } from "@/globals";
 import ButtonContainer from "@/components/forms/ButtonContainer";
+import { default_simple_error, header_internal } from "@/globals";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 
 type Props = {
@@ -18,33 +18,33 @@ type Props = {
 const BucketEditForm: React.FC<Props> = (props: Props) => {
   const { data, redirect = `/buckets/${data._id}` } = props;
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
     setComplete(false);
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const maxSize_bytes = parseInt(formData.get("maxSize_bytes")?.toString() || "0");
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const max_size_bytes = parseInt(form_data.get("max_size_bytes")?.toString() || "0");
     //TODO: update for an array of values
-    const permissions = parseInt(formData.get("permissions")?.toString() || "1") as BucketPermission;
+    const permissions = parseInt(form_data.get("permissions")?.toString() || "1") as BucketPermission;
     const update: Partial<Bucket> = {
-      maxSize_bytes,
+      max_size_bytes,
       permissions: [permissions],
     };
 
-    const validationError = validateRequest(update);
-    if (validationError.error) {
+    const validation_error = validateRequest(update);
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
@@ -70,14 +70,14 @@ const BucketEditForm: React.FC<Props> = (props: Props) => {
 
   const validateRequest = (data: Partial<Bucket>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
     Object.keys(data).map((key: string) => {
       switch (key) {
-        case "maxSize_bytes":
+        case "max_size_bytes":
           invalid = getInputError("number", data[key], true);
           if (invalid.error) {
-            inputsInvalid.maxSize_bytes = invalid.error;
+            inputs_invalid.max_size_bytes = invalid.error;
             message += `- Max size: ${invalid.message}\n`;
           }
           break;
@@ -86,7 +86,7 @@ const BucketEditForm: React.FC<Props> = (props: Props) => {
           const value = data[key] || [0];
           invalid = getInputError("number", value[0], true);
           if (invalid.error) {
-            inputsInvalid.permissions = invalid.error;
+            inputs_invalid.permissions = invalid.error;
             message += `- Permissions: ${invalid.message}\n`;
           }
           break;
@@ -94,15 +94,15 @@ const BucketEditForm: React.FC<Props> = (props: Props) => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""}`}
       onSubmit={(event: any) => {
         event.preventDefault();
@@ -111,7 +111,7 @@ const BucketEditForm: React.FC<Props> = (props: Props) => {
       <div className="content-container">
         <div className="inputs">
           <div className="w-full">
-            <TextInput name="name" disabled={true} label="Name" defaultValue={data.name} />
+            <TextInput name="name" disabled={true} label="Name" default_value={data.name} />
           </div>
 
           <div className="w-full flex flex-row gap-2 items-center justify-between">
@@ -120,9 +120,9 @@ const BucketEditForm: React.FC<Props> = (props: Props) => {
               max={9}
               required={true}
               label="Max size"
-              name="maxSize_bytes"
-              defaultValue={data.maxSize_bytes}
-              error={!!inputErrors.maxSize_bytes}
+              name="max_size_bytes"
+              default_value={data.max_size_bytes}
+              error={!!inputErrors.max_size_bytes}
             />
 
             {/* //TODO: update for an array of values */}
@@ -133,7 +133,7 @@ const BucketEditForm: React.FC<Props> = (props: Props) => {
               name="permissions"
               label="Permissions"
               error={!!inputErrors.permissions}
-              defaultValue={data.permissions ? data.permissions[0] : 1}
+              default_value={data.permissions ? data.permissions[0] : 1}
             />
           </div>
 
@@ -141,8 +141,8 @@ const BucketEditForm: React.FC<Props> = (props: Props) => {
             <TextInput
               label="Company"
               disabled={true}
-              name="companyId"
-              defaultValue={data.companyId ? (typeof data.companyId === "string" ? data.companyId : data.companyId.name) : undefined}
+              name="company_id"
+              default_value={data.company_id ? (typeof data.company_id === "string" ? data.company_id : data.company_id.name) : undefined}
             />
           </div>
         </div>

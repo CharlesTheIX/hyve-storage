@@ -11,7 +11,7 @@ type Props = {
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  defaultValue?: number;
+  default_value?: number;
   onInput?: (event: any) => void;
 };
 
@@ -26,11 +26,11 @@ const NumberInput: React.FC<Props> = (props: Props) => {
     required = false,
     placeholder = "",
     disabled = false,
-    defaultValue = 0,
+    default_value = 0,
     onInput = () => {},
   } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<number>(defaultValue);
+  const [value, setValue] = useState<number>(default_value);
 
   return (
     <div className={`hyve-input ${focused ? "focused" : ""} ${error ? "error" : ""} ${!!value ? "active" : ""}`}>

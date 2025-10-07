@@ -3,7 +3,7 @@ import Button from "./Button";
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
-import { defaultSimpleError } from "@/globals";
+import { default_simple_error } from "@/globals";
 import LoadingIcon from "@/components/LoadingIcon";
 import { useUserContext } from "@/contexts/userContext";
 import deleteUserById from "@/lib/users/deleteUserById";
@@ -15,42 +15,42 @@ import deleteBucketObjectById from "@/lib/buckets/deleteBucketObjectById";
 
 type Props = {
   type: DataType;
-  dataKey: string;
+  data_key: string;
   redirect?: string;
-  className?: string;
+  class_name?: string;
   children: React.ReactNode;
 };
 
 const DeleteDataButton: React.FC<Props> = (props: Props) => {
-  const { type, dataKey, redirect = "", children, className = "" } = props;
+  const { type, data_key, redirect = "", children, class_name = "" } = props;
   const router = useRouter();
   const { userData } = useUserContext();
   const { setToastItems } = useToastContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
 
   const removeData = async (type: DataType): Promise<void> => {
     var res;
     setLoading(true);
-    setError(defaultSimpleError);
+    setError(default_simple_error);
 
     try {
       switch (type) {
         case "user":
-          res = await deleteUserById(dataKey);
+          res = await deleteUserById(data_key);
           break;
 
         case "company":
-          res = await deleteCompanyById(dataKey);
+          res = await deleteCompanyById(data_key);
           break;
 
         case "bucket":
-          res = await deleteBucketById(dataKey);
+          res = await deleteBucketById(data_key);
           break;
 
         case "object":
-          res = await deleteBucketObjectById(dataKey);
+          res = await deleteBucketObjectById(data_key);
           break;
       }
 
@@ -59,16 +59,16 @@ const DeleteDataButton: React.FC<Props> = (props: Props) => {
         return setError({ error: true, title: "Error", message: res.message });
       }
 
-      setToastItems((prevValue) => {
-        const newItem: ToastItem = {
+      setToastItems((prev) => {
+        const new_item: ToastItem = {
           content: "",
           timeout: 3000,
           visible: true,
           type: "success",
           title: "Data removed",
         };
-        const newValue = [...prevValue, newItem];
-        return newValue;
+        const new_value = [...prev, new_item];
+        return new_value;
       });
       if (redirect) router.push(redirect);
       router.refresh();
@@ -91,7 +91,7 @@ const DeleteDataButton: React.FC<Props> = (props: Props) => {
         {children}
       </Button>
 
-      <Modal open={modalOpen} setOpen={setModalOpen} className={className}>
+      <Modal open={modalOpen} setOpen={setModalOpen} class_name={class_name}>
         <>
           {loading && <LoadingIcon />}
           {error.error && !loading && (
@@ -100,7 +100,7 @@ const DeleteDataButton: React.FC<Props> = (props: Props) => {
               <Button
                 type="default"
                 callback={() => {
-                  setError(defaultSimpleError);
+                  setError(default_simple_error);
                 }}
               >
                 Try Again

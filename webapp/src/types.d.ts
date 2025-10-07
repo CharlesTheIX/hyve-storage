@@ -1,5 +1,5 @@
 /* A */
-type ApiRequestOptions = {
+type ApiRequestFilters = {
   fields: string[];
   populate: string[];
 };
@@ -14,16 +14,11 @@ type ApiResponse = {
 /* B */
 type Bucket = MongoDoc & {
   name: string;
-  objectCount: number;
+  object_count: number;
   permissions: number[];
-  maxSize_bytes: number;
+  max_size_bytes: number;
   consumption_bytes: number;
-  companyId: string | Partial<Company>;
-};
-
-type BucketListData = {
-  name: string;
-  creationDate: string;
+  company_id: string | Partial<Company>;
 };
 
 type BucketPermission = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
@@ -31,8 +26,8 @@ type BucketPermission = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 /* C */
 type Company = MongoDoc & {
   name: string;
-  userIds: string[] | Partial<User>[];
-  bucketIds: string[] | Partial<Bucket>[];
+  user_ids: string[] | Partial<User>[];
+  bucket_ids: string[] | Partial<Bucket>[];
 };
 
 /* D */
@@ -55,9 +50,9 @@ type MinioObject = {
 
 type MinioObjectUploadRequest = {
   file: File;
-  bucketName: string;
-  fromSource: string;
-  objectName: string;
+  bucket_name: string;
+  from_source: string;
+  object_name: string;
 };
 
 type MongoDoc = {
@@ -76,7 +71,7 @@ type Option = {
 /* S */
 type StorageValue = {
   value: any;
-  timeStamp: number;
+  time_stamp: number;
 };
 
 /* T */
@@ -91,7 +86,7 @@ type TableType = "users" | "buckets" | "companies" | "objects";
 type User = MongoDoc & {
   surname: string;
   username: string;
-  firstName: string;
+  first_name: string;
   permissions: number[];
-  companyId: string | Partial<Company>;
+  company_id: string | Partial<Company>;
 };

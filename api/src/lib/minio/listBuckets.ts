@@ -1,11 +1,15 @@
-import { Client } from "minio";
-import { response_OK, response_SERVER_ERROR } from "../../globals";
+import getMinioClient from "./getMinioClient";
+import { NO_CONTENT, OK, SERVER_ERROR } from "../../globals";
 
-export default async (client: Client): Promise<ApiResponse> => {
+export default async (): Promise<ApiResponse> => {
   try {
-    var response = await client.listBuckets();
-    return { ...response_OK, data: response, message: "Buckets listed successfully" };
+    const client = getMinioClient();
+    var data = await client.listBuckets();
+    if (data.length === 0) return NO_CONTENT;
+
+    return { ...OK, data };
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

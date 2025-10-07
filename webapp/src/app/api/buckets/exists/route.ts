@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { header_external, response_SERVER_ERROR } from "@/globals";
+import { header_external, SERVER_ERROR } from "@/globals";
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,6 +11,6 @@ export async function POST(request: NextRequest) {
     }).then((res) => res.json());
     return NextResponse.json(response);
   } catch (err: any) {
-    return NextResponse.json({ ...response_SERVER_ERROR, data: err });
+    return NextResponse.json({ ...SERVER_ERROR, data: err });
   }
 }

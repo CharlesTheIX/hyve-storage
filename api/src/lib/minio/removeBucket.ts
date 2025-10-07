@@ -1,29 +1,22 @@
-import { Client } from "minio";
 import bucketExists from "./bucketExists";
+import getMinioClient from "./getMinioClient";
 import { isValidBucketName } from "../validation";
-import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../globals";
+import { BAD, NO_CONTENT, NOT_FOUND, OK, SERVER_ERROR } from "../../globals";
 
-type Props = {
-  name: string;
-  client: Client;
-};
-
-export default async (props: Props): Promise<ApiResponse> => {
-  const { client, name } = props;
+export default async (name: string): Promise<ApiResponse> => {
   const validation = isValidBucketName(name);
-  if (validation.error) return { ...response_BAD, message: validation.message };
+  if (validation.error) return { ...BAD, message: validation.message };
 
   try {
-    const exists = await bucketExists(client, name);
+    const client = getMinioClient();
+    const exists = await bucketExists(name);
     if (exists.error) return exists;
-    if (!exists.data) return { ...response_BAD, message: `A bucket with the name ${name} does not exist` };
+    if (exists.status !== OK.status) return NOT_FOUND;
 
     await client.removeBucket(name);
-    const newExists = await bucketExists(client, name);
-    if (newExists.error || newExists.data) return { ...response_SERVER_ERROR, message: "Bucket removal failed" };
-
-    return { ...response_DB_UPDATED, message: `Bucket ${name} removed` };
+    return NO_CONTENT;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

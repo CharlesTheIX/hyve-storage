@@ -8,14 +8,14 @@ const schema = new Schema(
       unique: true,
       required: [true, "Please provide a name"],
     },
-    userIds: [
+    user_ids: [
       {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Please provide an array of user ids"],
       },
     ],
-    bucketIds: [
+    bucket_ids: [
       {
         type: Schema.Types.ObjectId,
         ref: "Bucket",
@@ -28,9 +28,10 @@ const schema = new Schema(
 
 schema.pre("save", async function (next: any) {
   try {
-    if (this.userIds.length === 0) throw new Error("A company requires at least one user");
+    if (this.user_ids.length === 0) throw new Error("A company requires at least one user");
     next();
   } catch (err: any) {
+    //TODO: handle error
     console.error(`Mongo company pre save error: ${err.message}`);
     next(err);
   }

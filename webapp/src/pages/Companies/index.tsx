@@ -10,11 +10,11 @@ const CompaniesPage: React.FC = () => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Cog primaryColor={colors.white} size={50} />
+            <Cog primary_color={colors.white} size={50} />
             <h1>Companies</h1>
           </div>
 
-          <PermissionsWrapper permissionLevel={9}>
+          <PermissionsWrapper permission_level={9}>
             <Link href="/companies/create" className="hyve-button">
               Create New
             </Link>

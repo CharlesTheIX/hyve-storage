@@ -15,12 +15,12 @@ type Props = {
 const UserDataCard: React.FC<Props> = (props: Props) => {
   const { data } = props;
   const { setToastItems } = useToastContext();
-  const { _id, username, firstName, surname, createdAt, updatedAt, permissions, companyId } = data;
+  const { _id, username, first_name, surname, createdAt, updatedAt, permissions, company_id } = data;
 
   return (
     <div className="hyve-card">
       <div className="card-head">
-        <Document primaryColor={colors.white} />
+        <Document primary_color={colors.white} />
         <p>User Details</p>
       </div>
 
@@ -34,10 +34,10 @@ const UserDataCard: React.FC<Props> = (props: Props) => {
             </li>
           )}
 
-          {firstName && (
+          {first_name && (
             <li>
               <p>
-                <strong>First Name:</strong> {firstName}
+                <strong>First Name:</strong> {first_name}
               </p>
             </li>
           )}
@@ -50,12 +50,12 @@ const UserDataCard: React.FC<Props> = (props: Props) => {
             </li>
           )}
 
-          {companyId && (
+          {company_id && (
             <li>
               <p>
                 <strong>Company:</strong>{" "}
-                <Link href={`/companies/${typeof companyId === "string" ? companyId : companyId?._id}`}>
-                  {typeof companyId === "string" ? companyId : companyId.name}
+                <Link href={`/companies/${typeof company_id === "string" ? company_id : company_id?._id}`}>
+                  {typeof company_id === "string" ? company_id : company_id.name}
                 </Link>
               </p>
             </li>
@@ -85,7 +85,7 @@ const UserDataCard: React.FC<Props> = (props: Props) => {
             </li>
           )}
 
-          <PermissionsWrapper permissionLevel={9}>
+          <PermissionsWrapper permission_level={9}>
             <li className="flex flex cold gap-2 items-center">
               <p>
                 <strong>_id:</strong>
@@ -97,20 +97,20 @@ const UserDataCard: React.FC<Props> = (props: Props) => {
                   event.preventDefault();
                   event.stopPropagation();
                   const copied = copyContentToClipboard(_id || "");
-                  setToastItems((prevValue) => {
-                    const newItem: ToastItem = {
+                  setToastItems((prev) => {
+                    const new_item: ToastItem = {
                       timeout: 3000,
                       visible: true,
                       content: copied.message,
                       title: copied.title || "",
                       type: copied.error ? "error" : "success",
                     };
-                    const newValue = [...prevValue, newItem];
-                    return newValue;
+                    const new_value = [...prev, new_item];
+                    return new_value;
                   });
                 }}
               >
-                <Copy size={16} primaryColor={colors.green} />
+                <Copy size={16} primary_color={colors.green} />
                 <p>{_id}</p>
               </div>
             </li>

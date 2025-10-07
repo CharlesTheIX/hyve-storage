@@ -2,8 +2,8 @@
 import parseJSON from "@/lib/parseJSON";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { defaultSimpleError } from "@/globals";
 import getInputError from "@/lib/getInputError";
+import { default_simple_error } from "@/globals";
 import deleteUserById from "@/lib/users/deleteUserById";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
@@ -20,49 +20,49 @@ const UserDeletionForm: React.FC<Props> = (props: Props) => {
   const { redirect = "/users" } = props;
   const router = useRouter();
   const { setToastItems } = useToastContext();
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
     setComplete(false);
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const userId = parseJSON(formData.get("userId")?.toString()) ?? "";
-    const requestData: Partial<User> = {
-      _id: userId?.value,
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const user_id = parseJSON(form_data.get("user_id")?.toString()) ?? "";
+    const request_data: Partial<User> = {
+      _id: user_id?.value,
     };
 
-    const validationError = validateRequest(requestData);
-    if (validationError.error) {
+    const validation_error = validateRequest(request_data);
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
-      const response = await deleteUserById(requestData._id || "");
+      const response = await deleteUserById(request_data._id || "");
       if (response.error) {
         setLoading(false);
         return setError({ error: true, message: response.message, title: "Error" });
       }
 
-      setToastItems((prevValue) => {
-        const newItem: ToastItem = {
+      setToastItems((prev) => {
+        const new_item: ToastItem = {
           content: "",
           timeout: 3000,
           visible: true,
           type: "success",
           title: "User deleted successfully",
         };
-        const newValue = [...prevValue, newItem];
-        return newValue;
+        const new_value = [...prev, new_item];
+        return new_value;
       });
 
       if (redirect) return router.push(redirect);
@@ -76,14 +76,14 @@ const UserDeletionForm: React.FC<Props> = (props: Props) => {
 
   const validateRequest = (data: Partial<User>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
     Object.keys(data).map((key: string) => {
       switch (key) {
         case "_id":
-          invalid = getInputError("mongoId", data[key], true);
+          invalid = getInputError("mongo_id", data[key], true);
           if (invalid.error) {
-            inputsInvalid.userId = invalid.error;
+            inputs_invalid.user_id = invalid.error;
             message += `- User: ${invalid.message}\n`;
           }
           break;
@@ -91,15 +91,15 @@ const UserDeletionForm: React.FC<Props> = (props: Props) => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""}`}
       onSubmit={(event: any) => {
         event.preventDefault();
@@ -108,7 +108,7 @@ const UserDeletionForm: React.FC<Props> = (props: Props) => {
       <div className="content-container">
         <div className="inputs">
           <div className="w-full flex flex-row gap-2 items-center justify-between">
-            <UserDropdown label="User" name="userId" required={true} error={!!inputErrors.userId} />
+            <UserDropdown label="User" name="user_id" required={true} error={!!inputErrors.user_id} />
           </div>
         </div>
 

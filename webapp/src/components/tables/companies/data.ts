@@ -1,4 +1,4 @@
-export const adminTableHeaders: TableHeader[] = [
+export const admin_table_headers: TableHeader[] = [
   {
     value: "_id",
     label: "_id",
@@ -13,13 +13,13 @@ export const adminTableHeaders: TableHeader[] = [
   },
 ];
 
-export const mongoPopulationFields: string[] = [];
+export const mongo_population_fields: string[] = [];
 
-export const mongoSelectionFields = ["name", "userIds", "bucketIds", "createdAt", "updatedAt"];
+export const mongo_selection_fields = ["name", "user_ids", "bucket_ids", "createdAt", "updatedAt"];
 
-export const storageKey: string = "companies_table_headers";
+export const storage_key: string = "companies_table_headers";
 
-export const tableHeaders: TableHeader[] = [
+export const table_headers: TableHeader[] = [
   {
     value: "name",
     label: "Company Name",
@@ -27,13 +27,13 @@ export const tableHeaders: TableHeader[] = [
     visible: true,
   },
   {
-    value: "userIdCount",
+    value: "user_idCount",
     label: "User Count",
     sortable: false,
     visible: true,
   },
   {
-    value: "bucketIdCount",
+    value: "bucket_idCount",
     label: "Bucket Count",
     sortable: false,
     visible: true,

@@ -1,40 +1,44 @@
-import bucketExists from "./bucketExists";
+import bucketExists from "./getBucketExists";
+import { isValidObjectId } from "mongoose";
 import Model from "../../../models/Bucket.model";
 import createBucket from "../../minio/createBucket";
-import getMinioClient from "../../minio/getMinioClient";
+import { isValidBucketName } from "../../validation";
 import minioBucketExists from "../../minio/bucketExists";
 import addCompanyBucket from "../companies/addCompanyBucket";
-import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../../globals";
+import { BAD, CONFLICT, DB_UPDATED, OK, SERVER_ERROR } from "../../../globals";
 
 export default async (data: Partial<Bucket>): Promise<ApiResponse> => {
-  const { name, maxSize_bytes, companyId, permissions = [] } = data;
-  if (!name) return { ...response_BAD, message: "name required" };
-  if (!companyId) return { ...response_BAD, message: "companyId required" };
-  if (!maxSize_bytes) return { ...response_BAD, message: "maxSize_bytes required" };
+  const { name, max_size_bytes, company_id, permissions = [] } = data;
+  const validation = isValidBucketName(name || "");
+  if (validation.error) return { ...BAD, message: validation.message };
+
+  const company_id_validation = isValidObjectId(company_id);
+  if (!company_id_validation) return { ...BAD, message: "Invalid company_id" };
 
   try {
-    const existingDoc = await bucketExists(name);
-    if (existingDoc.data) return { ...response_BAD, message: `Bucket ${name} already exists` };
+    const existing_doc = await bucketExists(name || "");
+    if (existing_doc.error) return existing_doc;
+    if (existing_doc.status === OK.status) return CONFLICT;
 
-    const client = getMinioClient();
-    const existingBucket = await minioBucketExists(client, name);
-    if (existingBucket.data) return { ...response_BAD, message: `Bucket ${name} already exists` };
+    const existing_bucket = await minioBucketExists(name || "");
+    if (existing_bucket.error) return existing_bucket;
+    if (existing_bucket.status === OK.status) return CONFLICT;
 
-    const newBucket = await createBucket({ client, name, options: {} });
-    if (newBucket.error) return newBucket;
+    const new_bucket = await createBucket(name || "");
+    if (new_bucket.error) return new_bucket;
 
-    const newDoc = new Model({ name, maxSize_bytes, companyId, permissions });
-    if (!newDoc) return { ...response_BAD, message: "Bucket not created" };
+    const new_doc = new Model({ name, max_size_bytes, company_id, permissions });
+    if (!new_doc) throw new Error("Bucket not created");
 
-    const createdDoc = await newDoc.save();
-    if (!createdDoc) return { ...response_BAD, message: "Bucket not created" };
+    const created_doc = await new_doc.save();
+    if (!created_doc) throw new Error("Bucket not created");
 
-    const bucketId = createdDoc._id.toString();
-    const companyUpdated = await addCompanyBucket(companyId, bucketId);
-    if (companyUpdated.error) return companyUpdated;
+    const bucket_id = created_doc._id.toString();
+    await addCompanyBucket(company_id || "", bucket_id);
 
-    return { ...response_DB_UPDATED };
+    return DB_UPDATED;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, message: err.message };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

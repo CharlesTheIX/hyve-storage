@@ -6,7 +6,7 @@ import ClearStorageButton from "@/components/buttons/ClearStorageButton";
 
 const Navigation: React.FC = () => {
   const pathname = usePathname();
-  const navItems: Option[] = [
+  const nav_items: Option[] = [
     { value: "/users", label: "Users" },
     { value: "/companies", label: "Companies" },
     { value: "/buckets", label: "Buckets" },
@@ -14,7 +14,7 @@ const Navigation: React.FC = () => {
 
   return (
     <ul>
-      {navItems.map((i, key: number) => {
+      {nav_items.map((i, key: number) => {
         return (
           <li key={key}>
             <p>
@@ -26,7 +26,7 @@ const Navigation: React.FC = () => {
         );
       })}
 
-      <PermissionsWrapper permissionLevel={9}>
+      <PermissionsWrapper permission_level={9}>
         <li>
           <ClearStorageButton />
         </li>

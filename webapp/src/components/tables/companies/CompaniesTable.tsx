@@ -16,11 +16,11 @@ import PermissionsWrapper from "@/components/PermissionsWrapper";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
 import deleteCompanyById from "@/lib/companies/deleteCompanyById";
 import { ToastItem, useToastContext } from "@/contexts/toastContext";
-import { colors, defaultSimpleError, defaultTableNullValue } from "@/globals";
+import { colors, default_simple_error, default_null_label } from "@/globals";
 import { getTableHeaders, getTableMongoData, getTableStorageKey } from "../helpers";
 
 const type = "companies";
-const storageKey = getTableStorageKey(type);
+const storage_key = getTableStorageKey(type);
 const CompaniesTable: React.FC = () => {
   const router = useRouter();
   const { setToastItems } = useToastContext();
@@ -31,7 +31,7 @@ const CompaniesTable: React.FC = () => {
   const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [activeData, setActiveData] = useState<Partial<Company>>({});
   const [headers, setHeaders] = useState<TableHeader[]>(getTableHeaders(type));
-  const [modalError, setModalError] = useState<SimpleError>(defaultSimpleError);
+  const [modalError, setModalError] = useState<SimpleError>(default_simple_error);
 
   const errorCallback = () => {
     setLoading(false);
@@ -40,9 +40,9 @@ const CompaniesTable: React.FC = () => {
 
   const getTableData = async (): Promise<void> => {
     setLoading(true);
-    const options: Partial<ApiRequestOptions> = getTableMongoData(type);
+    const filters: Partial<ApiRequestFilters> = getTableMongoData(type);
     try {
-      const res = await getCompanies(options);
+      const res = await getCompanies(filters);
       if (res.error) return handleError({ message: res.message, err: res.data, callback: errorCallback });
       if (res.data.length > 0) setList(res.data);
       setLoading(false);
@@ -56,11 +56,11 @@ const CompaniesTable: React.FC = () => {
     router.push(uri);
   };
 
-  const removeData = async (dataKey: string): Promise<void> => {
+  const removeData = async (data_key: string): Promise<void> => {
     setModalLoading(true);
-    setModalError(defaultSimpleError);
+    setModalError(default_simple_error);
     try {
-      const res = await deleteCompanyById(dataKey);
+      const res = await deleteCompanyById(data_key);
       if (res.error) {
         setActiveData({});
         setModalLoading(false);
@@ -69,17 +69,17 @@ const CompaniesTable: React.FC = () => {
       setActiveData({});
       setModalOpen(false);
       setModalLoading(false);
-      setModalError(defaultSimpleError);
-      setToastItems((prevValue) => {
-        const newItem: ToastItem = {
+      setModalError(default_simple_error);
+      setToastItems((prev) => {
+        const new_item: ToastItem = {
           content: "",
           timeout: 3000,
           visible: true,
           type: "success",
           title: "Company removed",
         };
-        const newValue = [...prevValue, newItem];
-        return newValue;
+        const new_value = [...prev, new_item];
+        return new_value;
       });
       await getTableData();
     } catch (err: any) {
@@ -90,8 +90,8 @@ const CompaniesTable: React.FC = () => {
   };
 
   useEffect(() => {
-    const savedData = Storage.getStorageValue(storageKey);
-    if (savedData && savedData.value) setHeaders(savedData.value);
+    const saved_data = Storage.getStorageValue(storage_key);
+    if (saved_data && saved_data.value) setHeaders(saved_data.value);
     (async () => await getTableData())();
   }, []);
 
@@ -110,10 +110,10 @@ const CompaniesTable: React.FC = () => {
                       key={th.value}
                       className={`${th.visible ? "visible" : ""}`}
                       onClick={() => {
-                        setHeaders((prevValue) => {
-                          const newValue = prevValue.map((h, i) => (key === i ? { ...h, visible: !h.visible } : h));
-                          Storage.setStorageValue(storageKey, newValue);
-                          return newValue;
+                        setHeaders((prev) => {
+                          const new_value = prev.map((h, i) => (key === i ? { ...h, visible: !h.visible } : h));
+                          Storage.setStorageValue(storage_key, new_value);
+                          return new_value;
                         });
                       }}
                     >
@@ -158,35 +158,35 @@ const CompaniesTable: React.FC = () => {
                   >
                     {headers[0].visible && (
                       <td>
-                        <p>{td.name ? td.name : defaultTableNullValue}</p>
+                        <p>{td.name ? td.name : default_null_label}</p>
                       </td>
                     )}
 
                     {headers[1].visible && (
                       <td>
-                        <p>{td.userIds ? td.userIds.length : defaultTableNullValue}</p>
+                        <p>{td.user_ids ? td.user_ids.length : default_null_label}</p>
                       </td>
                     )}
 
                     {headers[2].visible && (
                       <td>
-                        <p>{td.bucketIds ? td.bucketIds.length : defaultTableNullValue}</p>
+                        <p>{td.bucket_ids ? td.bucket_ids.length : default_null_label}</p>
                       </td>
                     )}
 
                     {headers[3].visible && (
                       <td>
-                        <p>{td.createdAt ? new Date(td.createdAt).toLocaleDateString() : defaultTableNullValue}</p>
+                        <p>{td.createdAt ? new Date(td.createdAt).toLocaleDateString() : default_null_label}</p>
                       </td>
                     )}
 
                     {headers[4].visible && (
                       <td>
-                        <p>{td.updatedAt ? new Date(td.updatedAt).toLocaleDateString() : defaultTableNullValue}</p>
+                        <p>{td.updatedAt ? new Date(td.updatedAt).toLocaleDateString() : default_null_label}</p>
                       </td>
                     )}
 
-                    <PermissionsWrapper permissionLevel={9}>
+                    <PermissionsWrapper permission_level={9}>
                       {headers[5]?.visible && (
                         <td>
                           <div
@@ -196,21 +196,21 @@ const CompaniesTable: React.FC = () => {
                               event.preventDefault();
                               event.stopPropagation();
                               const copied = copyContentToClipboard(td._id || "");
-                              setToastItems((prevValue) => {
-                                const newItem: ToastItem = {
+                              setToastItems((prev) => {
+                                const new_item: ToastItem = {
                                   timeout: 3000,
                                   visible: true,
                                   content: copied.message,
                                   title: copied.title || "",
                                   type: copied.error ? "error" : "success",
                                 };
-                                const newValue = [...prevValue, newItem];
-                                return newValue;
+                                const new_value = [...prev, new_item];
+                                return new_value;
                               });
                             }}
                           >
-                            <Copy size={16} primaryColor={colors.green} />
-                            <p>{td._id ? td._id : defaultTableNullValue}</p>
+                            <Copy size={16} primary_color={colors.green} />
+                            <p>{td._id ? td._id : default_null_label}</p>
                           </div>
                         </td>
                       )}
@@ -225,7 +225,7 @@ const CompaniesTable: React.FC = () => {
                                 setModalOpen(true);
                               }}
                             >
-                              <Bin primaryColor={colors.red} size={16} />
+                              <Bin primary_color={colors.red} size={16} />
                             </Button>
                           </div>
                         </td>
@@ -246,7 +246,7 @@ const CompaniesTable: React.FC = () => {
                   <Button
                     type="default"
                     callback={() => {
-                      setModalError(defaultSimpleError);
+                      setModalError(default_simple_error);
                     }}
                   >
                     Try Again

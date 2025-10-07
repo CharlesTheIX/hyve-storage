@@ -1,15 +1,27 @@
+import { isValidObjectId } from "mongoose";
 import getCompanyById from "./getCompanyById";
-import updateCompanyById from "./updateCompanyById";
-import { response_SERVER_ERROR } from "../../../globals";
+import Model from "../../../models/Company.model";
+import { SERVER_ERROR, OK, NO_CONTENT, BAD } from "../../../globals";
 
-export default async (_id: string, bucketId: string): Promise<ApiResponse> => {
+export default async (_id: string, bucket_id: string): Promise<ApiResponse> => {
+  const _id_validation = isValidObjectId(_id);
+  if (!_id_validation) return { ...BAD, message: "Invalid _id" };
+
+  const bucket_id_validation = isValidObjectId(bucket_id);
+  if (!bucket_id_validation) return { ...BAD, message: "Invalid bucket_id" };
+
   try {
-    const company = await getCompanyById(_id, { fields: ["bucketIds"] });
+    const company = await getCompanyById(_id);
     if (company.error) return company;
-    const update = { bucketIds: [...company.data.bucketIds, bucketId] };
-    const updatedCompany = await updateCompanyById({ _id, update, options: { fields: ["bucketIds"] } });
-    return updatedCompany;
+    if (company.data.bucket_ids.includes(bucket_id)) return OK;
+
+    const query = { $push: { bucket_ids: bucket_id } };
+    const update = await Model.findByIdAndUpdate(_id, query).exec();
+    if (!update) throw new Error("Could not add bucket to company");
+
+    return NO_CONTENT;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

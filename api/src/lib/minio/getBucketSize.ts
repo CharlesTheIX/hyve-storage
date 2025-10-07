@@ -1,32 +1,30 @@
-import { Client } from "minio";
 import bucketExists from "./bucketExists";
+import getMinioClient from "./getMinioClient";
 import { isValidBucketName } from "../validation";
-import { response_BAD, response_OK, response_SERVER_ERROR } from "../../globals";
+import { BAD, NOT_FOUND, OK, SERVER_ERROR } from "../../globals";
 
-export default async (client: Client, name: string): Promise<ApiResponse> => {
+export default async (name: string): Promise<ApiResponse> => {
   const validation = isValidBucketName(name);
-  if (validation.error) return { ...response_BAD, message: validation.message };
+  if (validation.error) return { ...BAD, message: validation.message };
 
   try {
-    const exists = await bucketExists(client, name);
+    const exists = await bucketExists(name);
     if (exists.error) return exists;
-    if (!exists.data) return { ...response_BAD, message: `A bucket with the name ${name} does not exist` };
+    if (exists.status !== OK.status) return NOT_FOUND;
 
-    return new Promise((resolve, reject) => {
-      var totalSize: number = 0;
+    const client = getMinioClient();
+    const data = new Promise((resolve, reject) => {
+      var total_size: number = 0;
       const stream = client.listObjectsV2(name, "", true);
-      stream.on("data", (obj) => {
-        totalSize += obj.size;
-      });
-      stream.on("error", (err) => {
-        reject(err);
-      });
-      stream.on("end", () => {
-        const response: ApiResponse = { ...response_OK, data: totalSize };
-        resolve(response);
-      });
+
+      stream.on("data", (obj) => (total_size += obj.size));
+      stream.on("error", (err) => reject(err));
+      stream.on("end", () => resolve(total_size));
     });
+
+    return { ...OK, data };
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

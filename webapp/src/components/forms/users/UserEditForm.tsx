@@ -5,8 +5,8 @@ import getInputError from "@/lib/getInputError";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
-import { defaultSimpleError, header_internal } from "@/globals";
 import ButtonContainer from "@/components/forms/ButtonContainer";
+import { default_simple_error, header_internal } from "@/globals";
 import { useToastContext, ToastItem } from "@/contexts/toastContext";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 
@@ -19,32 +19,32 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
   const { data, redirect = `/users/${data._id}` } = props;
   const router = useRouter();
   const { setToastItems } = useToastContext();
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
     setComplete(false);
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const surname = formData.get("surname")?.toString() || "";
-    const firstName = formData.get("firstName")?.toString() || "";
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const surname = form_data.get("surname")?.toString() || "";
+    const first_name = form_data.get("first_name")?.toString() || "";
     const update: Partial<User> = {
       surname,
-      firstName,
+      first_name,
     };
 
-    const validationError = validateRequest(update);
-    if (validationError.error) {
+    const validation_error = validateRequest(update);
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
@@ -59,16 +59,16 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
         return setError({ error: true, message: response.message, title: "Error" });
       }
 
-      setToastItems((prevValue) => {
-        const newItem: ToastItem = {
+      setToastItems((prev) => {
+        const new_item: ToastItem = {
           content: "",
           timeout: 3000,
           visible: true,
           type: "success",
           title: "User updated successfully",
         };
-        const newValue = [...prevValue, newItem];
-        return newValue;
+        const new_value = [...prev, new_item];
+        return new_value;
       });
 
       if (redirect) return router.push(redirect);
@@ -82,21 +82,21 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
 
   const validateRequest = (data: Partial<User>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
     Object.keys(data).map((key: string) => {
       switch (key) {
         case "surname":
           invalid = getInputError("name", data[key], true);
           if (invalid.error) {
-            inputsInvalid.surname = invalid.error;
+            inputs_invalid.surname = invalid.error;
             message += `- Surname: ${invalid.message}\n`;
           }
           break;
-        case "firstName":
+        case "first_name":
           invalid = getInputError("name", data[key], true);
           if (invalid.error) {
-            inputsInvalid.firstName = invalid.error;
+            inputs_invalid.first_name = invalid.error;
             message += `- First name: ${invalid.message}\n`;
           }
           break;
@@ -104,15 +104,15 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   return (
     <form
-      ref={formRef}
+      ref={form_ref}
       className={`hyve-form ${loading ? "loading" : ""}`}
       onSubmit={(event: any) => {
         event.preventDefault();
@@ -121,23 +121,23 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
       <div className="content-container">
         <div className="inputs">
           <div className="w-full">
-            <TextInput name="username" disabled={true} label="Username" defaultValue={data.username} />
+            <TextInput name="username" disabled={true} label="Username" default_value={data.username} />
           </div>
 
           <div className="w-full flex flex-row gap-2 items-center justify-between">
-            <TextInput name="firstName" required={true} label="First name" error={!!inputErrors.firstName} defaultValue={data.firstName} />
-            <TextInput name="surname" required={true} label="Surname" error={!!inputErrors.surname} defaultValue={data.surname} />
+            <TextInput name="first_name" required={true} label="First name" error={!!inputErrors.first_name} default_value={data.first_name} />
+            <TextInput name="surname" required={true} label="Surname" error={!!inputErrors.surname} default_value={data.surname} />
           </div>
 
           <div className="w-full flex flex-row gap-2 items-center justify-between">
             <TextInput
               label="Company"
               disabled={true}
-              name="companyId"
-              defaultValue={data.companyId ? (typeof data.companyId === "string" ? data.companyId : data.companyId.name) : undefined}
+              name="company_id"
+              default_value={data.company_id ? (typeof data.company_id === "string" ? data.company_id : data.company_id.name) : undefined}
             />
 
-            <TextInput name="permissions" disabled={true} label="Permissions" defaultValue={data.permissions?.toString()} />
+            <TextInput name="permissions" disabled={true} label="Permissions" default_value={data.permissions?.toString()} />
           </div>
         </div>
 

@@ -1,10 +1,10 @@
 import { Metadata } from "next";
-import { defaultMetadata, siteName } from "@/globals";
+import { default_metadata, site_name } from "@/globals";
 import BucketCreationPage from "@/pages/Buckets/create";
 
 export const metadata: Metadata = {
-  ...defaultMetadata,
-  title: `Bucket Creation | ${siteName}`,
+  ...default_metadata,
+  title: `Bucket Creation | ${site_name}`,
   //TODO
   description: "Some description here.",
 };

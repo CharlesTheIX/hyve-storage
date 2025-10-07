@@ -1,29 +1,30 @@
-import mongoose from "mongoose";
 import getBucketById from "./getBucketById";
 import Model from "../../../models/Bucket.model";
 import removeBucket from "../../minio/removeBucket";
-import getMinioClient from "../../minio/getMinioClient";
+import mongoose, { isValidObjectId } from "mongoose";
+import { BAD, NO_CONTENT, SERVER_ERROR } from "../../../globals";
 import removeCompanyBucket from "../companies/removeCompanyBucket";
-import { response_BAD, response_DB_UPDATED, response_SERVER_ERROR } from "../../../globals";
 
 export default async (_id: string): Promise<ApiResponse> => {
+  const validation = isValidObjectId(_id);
+  if (!validation) return { ...BAD, message: "Invalid _id" };
+
   try {
-    const bucket = await getBucketById(_id, { fields: ["name", "companyId"] });
+    const bucket = await getBucketById(_id);
     if (bucket.error) return bucket;
 
-    const client = getMinioClient();
-    const removedBucket = await removeBucket({ client, name: bucket.data.name });
-    if (removedBucket.error) return removedBucket;
+    const company_updated = await removeCompanyBucket(bucket.data.company_id, bucket.data.name);
+    if (company_updated.error) return company_updated;
 
-    const objectId = new mongoose.Types.ObjectId(_id);
-    const deletedDoc = await Model.deleteOne({ _id: objectId });
-    if (!deletedDoc) return { ...response_BAD, message: "Bucket not deleted" };
+    const object_id = new mongoose.Types.ObjectId(_id);
+    const deleted_doc = await Model.findByIdAndDelete(object_id).exec();
+    if (!deleted_doc) throw new Error("Bucket not deleted");
 
-    const companyUpdated = await removeCompanyBucket(bucket.data.companyId, bucket.data.name);
-    if (companyUpdated.error) return companyUpdated;
+    await removeBucket(bucket.data.name);
 
-    return { ...response_DB_UPDATED };
+    return NO_CONTENT;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, message: err.message };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

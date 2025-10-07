@@ -16,8 +16,8 @@ const UserPage: React.FC<Props> = (props: Props) => {
       <section>
         <div className="flex flex-row gap-2 items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <Profile primaryColor={colors.white} size={50} />
-            <h1>{data.firstName && data.surname ? `${data.firstName} ${data.surname}` : data._id}</h1>
+            <Profile primary_color={colors.white} size={50} />
+            <h1>{data.first_name && data.surname ? `${data.first_name} ${data.surname}` : data._id}</h1>
           </div>
 
           <div className="flex flex-row gap-2 items-center">
@@ -25,7 +25,7 @@ const UserPage: React.FC<Props> = (props: Props) => {
               Edit
             </Link>
 
-            <DeleteDataButton dataKey={data._id || ""} type="user" redirect="/users">
+            <DeleteDataButton data_key={data._id || ""} type="user" redirect="/users">
               <p>Delete</p>
             </DeleteDataButton>
           </div>

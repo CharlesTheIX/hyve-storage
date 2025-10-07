@@ -14,7 +14,7 @@ export const application_mime_types = [
   "application/x-www-form-urlencoded",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 ];
 
 export const audio_mime_types = [
@@ -24,7 +24,7 @@ export const audio_mime_types = [
   "audio/mp4",
   "audio/webm",
   "audio/flac",
-  "audio/mpeg" // MP3
+  "audio/mpeg", // MP3
 ];
 
 export const font_mime_types = [
@@ -36,7 +36,7 @@ export const font_mime_types = [
   "application/font-woff2",
   "application/x-font-ttf",
   "application/x-font-opentype",
-  "application/vnd.ms-fontobject"
+  "application/vnd.ms-fontobject",
 ];
 
 export const form_mime_types = ["multipart/form-data", "application/x-www-form-urlencoded"];
@@ -49,18 +49,10 @@ export const image_mime_types = [
   "image/jpeg",
   "image/tiff",
   "image/svg+xml",
-  "image/vnd.microsoft.icon"
+  "image/vnd.microsoft.icon",
 ];
 
-export const text_mime_types = [
-  "text/css",
-  "text/csv",
-  "text/xml",
-  "text/html",
-  "text/plain",
-  "text/markdown",
-  "text/javascript"
-];
+export const text_mime_types = ["text/css", "text/csv", "text/xml", "text/html", "text/plain", "text/markdown", "text/javascript"];
 
 export const video_mime_types = [
   "video/mp4",
@@ -69,7 +61,7 @@ export const video_mime_types = [
   "video/3gpp",
   "video/3gpp2",
   "video/x-ms-wmv", // WMV
-  "video/x-msvideo" // AVI
+  "video/x-msvideo", // AVI
 ];
 
 export const mime_types_record: Record<string, string> = {
@@ -120,7 +112,7 @@ export const mime_types_record: Record<string, string> = {
   "3gp": "video/3gpp",
   "3g2": "video/3gpp2",
   wmv: "video/x-ms-wmv",
-  avi: "video/x-msvideo"
+  avi: "video/x-msvideo",
 };
 
 export default [
@@ -130,5 +122,5 @@ export default [
   ...form_mime_types,
   ...image_mime_types,
   ...text_mime_types,
-  ...video_mime_types
+  ...video_mime_types,
 ];

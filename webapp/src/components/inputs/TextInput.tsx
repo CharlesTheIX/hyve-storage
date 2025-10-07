@@ -8,14 +8,14 @@ type Props = {
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  defaultValue?: string;
+  default_value?: string;
   onInput?: (event: any) => void;
 };
 
 const TextInput: React.FC<Props> = (props: Props) => {
-  var { name, label, error = false, required = false, placeholder = "", defaultValue = "", onInput = () => {}, disabled = false } = props;
+  var { name, label, error = false, required = false, placeholder = "", default_value = "", onInput = () => {}, disabled = false } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<string>(defaultValue);
+  const [value, setValue] = useState<string>(default_value);
 
   return (
     <div className={`hyve-input ${focused ? "focused" : ""} ${error ? "error" : ""} ${!!value ? "active" : ""}`}>

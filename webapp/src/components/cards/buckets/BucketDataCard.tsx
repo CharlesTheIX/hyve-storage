@@ -4,8 +4,8 @@ import Copy from "@/components/svgs/Copy";
 import formatBytes from "@/lib/formatBytes";
 import Document from "@/components/svgs/Document";
 import Permissions from "@/lib/classes/Permissions";
+import { colors, default_null_label } from "@/globals";
 import PercentageRing from "@/components/PercentageRing";
-import { colors, defaultTableNullValue } from "@/globals";
 import PermissionsWrapper from "@/components/PermissionsWrapper";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
 import getPercentageFromRatio from "@/lib/getPercentageFromRatio";
@@ -18,13 +18,13 @@ type Props = {
 const BucketDataCard: React.FC<Props> = (props: Props) => {
   const { data } = props;
   const { setToastItems } = useToastContext();
-  const { _id, name, createdAt, updatedAt, permissions, companyId, maxSize_bytes, consumption_bytes, objectCount } = data;
-  const consumptionPercentage = getPercentageFromRatio(consumption_bytes || 0, maxSize_bytes || 0);
+  const { _id, name, createdAt, updatedAt, permissions, company_id, max_size_bytes, consumption_bytes, object_count } = data;
+  const consumption_percentage = getPercentageFromRatio(consumption_bytes || 0, max_size_bytes || 0);
 
   return (
     <div className="hyve-card">
       <div className="card-head">
-        <Document primaryColor={colors.white} />
+        <Document primary_color={colors.white} />
         <p>Bucket Details</p>
       </div>
 
@@ -40,7 +40,7 @@ const BucketDataCard: React.FC<Props> = (props: Props) => {
 
           <li>
             <p>
-              <strong>Max Size (KB):</strong> {maxSize_bytes ? formatBytes(maxSize_bytes, "KB") : defaultTableNullValue}
+              <strong>Max Size (KB):</strong> {max_size_bytes ? formatBytes(max_size_bytes, "KB") : default_null_label}
             </p>
           </li>
 
@@ -52,20 +52,20 @@ const BucketDataCard: React.FC<Props> = (props: Props) => {
 
               <div className="flex flex-row gap-1 items-center">
                 <p>
-                  {formatBytes(consumption_bytes || 0, "KB")}/{formatBytes(maxSize_bytes || 0, "KB")}
+                  {formatBytes(consumption_bytes || 0, "KB")}/{formatBytes(max_size_bytes || 0, "KB")}
                 </p>
 
-                <PercentageRing percentage={consumptionPercentage} size_rem={1} />
+                <PercentageRing percentage={consumption_percentage} size_rem={1} />
               </div>
             </div>
           </li>
 
-          {companyId && (
+          {company_id && (
             <li>
               <p>
                 <strong>Owning Company:</strong>{" "}
-                <Link href={`/companies/${typeof companyId === "string" ? companyId : companyId?._id}`}>
-                  {typeof companyId === "string" ? companyId : companyId.name}
+                <Link href={`/companies/${typeof company_id === "string" ? company_id : company_id?._id}`}>
+                  {typeof company_id === "string" ? company_id : company_id.name}
                 </Link>
               </p>
             </li>
@@ -73,7 +73,7 @@ const BucketDataCard: React.FC<Props> = (props: Props) => {
 
           <li>
             <p>
-              <strong>Object Count:</strong> {objectCount || objectCount === 0 ? objectCount : defaultTableNullValue}
+              <strong>Object Count:</strong> {object_count || object_count === 0 ? object_count : default_null_label}
             </p>
           </li>
 
@@ -101,7 +101,7 @@ const BucketDataCard: React.FC<Props> = (props: Props) => {
             </li>
           )}
 
-          <PermissionsWrapper permissionLevel={9}>
+          <PermissionsWrapper permission_level={9}>
             <li className="flex flex cold gap-2 items-center">
               <p>
                 <strong>_id:</strong>
@@ -113,20 +113,20 @@ const BucketDataCard: React.FC<Props> = (props: Props) => {
                   event.preventDefault();
                   event.stopPropagation();
                   const copied = copyContentToClipboard(_id || "");
-                  setToastItems((prevValue) => {
-                    const newItem: ToastItem = {
+                  setToastItems((prev) => {
+                    const new_item: ToastItem = {
                       timeout: 3000,
                       visible: true,
                       content: copied.message,
                       title: copied.title || "",
                       type: copied.error ? "error" : "success",
                     };
-                    const newValue = [...prevValue, newItem];
-                    return newValue;
+                    const new_value = [...prev, new_item];
+                    return new_value;
                   });
                 }}
               >
-                <Copy size={16} primaryColor={colors.green} />
+                <Copy size={16} primary_color={colors.green} />
                 <p>{_id}</p>
               </div>
             </li>

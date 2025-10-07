@@ -1,5 +1,5 @@
-export const bucketStorageKey: string = "buckets_table_headers";
-export const bucketTableHeaders: TableHeader[] = [
+export const bucket_storage_key: string = "buckets_table_headers";
+export const bucket_table_headers: TableHeader[] = [
   {
     value: "name",
     label: "Name",
@@ -7,19 +7,19 @@ export const bucketTableHeaders: TableHeader[] = [
     visible: true,
   },
   {
-    value: "companyId",
+    value: "company_id",
     label: "Company",
     sortable: false,
     visible: true,
   },
   {
-    value: "objectCount",
+    value: "object_count",
     label: "Object Count",
     sortable: false,
     visible: true,
   },
   {
-    value: "maxSize_bytes",
+    value: "max_size_bytes",
     label: "Size Limit (KB)",
     sortable: false,
     visible: true,
@@ -49,7 +49,7 @@ export const bucketTableHeaders: TableHeader[] = [
     visible: true,
   },
 ];
-export const bucketAdminTableHeaders: TableHeader[] = [
+export const bucket_admin_table_headers: TableHeader[] = [
   {
     value: "_id",
     label: "_id",
@@ -63,20 +63,20 @@ export const bucketAdminTableHeaders: TableHeader[] = [
     visible: true,
   },
 ];
-export const bucketMongoPopulationFields: string[] = ["companyId"];
-export const bucketMongoSelectionFields: string[] = [
+export const bucket_mongo_population_fields: string[] = ["company_id"];
+export const bucket_mongo_selection_fields: string[] = [
   "createdAt",
-  "companyId",
+  "company_id",
   "consumption_bytes",
-  "maxSize_bytes",
+  "max_size_bytes",
   "name",
-  "objectCount",
+  "object_count",
   "permissions",
   "updatedAt",
 ];
 
-export const objectStorageKey: string = "buckets_objects_table_headers";
-export const objectTableHeaders: TableHeader[] = [
+export const object_storage_key: string = "buckets_objects_table_headers";
+export const object_table_headers: TableHeader[] = [
   {
     value: "name",
     label: "Name",
@@ -102,7 +102,7 @@ export const objectTableHeaders: TableHeader[] = [
     visible: true,
   },
 ];
-export const objectAdminTableHeaders: TableHeader[] = [
+export const object_admin_table_headers: TableHeader[] = [
   {
     value: "delete",
     label: "Delete",
@@ -110,5 +110,5 @@ export const objectAdminTableHeaders: TableHeader[] = [
     visible: true,
   },
 ];
-export const objectMongoPopulationFields: string[] = [];
-export const objectMongoSelectionFields: string[] = [];
+export const object_mongo_population_fields: string[] = [];
+export const object_mongo_selection_fields: string[] = [];

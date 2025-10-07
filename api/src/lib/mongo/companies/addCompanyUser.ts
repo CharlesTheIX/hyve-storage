@@ -1,15 +1,27 @@
+import { isValidObjectId } from "mongoose";
 import getCompanyById from "./getCompanyById";
-import updateCompanyById from "./updateCompanyById";
-import { response_SERVER_ERROR } from "../../../globals";
+import Model from "../../../models/User.model";
+import { SERVER_ERROR, OK, NO_CONTENT, BAD } from "../../../globals";
 
-export default async (_id: string, userId: string): Promise<ApiResponse> => {
+export default async (_id: string, user_id: string): Promise<ApiResponse> => {
+  const _id_validation = isValidObjectId(_id);
+  if (!_id_validation) return { ...BAD, message: "Invalid _id" };
+
+  const user_id_validation = isValidObjectId(user_id);
+  if (!user_id_validation) return { ...BAD, message: "Invalid user_id" };
+
   try {
-    const company = await getCompanyById(_id, { fields: ["userIds"] });
-    if (company.error) return company;
-    const update = { userIds: [...company.data.userIds, userId] };
-    const updatedCompany = await updateCompanyById({ _id, update, options: { fields: ["userIds"] } });
-    return updatedCompany;
+    const user = await getCompanyById(_id);
+    if (user.error) return user;
+    if (user.data.user_ids.includes(user_id)) return OK;
+
+    const query = { $push: { user_ids: user_id } };
+    const update = await Model.findByIdAndUpdate(_id, query).exec();
+    if (!update) throw new Error("Could not add user to company");
+
+    return NO_CONTENT;
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

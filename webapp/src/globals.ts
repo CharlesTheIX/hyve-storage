@@ -1,7 +1,7 @@
 import { Metadata, Viewport } from "next";
-const defaultError = { data: null, error: true };
-const defaultSuccess = { data: null, error: false };
-export const siteName = "Hyve Storage";
+const default_error = { data: null, error: true };
+const default_success = { data: null, error: false };
+export const site_name = "Hyve Storage";
 export const status = {
   OK: 200,
   DB_UPDATED: 201,
@@ -27,16 +27,16 @@ export const colors = {
 };
 
 /* D */
-export const default404Metadata: Metadata = {
-  title: `404 | ${siteName}`,
+export const default_404_metadata: Metadata = {
+  title: `404 | ${site_name}`,
   robots: "noindex, nofollow",
   description: "Data not found",
 };
 
-export const defaultSimpleError = { error: false, message: "" };
+export const default_simple_error = { error: false, message: "" };
 
-export const defaultMetadata: Metadata = {
-  title: siteName,
+export const default_metadata: Metadata = {
+  title: site_name,
   description: "A microsite to host the Hyve Storage service.",
   icons: {
     // apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
@@ -57,9 +57,9 @@ export const defaultMetadata: Metadata = {
   },
 };
 
-export const defaultTableNullValue: string = "N/A";
+export const default_null_label: string = "N/A";
 
-export const defaultViewport: Viewport = {
+export const default_viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   minimumScale: 1,
@@ -79,36 +79,38 @@ export const header_internal = {
   "Content-Type": "application/json",
 };
 
+export const null_option: Option = { value: "", label: "" };
+
 /* R */
-export const response_BAD: ApiResponse = {
-  ...defaultError,
+export const BAD: ApiResponse = {
+  ...default_error,
   status: status.BAD,
   message: "An error occurred whilst processing the request.",
 };
 
-export const response_DB_UPDATED: ApiResponse = {
-  ...defaultSuccess,
+export const DB_UPDATED: ApiResponse = {
+  ...default_success,
   status: status.DB_UPDATED,
   message: "Database updated.",
 };
 
-export const response_OK: ApiResponse = {
-  ...defaultSuccess,
+export const OK: ApiResponse = {
+  ...default_success,
   status: status.OK,
   message: "Success.",
 };
 
-export const response_SERVER_ERROR: ApiResponse = {
-  ...defaultError,
+export const SERVER_ERROR: ApiResponse = {
+  ...default_error,
   status: status.SERVER_ERROR,
   message: "An error occurred on the server - refer to the data for more details.",
 };
 
-export const response_UNAUTHORISED: ApiResponse = {
-  ...defaultError,
+export const UNAUTHORISED: ApiResponse = {
+  ...default_error,
   status: status.UNAUTHORISED,
   message: "Unauthorised.",
 };
 
 /* S */
-export const storagePrefix = "__hyve_storage";
+export const storage_prefix = "__hyve_storage";

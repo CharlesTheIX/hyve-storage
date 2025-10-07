@@ -17,7 +17,7 @@ type Props = {
   fields?: string[];
 };
 
-const UserIdCard: React.FC<Props> = (props: Props) => {
+const user_idCard: React.FC<Props> = (props: Props) => {
   var { id, fields } = props;
   const { setToastItems } = useToastContext();
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,11 +31,11 @@ const UserIdCard: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const populate: string[] = ["companyId"];
-      const options: Partial<ApiRequestOptions> = { fields, populate };
+      const populate: string[] = ["company_id"];
+      const filters: Partial<ApiRequestFilters> = { fields, populate };
 
       try {
-        const res = await getUserById(id, options);
+        const res = await getUserById(id, filters);
         if (res.error) return handleError({ message: res.message, err: res.data, callback: errorCallback });
         setData(res.data);
         setLoading(false);
@@ -48,7 +48,7 @@ const UserIdCard: React.FC<Props> = (props: Props) => {
   return (
     <div className="hyve-card">
       <div className="card-head">
-        <Document primaryColor={colors.white} />
+        <Document primary_color={colors.white} />
         <p>User Details</p>
       </div>
 
@@ -65,10 +65,10 @@ const UserIdCard: React.FC<Props> = (props: Props) => {
               </li>
             )}
 
-            {data.firstName && (
+            {data.first_name && (
               <li>
                 <p>
-                  <strong>First Name:</strong> {data.firstName}
+                  <strong>First Name:</strong> {data.first_name}
                 </p>
               </li>
             )}
@@ -81,12 +81,12 @@ const UserIdCard: React.FC<Props> = (props: Props) => {
               </li>
             )}
 
-            {data.companyId && (
+            {data.company_id && (
               <li>
                 <p>
                   <strong>Company:</strong>{" "}
-                  <Link href={`/companies/${typeof data.companyId === "string" ? data.companyId : data.companyId?._id}`}>
-                    {typeof data.companyId === "string" ? data.companyId : data.companyId.name}
+                  <Link href={`/companies/${typeof data.company_id === "string" ? data.company_id : data.company_id?._id}`}>
+                    {typeof data.company_id === "string" ? data.company_id : data.company_id.name}
                   </Link>
                 </p>
               </li>
@@ -116,7 +116,7 @@ const UserIdCard: React.FC<Props> = (props: Props) => {
               </li>
             )}
 
-            <PermissionsWrapper permissionLevel={9}>
+            <PermissionsWrapper permission_level={9}>
               {data._id && (
                 <li className="flex flex cold gap-2 items-center">
                   <p>
@@ -129,20 +129,20 @@ const UserIdCard: React.FC<Props> = (props: Props) => {
                       event.preventDefault();
                       event.stopPropagation();
                       const copied = copyContentToClipboard(data._id || "");
-                      setToastItems((prevValue) => {
-                        const newItem: ToastItem = {
+                      setToastItems((prev) => {
+                        const new_item: ToastItem = {
                           timeout: 3000,
                           visible: true,
                           content: copied.message,
                           title: copied.title || "",
                           type: copied.error ? "error" : "success",
                         };
-                        const newValue = [...prevValue, newItem];
-                        return newValue;
+                        const new_value = [...prev, new_item];
+                        return new_value;
                       });
                     }}
                   >
-                    <Copy size={16} primaryColor={colors.green} />
+                    <Copy size={16} primary_color={colors.green} />
                     <p>{data._id}</p>
                   </div>
                 </li>
@@ -155,4 +155,4 @@ const UserIdCard: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default UserIdCard;
+export default user_idCard;

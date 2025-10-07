@@ -12,7 +12,7 @@ type Props = {
   required?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  defaultValue?: number[];
+  default_value?: number[];
   onInput?: (event: any) => void;
 };
 
@@ -27,24 +27,24 @@ const MultiNumberInput: React.FC<Props> = (props: Props) => {
     required = false,
     placeholder = "",
     disabled = false,
-    defaultValue = [],
+    default_value = [],
     onInput = () => {},
   } = props;
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<number[]>(defaultValue);
+  const [value, setValue] = useState<number[]>(default_value);
   const [currentValue, setCurrentValue] = useState<number>(min);
 
   const addItem = (): void => {
     if (disabled) return;
-    const newValue = [...value, currentValue];
-    setValue(newValue);
+    const new_value = [...value, currentValue];
+    setValue(new_value);
     setCurrentValue(min);
   };
 
   const removeItem = (index: number): void => {
     if (disabled) return;
-    const newValue = value.filter((_, key) => key === index);
-    setValue(newValue);
+    const new_value = value.filter((_, key) => key === index);
+    setValue(new_value);
   };
 
   return (

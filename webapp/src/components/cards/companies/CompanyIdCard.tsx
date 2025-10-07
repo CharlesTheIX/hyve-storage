@@ -5,7 +5,7 @@ import handleError from "@/lib/handleError";
 import { useEffect, useState } from "react";
 import Document from "@/components/svgs/Document";
 import LoadingIcon from "@/components/LoadingIcon";
-import { colors, defaultTableNullValue } from "@/globals";
+import { colors, default_null_label } from "@/globals";
 import getCompanyById from "@/lib/companies/getCompanyById";
 import PermissionsWrapper from "@/components/PermissionsWrapper";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
@@ -16,7 +16,7 @@ type Props = {
   fields?: string[];
 };
 
-const CompanyIdCard: React.FC<Props> = (props: Props) => {
+const company_idCard: React.FC<Props> = (props: Props) => {
   var { id, fields } = props;
   const { setToastItems } = useToastContext();
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,11 +30,11 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const populate: string[] = ["userIds", "bucketIds"];
-      const options: Partial<ApiRequestOptions> = { fields, populate };
+      const populate: string[] = ["user_ids", "bucket_ids"];
+      const filters: Partial<ApiRequestFilters> = { fields, populate };
 
       try {
-        const res = await getCompanyById(id, options);
+        const res = await getCompanyById(id, filters);
         if (res.error) return handleError({ message: res.message, err: res.data, callback: errorCallback });
         setData(res.data);
         setLoading(false);
@@ -47,7 +47,7 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
   return (
     <div className="hyve-card">
       <div className="card-head">
-        <Document primaryColor={colors.white} />
+        <Document primary_color={colors.white} />
         <p>Company Details</p>
       </div>
 
@@ -66,15 +66,15 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
               </li>
             )}
 
-            {data.userIds && (
+            {data.user_ids && (
               <li>
                 <p>
-                  <strong>Users:</strong> {data.userIds?.length === 0 && defaultTableNullValue}
+                  <strong>Users:</strong> {data.user_ids?.length === 0 && default_null_label}
                 </p>
 
-                {data.userIds.length > 0 && (
+                {data.user_ids.length > 0 && (
                   <ul className="indent">
-                    {data.userIds?.map((user, key: number) => {
+                    {data.user_ids?.map((user, key: number) => {
                       if (typeof user === "string") {
                         return (
                           <li key={key}>
@@ -85,7 +85,7 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
                         return (
                           <li key={key}>
                             <Link href={`/users/${user._id}`}>
-                              {user.username} ({user.firstName} {user.surname})
+                              {user.username} ({user.first_name} {user.surname})
                             </Link>
                           </li>
                         );
@@ -96,15 +96,15 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
               </li>
             )}
 
-            {data.bucketIds && (
+            {data.bucket_ids && (
               <li>
                 <p>
-                  <strong>Buckets:</strong> {data.bucketIds?.length === 0 && defaultTableNullValue}
+                  <strong>Buckets:</strong> {data.bucket_ids?.length === 0 && default_null_label}
                 </p>
 
-                {data.bucketIds?.length > 0 && (
+                {data.bucket_ids?.length > 0 && (
                   <ul className="indent">
-                    {data.bucketIds?.map((bucket, key: number) => {
+                    {data.bucket_ids?.map((bucket, key: number) => {
                       if (typeof bucket === "string") {
                         return (
                           <li key={key}>
@@ -140,7 +140,7 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
               </li>
             )}
 
-            <PermissionsWrapper permissionLevel={9}>
+            <PermissionsWrapper permission_level={9}>
               {data._id && (
                 <li className="flex flex cold gap-2 items-center">
                   <p>
@@ -153,20 +153,20 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
                       event.preventDefault();
                       event.stopPropagation();
                       const copied = copyContentToClipboard(data._id || "");
-                      setToastItems((prevValue) => {
-                        const newItem: ToastItem = {
+                      setToastItems((prev) => {
+                        const new_item: ToastItem = {
                           timeout: 3000,
                           visible: true,
                           content: copied.message,
                           title: copied.title || "",
                           type: copied.error ? "error" : "success",
                         };
-                        const newValue = [...prevValue, newItem];
-                        return newValue;
+                        const new_value = [...prev, new_item];
+                        return new_value;
                       });
                     }}
                   >
-                    <Copy size={16} primaryColor={colors.green} />
+                    <Copy size={16} primary_color={colors.green} />
                     <p>{data._id}</p>
                   </div>
                 </li>
@@ -179,4 +179,4 @@ const CompanyIdCard: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default CompanyIdCard;
+export default company_idCard;

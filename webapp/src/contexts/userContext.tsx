@@ -6,12 +6,12 @@ type UserContextData = {
   setUserData: React.Dispatch<React.SetStateAction<Partial<User>>>;
 };
 
-const defaultValue: UserContextData = {
+const default_value: UserContextData = {
   userData: {},
   setUserData: () => {},
 };
 
-const UserContext = createContext<UserContextData>(defaultValue);
+const UserContext = createContext<UserContextData>(default_value);
 
 export const UserContextProvider = (props: { children: React.ReactNode }) => {
   const { children } = props;

@@ -1,14 +1,14 @@
-import * as Minio from "minio";
+import { Client } from "minio";
 import getEnvVars from "../getEnvVars";
 
-export default (): Minio.Client => {
+export default (): Client => {
   const vars = getEnvVars().minio;
-  const client = new Minio.Client({
-    useSSL: vars.useSSL,
+  const client = new Client({
+    useSSL: vars.use_SSL,
     port: Number(vars.port),
     endPoint: vars.endpoint,
-    accessKey: vars.accessKey,
-    secretKey: vars.secretKey,
+    accessKey: vars.access_key,
+    secretKey: vars.secret_key,
   });
   return client;
 };

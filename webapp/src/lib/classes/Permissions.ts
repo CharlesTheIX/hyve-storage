@@ -1,5 +1,5 @@
 export default class Permissions {
-  public static bucketPermissions: { [key: string]: number } = {
+  public static bucket_permissions: { [key: string]: number } = {
     Read: 1,
     Write: 2,
     Update: 3,
@@ -22,21 +22,20 @@ export default class Permissions {
 
   public static getBucketPermissionLabels = (values?: any[], slice?: [number, number]): string[] => {
     var res: string[] = [];
-    Object.keys(this.bucketPermissions).forEach((label: string) => {
+    Object.keys(this.bucket_permissions).forEach((label: string) => {
       if (!values) return res.push(label);
       if (values.length === 0) return;
-      if (typeof values[0] === "number" && values.includes(this.bucketPermissions[label])) return res.push(label);
-      if (this.getFlatPermissionOptions(values, "value").includes(this.bucketPermissions[label])) return res.push(label);
+      if (typeof values[0] === "number" && values.includes(this.bucket_permissions[label])) return res.push(label);
+      if (this.getFlatPermissionOptions(values, "value").includes(this.bucket_permissions[label])) return res.push(label);
     });
     if (slice) return res.slice(...slice);
-    console.log(res);
     return res;
   };
 
   public static getBucketPermissionValues = (labels?: any[], slice?: [number, number]): number[] => {
     var res: number[] = [];
-    Object.keys(this.bucketPermissions).forEach((key) => {
-      const item: number = this.bucketPermissions[key];
+    Object.keys(this.bucket_permissions).forEach((key) => {
+      const item: number = this.bucket_permissions[key];
       if (!labels) return res.push(item);
       if (labels.length === 0) return null;
       if (typeof labels[0] === "string" && labels.includes(key)) return res.push(item);
@@ -48,13 +47,13 @@ export default class Permissions {
 
   public static getBucketPermissionOptions = (items?: any[], slice?: [number, number]): Option[] => {
     const res: Option[] = [];
-    Object.keys(this.bucketPermissions).forEach((key) => {
-      const item: Option = { label: key, value: this.bucketPermissions[key] };
+    Object.keys(this.bucket_permissions).forEach((key) => {
+      const item: Option = { label: key, value: this.bucket_permissions[key] };
       if (!items) return res.push(item);
       if (items.length === 0) return;
       if (typeof items[0] === "string" && items.includes(key)) return res.push(item);
       if (this.getFlatPermissionOptions(items, "label").includes(key)) return res.push(item);
-      if (typeof items[0] === "number" && items.includes(this.bucketPermissions[key])) return res.push(item);
+      if (typeof items[0] === "number" && items.includes(this.bucket_permissions[key])) return res.push(item);
     });
     if (slice) return res.slice(...slice);
     return res;

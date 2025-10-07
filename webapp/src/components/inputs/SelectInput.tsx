@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { null_option } from "@/globals";
 
 type Props = {
   name: string;
@@ -8,8 +9,7 @@ type Props = {
   options: Option[];
   required?: boolean;
   placeholder?: string;
-  defaultValue?: Option;
-  customSelect?: boolean;
+  default_value?: Option;
   onChange?: (event: any) => void;
 };
 
@@ -21,12 +21,12 @@ const SelectInput: React.FC<Props> = (props: Props) => {
     error = false,
     required = false,
     onChange = () => {},
+    default_value = null_option,
     placeholder = "Select an option",
-    defaultValue = { value: "", label: "" },
   } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<Option>(defaultValue);
+  const [value, setValue] = useState<Option>(default_value);
 
   return (
     <div className={`hyve-input select ${focused && !value.value ? "focused" : ""} ${error ? "error" : ""} ${!!value.value ? "active" : ""}`}>
@@ -67,9 +67,20 @@ const SelectInput: React.FC<Props> = (props: Props) => {
 
           <div className={`options-container`}>
             <ul>
-              <li className="blank-option" style={{ opacity: 0.8 }}>
-                {placeholder}
-              </li>
+              {required ? (
+                <li style={{ opacity: 0.8, cursor: "default" }}>{placeholder}</li>
+              ) : (
+                <li
+                  onClick={(event: any) => {
+                    setOpen(false);
+                    onChange(event);
+                    setFocused(false);
+                    setValue(null_option);
+                  }}
+                >
+                  None
+                </li>
+              )}
 
               {options.map((option) => {
                 return (

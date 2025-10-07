@@ -1,54 +1,70 @@
-const defaultError = { data: null, error: true };
+const default_error = { data: null, error: true };
 
-const defaultSuccess = { data: null, error: false };
+const default_success = { data: null, error: false };
 
 export const status = {
   OK: 200,
   DB_UPDATED: 201,
   NO_CONTENT: 204,
-
   BAD: 400,
   UNAUTHORISED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   CONFLICT: 409,
-
   SERVER_ERROR: 500,
 };
 
 /* R */
-export const response_BAD: ApiResponse = {
-  ...defaultError,
+export const BAD: ApiResponse = {
+  ...default_error,
   status: status.BAD,
   message: "An error occurred whilst processing the request",
 };
 
-export const response_DB_UPDATED: ApiResponse = {
-  ...defaultSuccess,
+export const CONFLICT: ApiResponse = {
+  ...default_error,
+  status: status.CONFLICT,
+  message: "An error occurred whilst processing the request",
+};
+
+export const DB_UPDATED: ApiResponse = {
+  ...default_success,
   status: status.DB_UPDATED,
   message: "Database updated",
 };
 
-export const response_NO_CONTENT: ApiResponse = {
-  ...defaultSuccess,
+export const FORBIDDEN: ApiResponse = {
+  ...default_error,
+  status: status.FORBIDDEN,
+  message: "Forbidden",
+};
+
+export const NO_CONTENT: ApiResponse = {
+  ...default_success,
   status: status.NO_CONTENT,
   message: "No content available",
 };
 
-export const response_OK: ApiResponse = {
-  ...defaultSuccess,
+export const NOT_FOUND: ApiResponse = {
+  ...default_error,
+  status: status.NOT_FOUND,
+  message: "No content found",
+};
+
+export const OK: ApiResponse = {
+  ...default_success,
   status: status.OK,
   message: "Success",
 };
 
-export const response_SERVER_ERROR: ApiResponse = {
-  ...defaultError,
+export const SERVER_ERROR: ApiResponse = {
+  ...default_error,
   status: status.SERVER_ERROR,
   message: "An error occurred on the server - refer to the data for more details",
 };
 
-export const response_UNAUTHORISED: ApiResponse = {
-  ...defaultError,
+export const UNAUTHORISED: ApiResponse = {
+  ...default_error,
   status: status.UNAUTHORISED,
   message: "Unauthorised",
 };

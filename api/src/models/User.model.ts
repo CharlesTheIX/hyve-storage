@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const schema = new Schema(
   {
     //auto assigned fields (_id, __v)
-    firstName: {
+    first_name: {
       type: String,
       required: [true, "Please provide a first name"],
     },
@@ -21,7 +21,7 @@ const schema = new Schema(
       enum: [1, 2, 3, 4, 5, 6, 7, 8, 9],
       default: [],
     },
-    companyId: {
+    company_id: {
       type: Schema.Types.ObjectId,
       ref: "Company",
     },
@@ -33,6 +33,7 @@ schema.pre("save", async function (next: any) {
   try {
     next();
   } catch (err: any) {
+    //TODO: handle error
     console.error(`Mongo user pre save error: ${err.message}`);
     next(err);
   }

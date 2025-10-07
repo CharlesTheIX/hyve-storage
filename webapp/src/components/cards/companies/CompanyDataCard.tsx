@@ -1,7 +1,8 @@
+"use client";
 import Link from "next/link";
 import Copy from "@/components/svgs/Copy";
 import Document from "@/components/svgs/Document";
-import { colors, defaultTableNullValue } from "@/globals";
+import { colors, default_null_label } from "@/globals";
 import PermissionsWrapper from "@/components/PermissionsWrapper";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
 import { ToastItem, useToastContext } from "@/contexts/toastContext";
@@ -13,12 +14,12 @@ type Props = {
 const CompanyDataCard: React.FC<Props> = (props: Props) => {
   const { data } = props;
   const { setToastItems } = useToastContext();
-  const { _id, name, userIds, bucketIds, createdAt, updatedAt } = data;
+  const { _id, name, user_ids, bucket_ids, createdAt, updatedAt } = data;
 
   return (
     <div className="hyve-card">
       <div className="card-head">
-        <Document primaryColor={colors.white} />
+        <Document primary_color={colors.white} />
         <p>Company Details</p>
       </div>
 
@@ -32,15 +33,15 @@ const CompanyDataCard: React.FC<Props> = (props: Props) => {
             </li>
           )}
 
-          {userIds && (
+          {user_ids && (
             <li>
               <p>
-                <strong>Users:</strong> {userIds?.length === 0 && defaultTableNullValue}
+                <strong>Users:</strong> {user_ids?.length === 0 && default_null_label}
               </p>
 
-              {userIds.length > 0 && (
+              {user_ids.length > 0 && (
                 <ul className="indent">
-                  {userIds?.map((user, key: number) => {
+                  {user_ids?.map((user, key: number) => {
                     if (typeof user === "string") {
                       return (
                         <li key={key}>
@@ -51,7 +52,7 @@ const CompanyDataCard: React.FC<Props> = (props: Props) => {
                       return (
                         <li key={key}>
                           <Link href={`/users/${user._id}`}>
-                            {user.username} ({user.firstName} {user.surname})
+                            {user.username} ({user.first_name} {user.surname})
                           </Link>
                         </li>
                       );
@@ -62,15 +63,15 @@ const CompanyDataCard: React.FC<Props> = (props: Props) => {
             </li>
           )}
 
-          {bucketIds && (
+          {bucket_ids && (
             <li>
               <p>
-                <strong>Buckets:</strong> {bucketIds?.length === 0 && defaultTableNullValue}
+                <strong>Buckets:</strong> {bucket_ids?.length === 0 && default_null_label}
               </p>
 
-              {bucketIds?.length > 0 && (
+              {bucket_ids?.length > 0 && (
                 <ul className="indent">
-                  {bucketIds?.map((bucket, key: number) => {
+                  {bucket_ids?.map((bucket, key: number) => {
                     if (typeof bucket === "string") {
                       return (
                         <li key={key}>
@@ -93,7 +94,7 @@ const CompanyDataCard: React.FC<Props> = (props: Props) => {
           {createdAt && (
             <li>
               <p>
-                <strong>Creation Date:</strong> {createdAt ? new Date(createdAt).toLocaleDateString() : defaultTableNullValue}
+                <strong>Creation Date:</strong> {createdAt ? new Date(createdAt).toLocaleDateString() : default_null_label}
               </p>
             </li>
           )}
@@ -101,12 +102,12 @@ const CompanyDataCard: React.FC<Props> = (props: Props) => {
           {updatedAt && (
             <li>
               <p>
-                <strong>Last Updated:</strong> {updatedAt ? new Date(updatedAt).toLocaleDateString() : defaultTableNullValue}
+                <strong>Last Updated:</strong> {updatedAt ? new Date(updatedAt).toLocaleDateString() : default_null_label}
               </p>
             </li>
           )}
 
-          <PermissionsWrapper permissionLevel={9}>
+          <PermissionsWrapper permission_level={9}>
             <li className="flex flex cold gap-2 items-center">
               <p>
                 <strong>_id:</strong>
@@ -118,20 +119,20 @@ const CompanyDataCard: React.FC<Props> = (props: Props) => {
                   event.preventDefault();
                   event.stopPropagation();
                   const copied = copyContentToClipboard(_id || "");
-                  setToastItems((prevValue) => {
-                    const newItem: ToastItem = {
+                  setToastItems((prev) => {
+                    const new_item: ToastItem = {
                       timeout: 3000,
                       visible: true,
                       content: copied.message,
                       title: copied.title || "",
                       type: copied.error ? "error" : "success",
                     };
-                    const newValue = [...prevValue, newItem];
-                    return newValue;
+                    const new_value = [...prev, new_item];
+                    return new_value;
                   });
                 }}
               >
-                <Copy size={16} primaryColor={colors.green} />
+                <Copy size={16} primary_color={colors.green} />
                 <p>{_id}</p>
               </div>
             </li>

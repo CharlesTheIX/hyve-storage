@@ -7,7 +7,7 @@ const CompanyCreationPage: React.FC = () => {
     <main>
       <section>
         <div className="flex flex-row gap-2 items-center">
-          <Create primaryColor={colors.white} size={50} />
+          <Create primary_color={colors.white} size={50} />
           <h1>Companies</h1>
         </div>
       </section>

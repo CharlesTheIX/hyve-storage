@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import UserCreationPage from "@/pages/Users/create";
-import { defaultMetadata, siteName } from "@/globals";
+import { default_metadata, site_name } from "@/globals";
 
 export const metadata: Metadata = {
-  ...defaultMetadata,
-  title: `User Creation | ${siteName}`,
+  ...default_metadata,
+  title: `User Creation | ${site_name}`,
   //TODO
   description: "Some description here.",
 };

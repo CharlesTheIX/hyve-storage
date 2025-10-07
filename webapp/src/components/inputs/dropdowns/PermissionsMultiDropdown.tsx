@@ -11,30 +11,28 @@ type Props = {
   error?: boolean;
   required?: boolean;
   disabled?: boolean;
-  sliceLimit?: number;
+  slice_limit?: number;
   placeholder?: string;
-  customSelect?: boolean;
-  defaultValue?: Option[];
+  default_value?: Option[];
   onChange?: (event: any) => void;
 };
 
 const options = Permissions.getBucketPermissionOptions();
-console.log(options);
 const PermissionsMultiDropdown: React.FC<Props> = (props: Props) => {
   var {
     name,
     label,
     error = false,
-    sliceLimit = 4,
+    slice_limit = 4,
     disabled = false,
     required = false,
-    defaultValue = [],
+    default_value = [],
     onChange = () => {},
     placeholder = "Select an option",
   } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
-  const [value, setValue] = useState<Option[]>(defaultValue);
+  const [value, setValue] = useState<Option[]>(default_value);
 
   return (
     <div className={`hyve-input select ${focused && open ? "focused" : ""} ${error ? "error" : ""} ${value.length > 0 ? "active" : ""}`}>
@@ -64,14 +62,14 @@ const PermissionsMultiDropdown: React.FC<Props> = (props: Props) => {
       >
         {value.length > 0 ? (
           <p>
-            {Permissions.getFlatPermissionOptions(value, "label", [0, sliceLimit]).join(", ")}
-            {value.length > sliceLimit && <span>{` +${value.length - sliceLimit}`}</span>}
+            {Permissions.getFlatPermissionOptions(value, "label", [0, slice_limit]).join(", ")}
+            {value.length > slice_limit && <span>{` +${value.length - slice_limit}`}</span>}
           </p>
         ) : (
           <p></p>
         )}
 
-        <Chevron direction="down" size={16} primaryColor={colors.white} />
+        <Chevron direction="down" size={16} primary_color={colors.white} />
       </div>
 
       {open && (
@@ -86,9 +84,7 @@ const PermissionsMultiDropdown: React.FC<Props> = (props: Props) => {
 
           <div className={`options-container`}>
             <ul>
-              <li className="blank-option" style={{ opacity: 0.8 }}>
-                {placeholder}
-              </li>
+              {required && <li style={{ opacity: 0.8, cursor: "default" }}>{placeholder}</li>}
 
               {options.map((option, key: number) => {
                 const selected = !!value.find((v) => option.value === v.value);
@@ -99,16 +95,16 @@ const PermissionsMultiDropdown: React.FC<Props> = (props: Props) => {
                     onClick={(event: any) => {
                       if (disabled) return;
                       onChange(event);
-                      setValue((prevValue) => {
-                        var newValue;
-                        if (!selected) newValue = [...prevValue, option];
-                        else newValue = prevValue.filter((item) => item.value !== option.value) || [];
-                        return newValue;
+                      setValue((prev) => {
+                        var new_value;
+                        if (!selected) new_value = [...prev, option];
+                        else new_value = prev.filter((item) => item.value !== option.value) || [];
+                        return new_value;
                       });
                     }}
                   >
                     <div className="checkbox">
-                      <Checkbox size={16} primaryColor={colors.white} checked={selected} />
+                      <Checkbox size={16} primary_color={colors.white} checked={selected} />
                     </div>
 
                     <p>{option.label}</p>

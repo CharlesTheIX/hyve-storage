@@ -7,8 +7,8 @@ import { useRef, useState, useEffect } from "react";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
-import { defaultSimpleError, header_internal } from "@/globals";
 import ButtonContainer from "@/components/forms/ButtonContainer";
+import { default_simple_error, header_internal } from "@/globals";
 import { useToastContext, ToastItem } from "@/contexts/toastContext";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 import CompanyDropdown from "@/components/inputs/dropdowns/CompanyDropdown";
@@ -16,52 +16,52 @@ import PermissionsMultiDropdown from "@/components/inputs/dropdowns/PermissionsM
 
 type Props = { redirect?: string };
 
-const storageKey = "user_creation_form_data";
+const storage_key = "user_creation_form_data";
 const UserCreationForm: React.FC<Props> = (props: Props) => {
   const { redirect = "/users" } = props;
   const router = useRouter();
   const { setToastItems } = useToastContext();
-  const formRef = useRef<HTMLFormElement>(null);
+  const form_ref = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
-  const [error, setError] = useState<SimpleError>(defaultSimpleError);
+  const [error, setError] = useState<SimpleError>(default_simple_error);
   const [storageValue, setStorageValue] = useState<StorageValue | null>(null);
   const [inputErrors, setInputErrors] = useState<{ [key: string]: boolean }>({});
 
   const handleFormSubmission = async (): Promise<void> => {
-    const form = formRef.current;
+    const form = form_ref.current;
     if (!form) return;
 
     setLoading(true);
     setInputErrors({});
     setComplete(false);
-    setError(defaultSimpleError);
-    const formData = new FormData(form);
-    const surname = formData.get("surname")?.toString() || "";
-    const username = formData.get("username")?.toString() || "";
-    const firstName = formData.get("firstName")?.toString() || "";
-    const permissions = parseJSON(formData.get("permissions")?.toString()) ?? [];
-    const companyId = parseJSON(formData.get("companyId")?.toString()) ?? undefined;
-    const requestData: Partial<User> = {
+    setError(default_simple_error);
+    const form_data = new FormData(form);
+    const surname = form_data.get("surname")?.toString() || "";
+    const username = form_data.get("username")?.toString() || "";
+    const first_name = form_data.get("first_name")?.toString() || "";
+    const permissions = parseJSON(form_data.get("permissions")?.toString()) ?? [];
+    const company_id = parseJSON(form_data.get("company_id")?.toString()) ?? undefined;
+    const request_data: Partial<User> = {
       surname,
       username,
-      firstName,
-      companyId: companyId?.value,
+      first_name,
+      company_id: company_id?.value,
       permissions: permissions.map((p: Option) => p.value),
     };
 
-    const validationError = validateRequest(requestData);
-    Storage.setStorageValue(storageKey, { ...requestData, companyId, permissions });
-    if (validationError.error) {
+    const validation_error = validateRequest(request_data);
+    Storage.setStorageValue(storage_key, { ...request_data, company_id, permissions });
+    if (validation_error.error) {
       setLoading(false);
-      return setError(validationError);
+      return setError(validation_error);
     }
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/users/create`, {
         method: "PUT",
         headers: header_internal,
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(request_data),
       }).then((res: any) => res.json());
 
       if (response.error) {
@@ -69,17 +69,17 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
         return setError({ error: true, message: response.message, title: "Error" });
       }
 
-      Storage.clearStorageValue(storageKey);
-      setToastItems((prevValue) => {
-        const newItem: ToastItem = {
+      Storage.clearStorageValue(storage_key);
+      setToastItems((prev) => {
+        const new_item: ToastItem = {
           content: "",
           timeout: 3000,
           visible: true,
           type: "success",
           title: "User created successfully",
         };
-        const newValue = [...prevValue, newItem];
-        return newValue;
+        const new_value = [...prev, new_item];
+        return new_value;
       });
 
       if (redirect) return router.push(redirect);
@@ -93,7 +93,7 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
 
   const validateRequest = (data: Partial<User>): SimpleError => {
     var invalid;
-    const inputsInvalid: { [key: string]: boolean } = {};
+    const inputs_invalid: { [key: string]: boolean } = {};
     var message = "Please address the following errors:\n";
 
     Object.keys(data).map((key: string) => {
@@ -101,7 +101,7 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
         case "username":
           invalid = getInputError("username", data[key], true);
           if (invalid.error) {
-            inputsInvalid.username = invalid.error;
+            inputs_invalid.username = invalid.error;
             message += `- Username: ${invalid.message}\n`;
           }
           break;
@@ -109,23 +109,23 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
         case "surname":
           invalid = getInputError("name", data[key], true);
           if (invalid.error) {
-            inputsInvalid.surname = invalid.error;
+            inputs_invalid.surname = invalid.error;
             message += `- Surname: ${invalid.message}\n`;
           }
           break;
 
-        case "firstName":
+        case "first_name":
           invalid = getInputError("name", data[key], true);
           if (invalid.error) {
-            inputsInvalid.firstName = invalid.error;
-            message += `- FirstName: ${invalid.message}\n`;
+            inputs_invalid.first_name = invalid.error;
+            message += `- first_name: ${invalid.message}\n`;
           }
           break;
 
         case "permissions":
           var err: boolean = data[key]?.length === 0;
           if (err) {
-            inputsInvalid.permissions = true;
+            inputs_invalid.permissions = true;
             message += `- Permissions: At least one value is required.\n`;
           }
 
@@ -133,16 +133,16 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
             if (err) return;
             invalid = getInputError("number", p, true);
             if (invalid.error) {
-              inputsInvalid.permissions = invalid.error;
+              inputs_invalid.permissions = invalid.error;
               message += `- Permissions: ${invalid.message}\n`;
             }
           });
           break;
 
-        case "companyId":
-          invalid = getInputError("mongoId", data[key], false);
+        case "company_id":
+          invalid = getInputError("mongo_id", data[key], false);
           if (invalid.error) {
-            inputsInvalid.companyId = invalid.error;
+            inputs_invalid.company_id = invalid.error;
             message += `- Company: ${invalid.message}\n`;
           }
           break;
@@ -150,45 +150,51 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
     });
 
     const title = "Input error";
-    const error = Object.keys(inputsInvalid).length > 0;
+    const error = Object.keys(inputs_invalid).length > 0;
     if (!error) message = "";
-    setInputErrors(inputsInvalid);
+    setInputErrors(inputs_invalid);
     return { error, message, title };
   };
 
   useEffect(() => {
-    const savedData = Storage.getStorageValue(storageKey);
-    if (!savedData) return;
-    setStorageValue(savedData);
+    const saved_data = Storage.getStorageValue(storage_key);
+    if (!saved_data) return;
+    setStorageValue(saved_data);
   }, []);
 
   return (
-    <form ref={formRef} className={`hyve-form ${loading ? "loading" : ""}`} onSubmit={(event: any) => event.preventDefault()}>
+    <form ref={form_ref} className={`hyve-form ${loading ? "loading" : ""}`} onSubmit={(event: any) => event.preventDefault()}>
       <div className="content-container">
         <div className="inputs">
           <div className="w-full">
-            <TextInput name="username" required={true} label="Username" error={!!inputErrors.username} defaultValue={storageValue?.value?.username} />
+            <TextInput
+              name="username"
+              required={true}
+              label="Username"
+              error={!!inputErrors.username}
+              default_value={storageValue?.value?.username}
+            />
           </div>
 
           <div className="w-full flex flex-row gap-2 items-center justify-between">
             <TextInput
               required={true}
-              name="firstName"
+              name="first_name"
               label="First name"
-              error={!!inputErrors.firstName}
-              defaultValue={storageValue?.value?.firstName}
+              error={!!inputErrors.first_name}
+              default_value={storageValue?.value?.first_name}
             />
 
-            <TextInput name="surname" required={true} label="Surname" error={!!inputErrors.surname} defaultValue={storageValue?.value?.surname} />
+            <TextInput name="surname" required={true} label="Surname" error={!!inputErrors.surname} default_value={storageValue?.value?.surname} />
           </div>
 
           <div className="w-full flex flex-row gap-2 items-start justify-between">
             <CompanyDropdown
               label="Company"
               required={false}
-              name="companyId"
-              error={!!inputErrors.companyId}
-              defaultValue={storageValue?.value?.companyId}
+              name="company_id"
+              error={!!inputErrors.company_id}
+              default_value={storageValue?.value?.company_id}
             />
 
             <PermissionsMultiDropdown
@@ -196,7 +202,7 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
               name="permissions"
               label="Permissions"
               error={!!inputErrors.permissions}
-              defaultValue={storageValue?.value?.permissions}
+              default_value={storageValue?.value?.permissions}
             />
           </div>
         </div>

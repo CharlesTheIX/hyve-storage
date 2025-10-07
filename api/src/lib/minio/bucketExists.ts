@@ -1,15 +1,19 @@
-import { Client } from "minio";
+import getMinioClient from "./getMinioClient";
 import { isValidBucketName } from "../validation";
-import { response_BAD, response_OK, response_SERVER_ERROR } from "../../globals";
+import { BAD, NO_CONTENT, OK, SERVER_ERROR } from "../../globals";
 
-export default async (client: Client, name: string): Promise<ApiResponse> => {
+export default async (name: string): Promise<ApiResponse> => {
   const validation = isValidBucketName(name);
-  if (validation.error) return { ...response_BAD, message: validation.message };
+  if (validation.error) return { ...BAD, message: validation.message };
 
   try {
-    const response = await client.bucketExists(name);
-    return { ...response_OK, data: response, message: `Minio bucket ${name} ${!!response ? "does" : "does not"} exist` };
+    const client = getMinioClient();
+    const data = !!(await client.bucketExists(name));
+    if (!data) return NO_CONTENT;
+
+    return { ...OK, data };
   } catch (err: any) {
-    return { ...response_SERVER_ERROR, data: err };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

@@ -5,51 +5,52 @@ import { isValidObjectName } from "../../validation";
 import getMinioClient from "../../minio/getMinioClient";
 import getBucketByName from "../../mongo/buckets/getBucketByName";
 import updateBucketById from "../../mongo/buckets/updateBucketById";
-import { response_BAD, response_DB_UPDATED } from "../../../globals";
+import { BAD, CONFLICT, DB_UPDATED, NOT_FOUND, OK, SERVER_ERROR } from "../../../globals";
 
 type Props = {
-  bucketName: string;
-  objectName?: string;
-  fromSource?: string;
+  bucket_name: string;
+  object_name?: string;
+  from_source?: string;
   file: Express.Multer.File;
 };
 
 export default async (props: Props): Promise<ApiResponse> => {
-  const { bucketName, objectName, file, fromSource = "unknown" } = props;
-  const filePath = file.path;
-  const client = getMinioClient();
-  const fileSize = fs.statSync(filePath).size;
-  const fileStream = fs.createReadStream(filePath);
-  const fileName = objectName || file.originalname;
+  const { bucket_name, object_name, file, from_source = "unknown" } = props;
+  const file_name = object_name || file.originalname;
+  const valid_object_name = isValidObjectName(file_name);
+  if (valid_object_name.error) return { ...BAD, message: `${valid_object_name.message}` };
+
+  const file_path = file.path;
+  const file_size = fs.statSync(file_path).size;
+  const file_stream = fs.createReadStream(file_path);
   const metaData = {
     "Content-Type": file.mimetype,
-    "X-Amz-Meta-Uploaded-From": fromSource,
+    "X-Amz-Meta-Uploaded-From": from_source,
   };
 
-  const validObjectName = isValidObjectName(fileName);
-  if (validObjectName.error) return { ...response_BAD, message: `${validObjectName.message}` };
-
   try {
-    const bucket_exists = await bucketExists(client, bucketName);
+    const bucket_exists = await bucketExists(bucket_name);
     if (bucket_exists.error) return bucket_exists;
-    if (!bucket_exists.data) return { ...response_BAD, message: `Bucket does not exists: ${bucketName}.` };
+    if (bucket_exists.status !== OK.status) return NOT_FOUND;
 
-    const object_exists = await objectExists({ client, bucketName, objectName: fileName });
-    if (object_exists) return { ...response_BAD, message: `Object already exists: ${fileName}.` };
+    const object_exists = await objectExists(bucket_name, file_name);
+    if (object_exists.error) return object_exists;
+    if (object_exists.status === OK.status) return CONFLICT;
 
-    const objectInfo = await client.putObject(bucketName, fileName, fileStream, fileSize, metaData);
-    if (!objectInfo) return { ...response_BAD, message: "Filed to upload form object." };
+    const client = getMinioClient();
+    const object_info = await client.putObject(bucket_name, file_name, file_stream, file_size, metaData);
+    if (!object_info) return { ...BAD, message: "Filed to upload form object." };
 
-    const mongoBucket = await getBucketByName(bucketName, { fields: ["objectCount", "consumption_bytes"] });
-    if (mongoBucket.error) return mongoBucket;
+    const mongo_bucket = await getBucketByName(bucket_name, { fields: ["object_count", "consumption_bytes"] });
+    if (mongo_bucket.error) return mongo_bucket;
 
-    const update = { objectCount: mongoBucket.data.objectCount + 1, consumption_bytes: mongoBucket.data.consumption_bytes + fileSize };
-    const updatedMongoBucket = await updateBucketById({ _id: mongoBucket.data._id, update, options: { fields: ["_id"] } });
-    if (updatedMongoBucket.error) return updatedMongoBucket;
+    const update = { object_count: mongo_bucket.data.object_count + 1, consumption_bytes: mongo_bucket.data.consumption_bytes + file_size };
+    const updated_mongo_bucket = await updateBucketById({ _id: mongo_bucket.data._id, update });
+    if (updated_mongo_bucket.error) return updated_mongo_bucket;
 
-    return response_DB_UPDATED;
+    return DB_UPDATED;
   } catch (err: any) {
-    console.error("Failed to upload form object: ", err);
-    return { ...response_BAD, message: `Failed to upload form object - ${err.message}.` };
+    //TODO: handle errors
+    return { ...SERVER_ERROR, data: err };
   }
 };

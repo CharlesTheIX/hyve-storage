@@ -8,9 +8,9 @@ export default () => ({
     port: process.env.MINIO_PORT!,
     region: process.env.MINIO_REGION!,
     endpoint: process.env.MINIO_ENDPOINT!,
-    accessKey: process.env.MINIO_ACCESS_KEY!,
-    secretKey: process.env.MINIO_SECRET_KEY!,
-    useSSL: process.env.MINIO_USE_SSL! === "true",
+    access_key: process.env.MINIO_ACCESS_KEY!,
+    secret_key: process.env.MINIO_SECRET_KEY!,
+    use_SSL: process.env.MINIO_USE_SSL! === "true",
   },
   mongo: {
     uri: process.env.MONGO_URI!,
