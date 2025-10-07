@@ -45,7 +45,6 @@ const Page = async ({ params }: { params: { _id: string } }): Promise<React.JSX.
       headers: header_external,
       body: JSON.stringify({ _id, filters }),
     }).then((r) => r.json());
-    console.log("test", res.data);
     if (res.error) return notFound();
     return <CompanyPage data={res.data} />;
   } catch (err: any) {
