@@ -7,6 +7,7 @@ import { useRef, useState, useEffect } from "react";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
 import { default_simple_error, header_internal } from "@/globals";
 import UserDropdown from "@/components/inputs/dropdowns/UserDropdown";
@@ -43,9 +44,8 @@ const CompanyCreationForm: React.FC<Props> = (props: Props) => {
       user_ids: [user_ids.value],
     };
 
-    Storage.setStorageValue(storage_key, { ...request_data, user_ids });
-
     const validation_error = validateRequest(request_data);
+    Storage.setStorageValue(storage_key, { ...request_data, user_ids });
     if (validation_error.error) {
       setLoading(false);
       return setError(validation_error);
@@ -60,7 +60,7 @@ const CompanyCreationForm: React.FC<Props> = (props: Props) => {
 
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
 
       Storage.clearStorageValue(storage_key);
@@ -70,7 +70,7 @@ const CompanyCreationForm: React.FC<Props> = (props: Props) => {
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
+      return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
   };
 

@@ -1,9 +1,10 @@
 "use client";
 import { useRef, useState } from "react";
-import getInputError from "@/lib/getInputError";
+import validateRequest from "./validateRequest";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
 import { default_simple_error, header_internal } from "@/globals";
 import CompletionContainer from "@/components/forms/CompletionContainer";
@@ -28,10 +29,11 @@ const UserExistsForm: React.FC = () => {
     const username = form_data.get("username")?.toString() || "";
     const request_data: Partial<User> = { username };
 
-    const validation_error = validateRequest(request_data);
-    if (validation_error.error) {
+    const validation = validateRequest(request_data);
+    setInputErrors(validation.invalid_inputs);
+    if (validation.simple_error.error) {
       setLoading(false);
-      return setError(validation_error);
+      return setError(validation.simple_error);
     }
 
     try {
@@ -43,7 +45,7 @@ const UserExistsForm: React.FC = () => {
 
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
 
       setComplete(true);
@@ -51,31 +53,8 @@ const UserExistsForm: React.FC = () => {
       setExists(response.data);
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
+      return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
-  };
-
-  const validateRequest = (data: Partial<User>): SimpleError => {
-    var invalid;
-    const inputs_invalid: { [key: string]: boolean } = {};
-    var message = "Please address the following errors:\n";
-    Object.keys(data).map((key: string) => {
-      switch (key) {
-        case "username":
-          invalid = getInputError("username", data[key], true);
-          if (invalid.error) {
-            inputs_invalid.username = invalid.error;
-            message += `- Username: ${invalid.message}\n`;
-          }
-          break;
-      }
-    });
-
-    const title = "Input error";
-    const error = Object.keys(inputs_invalid).length > 0;
-    if (!error) message = "";
-    setInputErrors(inputs_invalid);
-    return { error, message, title };
   };
 
   return (

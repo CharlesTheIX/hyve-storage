@@ -1,7 +1,10 @@
 /* A */
 type ApiRequestFilters = {
+  skip: number;
+  limit: number;
   fields: string[];
   populate: string[];
+  sort: { order: "asc" | "desc"; field: string };
 };
 
 type ApiResponse = {
@@ -9,6 +12,11 @@ type ApiResponse = {
   error: boolean;
   status: number;
   message: string;
+  meta?: Partial<ApiResponseMeta>;
+};
+
+type ApiResponseMeta = {
+  collection_count: number;
 };
 
 /* B */
@@ -78,9 +86,20 @@ type StorageValue = {
 type TableHeader = Option & {
   visible?: boolean;
   sortable?: boolean;
+  permissions?: number[];
 };
 
 type TableType = "users" | "buckets" | "companies" | "objects";
+
+type ToastItem = {
+  title: string;
+  type: ToastType;
+  content: string;
+  timeout: number;
+  visible: boolean;
+};
+
+type ToastType = "success" | "error";
 
 /* U */
 type User = MongoDoc & {

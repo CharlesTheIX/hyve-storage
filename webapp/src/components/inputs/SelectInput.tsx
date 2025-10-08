@@ -1,39 +1,32 @@
 "use client";
 import { useState } from "react";
-import { null_option } from "@/globals";
+import Chevron from "../svgs/Chevron";
+import { colors, null_option } from "@/globals";
 
 type Props = {
   name: string;
   label?: string;
   error?: boolean;
   options: Option[];
+  disabled?: boolean;
   required?: boolean;
-  placeholder?: string;
   default_value?: Option;
-  onChange?: (event: any) => void;
+  onChange?: (value: Option) => void;
 };
 
 const SelectInput: React.FC<Props> = (props: Props) => {
-  var {
-    name,
-    label,
-    options,
-    error = false,
-    required = false,
-    onChange = () => {},
-    default_value = null_option,
-    placeholder = "Select an option",
-  } = props;
+  var { name, label, options, error = false, required = false, onChange = () => {}, default_value = null_option, disabled = false } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
   const [value, setValue] = useState<Option>(default_value);
 
   return (
-    <div className={`hyve-input select ${focused && !value.value ? "focused" : ""} ${error ? "error" : ""} ${!!value.value ? "active" : ""}`}>
+    <div className={`hyve-input select ${focused && open ? "focused" : ""} ${error ? "error" : ""} ${!!value.value ? "active" : ""}`}>
       {label && (
         <p
           className="label"
           onClick={() => {
+            if (disabled) return;
             setOpen(!open);
             setFocused(!focused);
           }}
@@ -46,13 +39,15 @@ const SelectInput: React.FC<Props> = (props: Props) => {
       <input type="hidden" value={JSON.stringify(value)} id={name} name={name} />
 
       <div
-        className="select-value"
+        className={`select-value ${disabled ? "disabled" : ""}`}
         onClick={() => {
+          if (disabled) return;
           setOpen(!open);
           setFocused(!focused);
         }}
       >
         <p>{value.label}</p>
+        <Chevron direction="down" size={24} primary_color={colors.white} />
       </div>
 
       {open && (
@@ -67,9 +62,7 @@ const SelectInput: React.FC<Props> = (props: Props) => {
 
           <div className={`options-container`}>
             <ul>
-              {required ? (
-                <li style={{ opacity: 0.8, cursor: "default" }}>{placeholder}</li>
-              ) : (
+              {!required && (
                 <li
                   onClick={(event: any) => {
                     setOpen(false);
@@ -82,12 +75,13 @@ const SelectInput: React.FC<Props> = (props: Props) => {
                 </li>
               )}
 
-              {options.map((option) => {
+              {options.map((option, key) => {
                 return (
                   <li
+                    key={key}
                     onClick={(event: any) => {
                       setOpen(false);
-                      onChange(event);
+                      onChange(option);
                       setValue(option);
                       setFocused(false);
                     }}

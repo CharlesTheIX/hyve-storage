@@ -2,16 +2,17 @@
 import parseJSON from "@/lib/parseJSON";
 import Storage from "@/lib/classes/Storage";
 import { useRouter } from "next/navigation";
-import getInputError from "@/lib/getInputError";
+import validateRequest from "./validateRequest";
 import { useRef, useState, useEffect } from "react";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
+import { useToastContext } from "@/contexts/toastContext";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
-import { default_simple_error, header_internal } from "@/globals";
-import { useToastContext, ToastItem } from "@/contexts/toastContext";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 import CompanyDropdown from "@/components/inputs/dropdowns/CompanyDropdown";
+import { default_simple_error, default_toast_item, header_internal } from "@/globals";
 import PermissionsMultiDropdown from "@/components/inputs/dropdowns/PermissionsMultiDropdown";
 
 type Props = { redirect?: string };
@@ -50,11 +51,12 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
       permissions: permissions.map((p: Option) => p.value),
     };
 
-    const validation_error = validateRequest(request_data);
+    const validation = validateRequest(request_data);
+    setInputErrors(validation.invalid_inputs);
     Storage.setStorageValue(storage_key, { ...request_data, company_id, permissions });
-    if (validation_error.error) {
+    if (validation.simple_error.error) {
       setLoading(false);
-      return setError(validation_error);
+      return setError(validation.simple_error);
     }
 
     try {
@@ -66,20 +68,17 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
 
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
 
       Storage.clearStorageValue(storage_key);
       setToastItems((prev) => {
-        const new_item: ToastItem = {
-          content: "",
-          timeout: 3000,
-          visible: true,
-          type: "success",
+        const item: ToastItem = {
+          ...default_toast_item,
           title: "User created successfully",
         };
-        const new_value = [...prev, new_item];
-        return new_value;
+        const next = [...prev, item];
+        return next;
       });
 
       if (redirect) return router.push(redirect);
@@ -89,71 +88,6 @@ const UserCreationForm: React.FC<Props> = (props: Props) => {
       setLoading(false);
       return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
-  };
-
-  const validateRequest = (data: Partial<User>): SimpleError => {
-    var invalid;
-    const inputs_invalid: { [key: string]: boolean } = {};
-    var message = "Please address the following errors:\n";
-
-    Object.keys(data).map((key: string) => {
-      switch (key) {
-        case "username":
-          invalid = getInputError("username", data[key], true);
-          if (invalid.error) {
-            inputs_invalid.username = invalid.error;
-            message += `- Username: ${invalid.message}\n`;
-          }
-          break;
-
-        case "surname":
-          invalid = getInputError("name", data[key], true);
-          if (invalid.error) {
-            inputs_invalid.surname = invalid.error;
-            message += `- Surname: ${invalid.message}\n`;
-          }
-          break;
-
-        case "first_name":
-          invalid = getInputError("name", data[key], true);
-          if (invalid.error) {
-            inputs_invalid.first_name = invalid.error;
-            message += `- first_name: ${invalid.message}\n`;
-          }
-          break;
-
-        case "permissions":
-          var err: boolean = data[key]?.length === 0;
-          if (err) {
-            inputs_invalid.permissions = true;
-            message += `- Permissions: At least one value is required.\n`;
-          }
-
-          data[key]?.forEach((p) => {
-            if (err) return;
-            invalid = getInputError("number", p, true);
-            if (invalid.error) {
-              inputs_invalid.permissions = invalid.error;
-              message += `- Permissions: ${invalid.message}\n`;
-            }
-          });
-          break;
-
-        case "company_id":
-          invalid = getInputError("mongo_id", data[key], false);
-          if (invalid.error) {
-            inputs_invalid.company_id = invalid.error;
-            message += `- Company: ${invalid.message}\n`;
-          }
-          break;
-      }
-    });
-
-    const title = "Input error";
-    const error = Object.keys(inputs_invalid).length > 0;
-    if (!error) message = "";
-    setInputErrors(inputs_invalid);
-    return { error, message, title };
   };
 
   useEffect(() => {

@@ -14,13 +14,9 @@ const Footer: React.FC = () => {
           <li>
             <Link href="">Cookie Policy</Link>
           </li>
-
-          <li className="delimiter">|</li>
-
-          <li>
-            <Link href="https://www.hyve.com">Hyve &copy; {new Date().getFullYear()}</Link>
-          </li>
         </ul>
+
+        <Link href="https://www.hyve.com">Hyve &copy; {new Date().getFullYear()}</Link>
       </nav>
     </footer>
   );

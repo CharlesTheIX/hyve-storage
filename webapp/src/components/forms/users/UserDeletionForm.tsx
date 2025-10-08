@@ -2,13 +2,14 @@
 import parseJSON from "@/lib/parseJSON";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import getInputError from "@/lib/getInputError";
-import { default_simple_error } from "@/globals";
+import validateRequest from "./validateRequest";
 import deleteUserById from "@/lib/users/deleteUserById";
 import LoadingContainer from "@/components/LoadingIcon";
+import { useToastContext } from "@/contexts/toastContext";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
-import { useToastContext, ToastItem } from "@/contexts/toastContext";
+import { default_simple_error, default_toast_item } from "@/globals";
 import UserDropdown from "@/components/inputs/dropdowns/UserDropdown";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 
@@ -40,29 +41,27 @@ const UserDeletionForm: React.FC<Props> = (props: Props) => {
       _id: user_id?.value,
     };
 
-    const validation_error = validateRequest(request_data);
-    if (validation_error.error) {
+    const validation = validateRequest(request_data);
+    setInputErrors(validation.invalid_inputs);
+    if (validation.simple_error.error) {
       setLoading(false);
-      return setError(validation_error);
+      return setError(validation.simple_error);
     }
 
     try {
       const response = await deleteUserById(request_data._id || "");
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
 
       setToastItems((prev) => {
-        const new_item: ToastItem = {
-          content: "",
-          timeout: 3000,
-          visible: true,
-          type: "success",
+        const item: ToastItem = {
+          ...default_toast_item,
           title: "User deleted successfully",
         };
-        const new_value = [...prev, new_item];
-        return new_value;
+        const next = [...prev, item];
+        return next;
       });
 
       if (redirect) return router.push(redirect);
@@ -70,31 +69,8 @@ const UserDeletionForm: React.FC<Props> = (props: Props) => {
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
+      return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
-  };
-
-  const validateRequest = (data: Partial<User>): SimpleError => {
-    var invalid;
-    const inputs_invalid: { [key: string]: boolean } = {};
-    var message = "Please address the following errors:\n";
-    Object.keys(data).map((key: string) => {
-      switch (key) {
-        case "_id":
-          invalid = getInputError("mongo_id", data[key], true);
-          if (invalid.error) {
-            inputs_invalid.user_id = invalid.error;
-            message += `- User: ${invalid.message}\n`;
-          }
-          break;
-      }
-    });
-
-    const title = "Input error";
-    const error = Object.keys(inputs_invalid).length > 0;
-    if (!error) message = "";
-    setInputErrors(inputs_invalid);
-    return { error, message, title };
   };
 
   return (

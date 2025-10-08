@@ -11,14 +11,15 @@ import Accordion from "@/components/Accordion";
 import Button from "@/components/buttons/Button";
 import LoadingIcon from "@/components/LoadingIcon";
 import LoadingContainer from "@/components/LoadingIcon";
+import { useToastContext } from "@/contexts/toastContext";
 import getBucketObjects from "@/lib/buckets/getBucketObjects";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import PermissionsWrapper from "@/components/PermissionsWrapper";
-import { getTableHeaders, getTableStorageKey } from "../helpers";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
-import { ToastItem, useToastContext } from "@/contexts/toastContext";
+import { getTableHeaders, getTableStorageKey } from "../lib/helpers";
 import deleteBucketObjectById from "@/lib/buckets/deleteBucketObjectById";
-import { colors, default_simple_error, default_null_label } from "@/globals";
+import { colors, default_simple_error, default_null_label, default_toast_item } from "@/globals";
 
 type Props = {
   bucket_id: string;
@@ -69,28 +70,25 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
       if (res.error) {
         setActiveData({});
         setModalLoading(false);
-        return setModalError({ error: true, title: "Error", message: res.message });
+        return setModalError({ error: true, title: getErrorResponseTitle(res.status), message: res.message });
       }
       setActiveData({});
       setModalOpen(false);
       setModalLoading(false);
       setModalError(default_simple_error);
       setToastItems((prev) => {
-        const new_item: ToastItem = {
-          content: "",
-          timeout: 3000,
-          visible: true,
-          type: "success",
+        const item: ToastItem = {
+          ...default_toast_item,
           title: "Object removed",
         };
-        const new_value = [...prev, new_item];
-        return new_value;
+        const next = [...prev, item];
+        return next;
       });
       await getTableData();
     } catch (err: any) {
       setActiveData({});
       setModalLoading(false);
-      setModalError({ error: true, title: "Error", message: err.message });
+      return setModalError({ error: true, title: `Unexpected error`, message: err.message });
     }
   };
 
@@ -207,7 +205,7 @@ const BucketObjectsTable: React.FC<Props> = (props: Props) => {
                       </td>
                     )}
 
-                    <PermissionsWrapper permission_level={9}>
+                    <PermissionsWrapper permissions={[9]}>
                       {headers[4]?.visible && (
                         <td>
                           <div className="z-2 delete-button">

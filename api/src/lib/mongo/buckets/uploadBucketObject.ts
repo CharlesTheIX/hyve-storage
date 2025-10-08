@@ -35,7 +35,7 @@ export default async (props: Props): Promise<ApiResponse> => {
 
     const object_exists = await objectExists(bucket_name, file_name);
     if (object_exists.error) return object_exists;
-    if (object_exists.status === OK.status) return CONFLICT;
+    if (object_exists.status === OK.status) return { ...CONFLICT, message: "Object name already exists" };
 
     const client = getMinioClient();
     const object_info = await client.putObject(bucket_name, file_name, file_stream, file_size, metaData);

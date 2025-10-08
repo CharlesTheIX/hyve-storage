@@ -6,14 +6,6 @@ type ToastContextData = {
   toastItems: ToastItem[];
   setToastItems: React.Dispatch<React.SetStateAction<ToastItem[]>>;
 };
-export type ToastItem = {
-  title: string;
-  type: ToastType;
-  content: string;
-  timeout: number;
-  visible: boolean;
-};
-type ToastType = "success" | "error";
 
 const default_value: ToastContextData = {
   toastItems: [],

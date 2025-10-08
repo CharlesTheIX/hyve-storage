@@ -26,7 +26,7 @@ const Navigation: React.FC = () => {
         );
       })}
 
-      <PermissionsWrapper permission_level={9}>
+      <PermissionsWrapper permissions={[9]}>
         <li>
           <ClearStorageButton />
         </li>

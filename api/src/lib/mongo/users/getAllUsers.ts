@@ -7,9 +7,7 @@ export default async (filters?: Partial<ApiRequestFilters>): Promise<ApiResponse
     const query = Model.find();
     const data = await applyMongoFilters(query, filters).lean().exec();
     if (data.length === 0) return NO_CONTENT;
-
     const collection_count = await Model.countDocuments();
-
     return { ...OK, data, meta: { collection_count } };
   } catch (err: any) {
     //TODO: handle errors

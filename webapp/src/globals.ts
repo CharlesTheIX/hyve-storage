@@ -59,6 +59,14 @@ export const default_metadata: Metadata = {
 
 export const default_null_label: string = "N/A";
 
+export const default_toast_item: ToastItem = {
+  title: "",
+  content: "",
+  timeout: 3000,
+  visible: true,
+  type: "success",
+};
+
 export const default_viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,

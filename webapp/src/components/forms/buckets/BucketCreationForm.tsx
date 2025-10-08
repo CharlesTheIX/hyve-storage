@@ -8,6 +8,7 @@ import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import NumberInput from "@/components/inputs/NumberInput";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
 import { default_simple_error, header_internal } from "@/globals";
 import CompletionContainer from "@/components/forms/CompletionContainer";
@@ -39,7 +40,6 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
     const name = form_data.get("name")?.toString() || "";
     const company_id = parseJSON(form_data.get("company_id")?.toString()) ?? "";
     const max_size_bytes = parseInt(form_data.get("max_size_bytes")?.toString() || "0");
-    //TODO: update for an array of values
     const permissions = parseInt(form_data.get("permissions")?.toString() || "1") as BucketPermission;
     const request_data: Partial<Bucket> = {
       name,
@@ -48,9 +48,8 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
       company_id: company_id?.value,
     };
 
-    Storage.setStorageValue(storage_key, { ...request_data, permissions, company_id });
-
     const validation_error = validateRequest(request_data);
+    Storage.setStorageValue(storage_key, { ...request_data, permissions, company_id });
     if (validation_error.error) {
       setLoading(false);
       return setError(validation_error);
@@ -65,7 +64,7 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
 
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
 
       Storage.clearStorageValue(storage_key);
@@ -75,7 +74,7 @@ const BucketCreationForm: React.FC<Props> = (props: Props) => {
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
+      return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
   };
 

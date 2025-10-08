@@ -17,7 +17,7 @@ export default async (data: Partial<Company>): Promise<ApiResponse> => {
   try {
     const existing_doc = await companyExists(name || "");
     if (existing_doc.error) return existing_doc;
-    if (existing_doc.status === OK.status) return CONFLICT;
+    if (existing_doc.status === OK.status) return { ...CONFLICT, message: "Company name already exists" };
 
     const new_doc = new Model({ name, user_ids, bucket_ids: [] });
     if (!new_doc) throw new Error("Company not created");

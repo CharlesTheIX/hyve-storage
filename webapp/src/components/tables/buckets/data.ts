@@ -1,4 +1,8 @@
+export const object_mongo_population_fields: string[] = [];
+export const object_mongo_selection_fields: string[] = [];
 export const bucket_storage_key: string = "buckets_table_headers";
+export const bucket_mongo_population_fields: string[] = ["company_id"];
+export const object_storage_key: string = "buckets_objects_table_headers";
 export const bucket_table_headers: TableHeader[] = [
   {
     value: "name",
@@ -39,31 +43,30 @@ export const bucket_table_headers: TableHeader[] = [
   {
     value: "createdAt",
     label: "Creation Date",
-    sortable: false,
-    visible: true,
+    sortable: true,
+    visible: false,
   },
   {
     value: "updatedAt",
     label: "Last Updated",
-    sortable: false,
-    visible: true,
+    sortable: true,
+    visible: false,
   },
-];
-export const bucket_admin_table_headers: TableHeader[] = [
   {
     value: "_id",
     label: "_id",
     sortable: false,
     visible: true,
+    permissions: [9],
   },
   {
     value: "delete",
     label: "Delete",
     sortable: false,
     visible: true,
+    permissions: [9],
   },
 ];
-export const bucket_mongo_population_fields: string[] = ["company_id"];
 export const bucket_mongo_selection_fields: string[] = [
   "createdAt",
   "company_id",
@@ -75,7 +78,6 @@ export const bucket_mongo_selection_fields: string[] = [
   "updatedAt",
 ];
 
-export const object_storage_key: string = "buckets_objects_table_headers";
 export const object_table_headers: TableHeader[] = [
   {
     value: "name",
@@ -101,14 +103,11 @@ export const object_table_headers: TableHeader[] = [
     sortable: false,
     visible: true,
   },
-];
-export const object_admin_table_headers: TableHeader[] = [
   {
     value: "delete",
     label: "Delete",
     sortable: false,
     visible: true,
+    permissions: [9],
   },
 ];
-export const object_mongo_population_fields: string[] = [];
-export const object_mongo_selection_fields: string[] = [];

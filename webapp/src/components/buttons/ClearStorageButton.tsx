@@ -1,6 +1,7 @@
 import Button from "./Button";
 import Storage from "@/lib/classes/Storage";
-import { ToastItem, useToastContext } from "@/contexts/toastContext";
+import { useToastContext } from "@/contexts/toastContext";
+
 const ClearStorageButton: React.FC = () => {
   const { setToastItems } = useToastContext();
   const callback = () => {

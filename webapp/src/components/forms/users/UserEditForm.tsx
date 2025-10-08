@@ -1,19 +1,21 @@
 "use client";
+import parseJSON from "@/lib/parseJSON";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import getInputError from "@/lib/getInputError";
+import validateRequest from "./validateRequest";
+import Permissions from "@/lib/classes/Permissions";
 import TextInput from "@/components/inputs/TextInput";
 import LoadingContainer from "@/components/LoadingIcon";
+import { useToastContext } from "@/contexts/toastContext";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
-import { default_simple_error, header_internal } from "@/globals";
-import { useToastContext, ToastItem } from "@/contexts/toastContext";
 import CompletionContainer from "@/components/forms/CompletionContainer";
+import CompanyDropdown from "@/components/inputs/dropdowns/CompanyDropdown";
+import { default_simple_error, default_toast_item, header_internal } from "@/globals";
+import PermissionsMultiDropdown from "@/components/inputs/dropdowns/PermissionsMultiDropdown";
 
-type Props = {
-  redirect?: string;
-  data: Partial<User>;
-};
+type Props = { redirect?: string; data: Partial<User> };
 
 const UserEditForm: React.FC<Props> = (props: Props) => {
   const { data, redirect = `/users/${data._id}` } = props;
@@ -36,15 +38,20 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
     const form_data = new FormData(form);
     const surname = form_data.get("surname")?.toString() || "";
     const first_name = form_data.get("first_name")?.toString() || "";
+    const permissions = parseJSON(form_data.get("permissions")?.toString()) ?? [];
+    const company_id = parseJSON(form_data.get("company_id")?.toString()) ?? undefined;
     const update: Partial<User> = {
       surname,
       first_name,
+      company_id: company_id?.value,
+      permissions: permissions.map((p: Option) => p.value),
     };
 
-    const validation_error = validateRequest(update);
-    if (validation_error.error) {
+    const validation = validateRequest(update);
+    setInputErrors(validation.invalid_inputs);
+    if (validation.simple_error.error) {
       setLoading(false);
-      return setError(validation_error);
+      return setError(validation.simple_error);
     }
 
     try {
@@ -56,19 +63,16 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
 
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
 
       setToastItems((prev) => {
-        const new_item: ToastItem = {
-          content: "",
-          timeout: 3000,
-          visible: true,
-          type: "success",
+        const item: ToastItem = {
+          ...default_toast_item,
           title: "User updated successfully",
         };
-        const new_value = [...prev, new_item];
-        return new_value;
+        const next = [...prev, item];
+        return next;
       });
 
       if (redirect) return router.push(redirect);
@@ -76,48 +80,12 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
+      return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
   };
 
-  const validateRequest = (data: Partial<User>): SimpleError => {
-    var invalid;
-    const inputs_invalid: { [key: string]: boolean } = {};
-    var message = "Please address the following errors:\n";
-    Object.keys(data).map((key: string) => {
-      switch (key) {
-        case "surname":
-          invalid = getInputError("name", data[key], true);
-          if (invalid.error) {
-            inputs_invalid.surname = invalid.error;
-            message += `- Surname: ${invalid.message}\n`;
-          }
-          break;
-        case "first_name":
-          invalid = getInputError("name", data[key], true);
-          if (invalid.error) {
-            inputs_invalid.first_name = invalid.error;
-            message += `- First name: ${invalid.message}\n`;
-          }
-          break;
-      }
-    });
-
-    const title = "Input error";
-    const error = Object.keys(inputs_invalid).length > 0;
-    if (!error) message = "";
-    setInputErrors(inputs_invalid);
-    return { error, message, title };
-  };
-
   return (
-    <form
-      ref={form_ref}
-      className={`hyve-form ${loading ? "loading" : ""}`}
-      onSubmit={(event: any) => {
-        event.preventDefault();
-      }}
-    >
+    <form ref={form_ref} className={`hyve-form ${loading ? "loading" : ""}`} onSubmit={(event: any) => event.preventDefault()}>
       <div className="content-container">
         <div className="inputs">
           <div className="w-full">
@@ -130,14 +98,25 @@ const UserEditForm: React.FC<Props> = (props: Props) => {
           </div>
 
           <div className="w-full flex flex-row gap-2 items-center justify-between">
-            <TextInput
+            <CompanyDropdown
               label="Company"
-              disabled={true}
+              required={false}
               name="company_id"
-              default_value={data.company_id ? (typeof data.company_id === "string" ? data.company_id : data.company_id.name) : undefined}
+              error={!!inputErrors.company_id}
+              default_value={
+                data.company_id && typeof data.company_id !== "string"
+                  ? { value: data.company_id._id as string, label: data.company_id.name as string }
+                  : undefined
+              }
             />
 
-            <TextInput name="permissions" disabled={true} label="Permissions" default_value={data.permissions?.toString()} />
+            <PermissionsMultiDropdown
+              required={true}
+              name="permissions"
+              label="Permissions"
+              error={!!inputErrors.permissions}
+              default_value={Permissions.getBucketPermissionOptions(data.permissions)}
+            />
           </div>
         </div>
 

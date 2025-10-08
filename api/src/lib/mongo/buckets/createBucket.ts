@@ -18,11 +18,11 @@ export default async (data: Partial<Bucket>): Promise<ApiResponse> => {
   try {
     const existing_doc = await bucketExists(name || "");
     if (existing_doc.error) return existing_doc;
-    if (existing_doc.status === OK.status) return CONFLICT;
+    if (existing_doc.status === OK.status) return { ...CONFLICT, message: "Bucket name already exists" };
 
     const existing_bucket = await minioBucketExists(name || "");
     if (existing_bucket.error) return existing_bucket;
-    if (existing_bucket.status === OK.status) return CONFLICT;
+    if (existing_bucket.status === OK.status) return { ...CONFLICT, message: "Bucket name already exists" };
 
     const new_bucket = await createBucket(name || "");
     if (new_bucket.error) return new_bucket;

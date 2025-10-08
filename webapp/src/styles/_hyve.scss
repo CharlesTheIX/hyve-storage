@@ -100,8 +100,8 @@ $hover_opacity: 0.5;
 
 @mixin hyve-scrollbar($direction: both) {
   overflow: hidden;
-  scrollbar-width: thin;
   scrollbar-color: $green $grey;
+  scrollbar-width: thin;
 
   @if $direction == y {
     overflow-y: scroll;
@@ -162,7 +162,6 @@ header {
 
 main {
   @apply px-8 py-8 flex flex-col gap-2 items-center justify-start;
-  animation: fade-in $transition_time ease-in-out forwards;
   min-height: 100vh;
   width: 100%;
 }
@@ -172,16 +171,10 @@ footer {
   border-top: $border_width solid $white;
 
   nav {
-    @apply flex flex-col items-center justify-center;
+    @apply flex flex-col items-center justify-center gap-1 text-xs;
 
     ul {
       @apply flex flex-row gap-2 items-center justify-center;
-    }
-
-    a,
-    .delimiter {
-      @apply text-xs;
-      font-weight: normal;
     }
 
     .delimiter {
@@ -201,6 +194,30 @@ a {
 }
 
 /* Classes */
+/* B */
+.background-black {
+  background-color: $black;
+}
+
+.background-blue {
+  background-color: $blue;
+}
+
+.background-green {
+  background-color: $green;
+}
+
+.background-grey {
+  background-color: $grey;
+}
+
+.background-red {
+  background-color: $red;
+}
+
+.background-white {
+  background-color: $white;
+}
 /* H */
 .highlight {
   color: $blue;
@@ -208,7 +225,7 @@ a {
 }
 
 .hyve-accordion {
-  @apply flex flex-col;
+  @apply flex flex-col w-full;
 
   .accordion-head {
     @apply px-4 py-2 w-full flex flex-row gap-1 items-center justify-between;
@@ -220,6 +237,7 @@ a {
 
     p {
       @apply text-lg font-bold;
+      color: $green;
     }
 
     svg {
@@ -346,7 +364,8 @@ a {
   }
 
   .card-body {
-    @apply px-4 py-2 w-full;
+    @apply px-4 py-2 w-full flex flex-col gap-2 relative;
+    min-height: 75px;
 
     .indent {
       @apply ml-4;
@@ -598,8 +617,57 @@ a {
   }
 }
 
+.hyve-paginator {
+  @apply flex flex-row gap-2 items-center justify-end;
+
+  .button-container {
+    @apply flex flex-row items-center;
+
+    .pagination-button {
+      cursor: pointer;
+      transition: all $transition_time ease-in-out;
+
+      &.disabled {
+        cursor: not-allowed;
+        opacity: $hover_opacity;
+      }
+
+      &:hover {
+        opacity: $hover_opacity;
+      }
+    }
+  }
+
+  .limit-container {
+    @apply flex flex-row gap-1 items-center;
+    min-width: 50px;
+
+    .hyve-input.select {
+      padding-top: 0;
+
+      .select-value {
+        @apply py-0 px-1;
+        min-height: unset;
+      }
+
+      &::after {
+        background-color: $green;
+      }
+    }
+  }
+}
+
 .hyve-table {
   @apply flex flex-col gap-2;
+
+  .table-container {
+    width: 100%;
+    @include hyve-scrollbar(x);
+  }
+
+  .table-controls {
+    @apply flex flex-row items-start;
+  }
 
   table {
     @apply w-full text-left;
@@ -616,8 +684,25 @@ a {
         th {
           @apply py-1 px-2 text-lg;
 
-          p {
-            font-weight: bold;
+          div {
+            @apply flex flex-row gap-1 items-center justify-between;
+
+            p {
+              font-weight: normal;
+            }
+
+            &.sortable {
+              cursor: pointer;
+              stroke: $white;
+
+              &:hover {
+                opacity: $hover_opacity;
+              }
+
+              &.active {
+                stroke: $green;
+              }
+            }
           }
         }
       }
@@ -655,6 +740,17 @@ a {
     }
   }
 
+  .refresh-button {
+    @apply px-4 pt-2;
+    cursor: pointer;
+    opacity: 1;
+    transition: all $transition_time ease-in-out;
+
+    &:hover {
+      opacity: $hover_opacity;
+    }
+  }
+
   .accordion-body ul {
     @apply flex flex-row gap-2 items-start px-4 py-4;
     flex-wrap: wrap;
@@ -664,8 +760,8 @@ a {
     li {
       @apply px-4 py-1 w-auto text-center;
       background-color: $black;
-      border: $border_width solid $white;
-      color: $white;
+      border: $border_width solid $green;
+      color: $green;
       cursor: pointer;
       font-weight: bold;
       min-width: 150px;
@@ -673,7 +769,7 @@ a {
       transition: all $transition_time ease-in-out;
 
       &.visible {
-        background-color: $white;
+        background-color: $green;
         color: $black;
       }
 
@@ -684,6 +780,7 @@ a {
   }
 
   .hyve-loading-icon {
+    @apply pt-4;
     position: relative;
   }
 }
@@ -700,6 +797,7 @@ a {
   .hyve-toast {
     @apply py-2 px-4 pr-10 flex flex-col gap-0 relative;
     animation: slide-in-right $transition_time ease-in-out forwards;
+    background-color: $black;
     border: $border_width solid $green;
     color: $green;
     width: 320px;

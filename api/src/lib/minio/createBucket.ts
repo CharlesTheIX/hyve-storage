@@ -12,7 +12,7 @@ export default async (name: string, options: any = { region: vars.minio.region, 
   try {
     const exists = await bucketExists(name);
     if (exists.error) return exists;
-    if (exists.status === OK.status) return CONFLICT;
+    if (exists.status === OK.status) return { ...CONFLICT, message: "Bucket name already exists" };
 
     const client = getMinioClient();
     const { region, makeOptions } = options;

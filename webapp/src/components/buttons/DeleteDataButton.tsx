@@ -3,14 +3,15 @@ import Button from "./Button";
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import { useRouter } from "next/navigation";
-import { default_simple_error } from "@/globals";
 import LoadingIcon from "@/components/LoadingIcon";
 import { useUserContext } from "@/contexts/userContext";
 import deleteUserById from "@/lib/users/deleteUserById";
+import { useToastContext } from "@/contexts/toastContext";
 import deleteBucketById from "@/lib/buckets/deleteBucketById";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import deleteCompanyById from "@/lib/companies/deleteCompanyById";
-import { useToastContext, ToastItem } from "@/contexts/toastContext";
+import { default_simple_error, default_toast_item } from "@/globals";
 import deleteBucketObjectById from "@/lib/buckets/deleteBucketObjectById";
 
 type Props = {
@@ -56,25 +57,22 @@ const DeleteDataButton: React.FC<Props> = (props: Props) => {
 
       if (res.error) {
         setLoading(false);
-        return setError({ error: true, title: "Error", message: res.message });
+        return setError({ error: true, title: getErrorResponseTitle(res.status), message: res.message });
       }
 
       setToastItems((prev) => {
-        const new_item: ToastItem = {
-          content: "",
-          timeout: 3000,
-          visible: true,
-          type: "success",
+        const item: ToastItem = {
+          ...default_toast_item,
           title: "Data removed",
         };
-        const new_value = [...prev, new_item];
-        return new_value;
+        const next = [...prev, item];
+        return next;
       });
       if (redirect) router.push(redirect);
       router.refresh();
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, title: "Error", message: err.message });
+      return setError({ error: true, title: `Unexpected Error`, message: err.message });
     }
   };
 

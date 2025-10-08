@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
-import Button from "@/components/buttons/Button";
+import { colors } from "@/globals";
+import Chevron from "@/components/svgs/Chevron";
+import Checkbox from "@/components/svgs/Checkbox";
 
 type Props = {
   name: string;
@@ -9,138 +11,101 @@ type Props = {
   options: Option[];
   required?: boolean;
   disabled?: boolean;
-  placeholder?: string;
+  slice_limit?: number;
   default_value?: Option[];
   onChange?: (event: any) => void;
 };
 
-const SelectInput: React.FC<Props> = (props: Props) => {
-  var {
-    name,
-    label,
-    options,
-    error = false,
-    disabled = false,
-    required = false,
-    default_value = [],
-    onChange = () => {},
-    placeholder = "Select an option",
-  } = props;
+const MultiSelectInput: React.FC<Props> = (props: Props) => {
+  var { name, label, slice_limit = 4, options, error = false, disabled = false, required = false, default_value = [], onChange = () => {} } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
   const [value, setValue] = useState<Option[]>(default_value);
-  const [currentValue, setCurrentValue] = useState<Option>({ value: "", label: "" });
-
-  const addItem = (): void => {
-    if (disabled) return;
-    const new_value = [...value, currentValue];
-    setValue(new_value);
-    setCurrentValue({ value: "", label: "" });
-  };
-
-  const removeItem = (index: number): void => {
-    if (disabled) return;
-    const new_value = value.filter((_, key) => key === index);
-    setValue(new_value);
-  };
 
   return (
-    <div
-      className={`hyve-input select ${focused && !currentValue.value ? "focused" : ""} ${error ? "error" : ""} ${
-        !!currentValue.value ? "active" : ""
-      }`}
-    >
-      <input type="hidden" value={JSON.stringify(value)} name={name} id={name} />
+    <div className={`hyve-input select ${focused && open ? "focused" : ""} ${error ? "error" : ""} ${value.length > 0 ? "active" : ""}`}>
+      <input type="hidden" name={name} id={name} value={JSON.stringify(value)} />
 
-      {value.length && (
-        <div className="flex flex-row flex-wrap gap-2 items-center">
-          {value.map((item, key) => {
-            return (
-              <Button
-                key={key}
-                type="default"
-                disabled={false}
-                callback={() => {
-                  removeItem(key);
-                }}
-              >
-                {item.label}
-              </Button>
-            );
-          })}
-        </div>
+      {label && (
+        <p
+          className="label"
+          onClick={() => {
+            if (disabled) return;
+            setOpen(!open);
+            setFocused(!focused);
+          }}
+        >
+          {label}
+          {required && <sup>*</sup>}
+        </p>
       )}
 
-      <div>
-        {label && (
-          <p
-            className="label"
-            onClick={() => {
-              if (disabled) return;
-              setOpen(!open);
-              setFocused(!focused);
-            }}
-          >
-            {label}
-            {required && <sup>*</sup>}
+      <div
+        className={`select-value ${disabled ? "disabled" : ""}`}
+        onClick={() => {
+          if (disabled) return;
+          setOpen(!open);
+          setFocused(!focused);
+        }}
+      >
+        {value.length > 0 ? (
+          <p>
+            {value
+              .map((i) => i.label)
+              .slice(0, slice_limit)
+              .join(", ")}
+            {value.length > slice_limit && <span>{` +${value.length - slice_limit}`}</span>}
           </p>
+        ) : (
+          <p></p>
         )}
 
-        <input type="hidden" value={JSON.stringify(value)} id={name} name={name} />
-
-        <div className="flex flex-row w-full">
-          <div
-            className="select-value"
-            onClick={() => {
-              if (disabled) return;
-              setOpen(!open);
-              setFocused(!focused);
-            }}
-          >
-            <p>{currentValue.label}</p>
-          </div>
-
-          {open && (
-            <>
-              <div
-                className="options-background"
-                onClick={() => {
-                  setOpen(false);
-                  setFocused(false);
-                }}
-              />
-
-              <div className={`options-container`}>
-                <ul>
-                  <li className="blank-option">{placeholder}</li>
-                  {options.map((option) => {
-                    return (
-                      <li
-                        onClick={(event: any) => {
-                          setOpen(false);
-                          onChange(event);
-                          setFocused(false);
-                          setCurrentValue(option);
-                        }}
-                      >
-                        {option.label}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="w-auto">
-          <Button type="default" disabled={disabled} callback={addItem}>
-            Add
-          </Button>
-        </div>
+        <Chevron direction="down" size={24} primary_color={colors.white} />
       </div>
+
+      {open && (
+        <>
+          <div
+            className="options-background"
+            onClick={() => {
+              setOpen(false);
+              setFocused(false);
+            }}
+          />
+
+          <div className={`options-container`}>
+            <ul>
+              {options.map((option, key) => {
+                const selected = !!value.find((v) => option.value === v.value);
+                return (
+                  <li
+                    key={key}
+                    className="flex flex-row items-center gap-2"
+                    onClick={(event: any) => {
+                      if (disabled) return;
+                      onChange(event);
+                      setValue((prev) => {
+                        var new_value;
+                        if (!selected) new_value = [...prev, option];
+                        else new_value = prev.filter((item) => item.value !== option.value) || [];
+                        return new_value;
+                      });
+                    }}
+                  >
+                    <div className="checkbox">
+                      <Checkbox size={16} primary_color={colors.white} checked={selected} />
+                    </div>
+
+                    <p>{option.label}</p>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default SelectInput;
+export default MultiSelectInput;

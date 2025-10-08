@@ -4,9 +4,9 @@ import { colors } from "@/globals";
 import Copy from "@/components/svgs/Copy";
 import Document from "@/components/svgs/Document";
 import Permissions from "@/lib/classes/Permissions";
+import { useToastContext } from "@/contexts/toastContext";
 import PermissionsWrapper from "@/components/PermissionsWrapper";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
-import { ToastItem, useToastContext } from "@/contexts/toastContext";
 
 type Props = {
   data: Partial<User>;
@@ -24,8 +24,39 @@ const UserDataCard: React.FC<Props> = (props: Props) => {
         <p>User Details</p>
       </div>
 
-      <div className="card-body flex flex-col gap-2 items-centre justify-centre">
+      <div className="card-body">
         <ul>
+          <PermissionsWrapper permissions={[9]}>
+            <li className="flex flex-row gap-2">
+              <p>
+                <strong>_id:</strong>
+              </p>
+              <div
+                style={{ display: "flex" }}
+                className="flex-row justify-start items-center z-2 gap-2 link-text"
+                onClick={(event: any) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  const copied = copyContentToClipboard(_id || "");
+                  setToastItems((prev) => {
+                    const new_item: ToastItem = {
+                      timeout: 3000,
+                      visible: true,
+                      content: copied.message,
+                      title: copied.title || "",
+                      type: copied.error ? "error" : "success",
+                    };
+                    const new_value = [...prev, new_item];
+                    return new_value;
+                  });
+                }}
+              >
+                <Copy size={16} primary_color={colors.green} />
+                <p>{_id}</p>
+              </div>
+            </li>
+          </PermissionsWrapper>
+
           {username && (
             <li>
               <p>
@@ -84,37 +115,6 @@ const UserDataCard: React.FC<Props> = (props: Props) => {
               </p>
             </li>
           )}
-
-          <PermissionsWrapper permission_level={9}>
-            <li className="flex flex cold gap-2 items-center">
-              <p>
-                <strong>_id:</strong>
-              </p>
-              <div
-                style={{ display: "flex" }}
-                className="flex-row justify-start items-center z-2 gap-2 link-text"
-                onClick={(event: any) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  const copied = copyContentToClipboard(_id || "");
-                  setToastItems((prev) => {
-                    const new_item: ToastItem = {
-                      timeout: 3000,
-                      visible: true,
-                      content: copied.message,
-                      title: copied.title || "",
-                      type: copied.error ? "error" : "success",
-                    };
-                    const new_value = [...prev, new_item];
-                    return new_value;
-                  });
-                }}
-              >
-                <Copy size={16} primary_color={colors.green} />
-                <p>{_id}</p>
-              </div>
-            </li>
-          </PermissionsWrapper>
         </ul>
       </div>
     </div>

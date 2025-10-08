@@ -6,6 +6,7 @@ import getInputError from "@/lib/getInputError";
 import { default_simple_error } from "@/globals";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
 import deleteCompanyById from "@/lib/companies/deleteCompanyById";
 import CompletionContainer from "@/components/forms/CompletionContainer";
@@ -48,7 +49,7 @@ const CompanyDeletionForm: React.FC<Props> = (props: Props) => {
       const response = await deleteCompanyById(request_data._id || "");
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
 
       if (redirect) return router.push(redirect);
@@ -56,7 +57,7 @@ const CompanyDeletionForm: React.FC<Props> = (props: Props) => {
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
+      return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
   };
 

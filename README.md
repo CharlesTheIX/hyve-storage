@@ -25,21 +25,31 @@ minio server --address 0.0.0.0:9000 /data
 
 This project contains the API & Webapp repositories for the Hyve storage application.
 
-The primary aim of the Hyve Storage application is create a Hyve [S3](https://aws.amazon.com/s3/) like storage system for internal use & to be a service that we can provide to customers as an auxiliary to the myHyve portal.
+The primary aim of the Hyve Storage application is create a Hyve [S3](https://aws.amazon.com/s3/) like storage system & interface for internal use & to be a service that we can provide to customers as an auxiliary to the myHyve portal.
 
 The primary tools / technologies used for this project are:
 
 - [Typescript](https://www.typescriptlang.org/)
-- [NextJS](https://nextjs.org/)
 - [Express](https://expressjs.com/)
+- [NextJS](https://nextjs.org/)
 - [MinIO](https://www.min.io/)
+- [NodeJS]()
+- [Postman]()
+- [Docker]()
+- [MongoDB]()
 
-# Development
+## Development
 
 This project is currently under development & therefor no documentation can be found yet. However, below are is a collection of notes for developers to aid in initiating new developers to the project as well as help maintain consistent coding standards.
 
 - Enable auto formatting with prettier (the rc file should be in the root of the project [here](./.prettierrc.yml))
 - The webapp uses a mixture if Tailwind & SASS for styling UI components.
 - Should there be areas where current features are not implimenet, or whereever seems appropriate, please use the comment flag `//TODO:` to make house keeping easier & more 'searchable'.
+
+## API
+
+### Setup
+
+This section in the repo has the following commands
 
 ## Users

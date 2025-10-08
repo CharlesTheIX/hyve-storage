@@ -1,6 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import getCompanyById from "./getCompanyById";
-import Model from "../../../models/User.model";
+import Model from "../../../models/Company.model";
 import { SERVER_ERROR, OK, NO_CONTENT, BAD } from "../../../globals";
 
 export default async (_id: string, user_id: string): Promise<ApiResponse> => {
@@ -11,9 +11,9 @@ export default async (_id: string, user_id: string): Promise<ApiResponse> => {
   if (!user_id_validation) return { ...BAD, message: "Invalid user_id" };
 
   try {
-    const user = await getCompanyById(_id);
-    if (user.error) return user;
-    if (user.data.user_ids.includes(user_id)) return OK;
+    const company = await getCompanyById(_id, { fields: ["user_ids"] });
+    if (company.error) return company;
+    if (company.data.user_ids.includes(user_id)) return OK;
 
     const query = { $push: { user_ids: user_id } };
     const update = await Model.findByIdAndUpdate(_id, query).exec();

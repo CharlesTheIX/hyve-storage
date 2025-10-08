@@ -8,9 +8,9 @@ import getUserById from "@/lib/users/getUserById";
 import Document from "@/components/svgs/Document";
 import LoadingIcon from "@/components/LoadingIcon";
 import Permissions from "@/lib/classes/Permissions";
+import { useToastContext } from "@/contexts/toastContext";
 import PermissionsWrapper from "@/components/PermissionsWrapper";
 import copyContentToClipboard from "@/lib/copyContentToClipboard";
-import { ToastItem, useToastContext } from "@/contexts/toastContext";
 
 type Props = {
   id: string;
@@ -52,11 +52,44 @@ const user_idCard: React.FC<Props> = (props: Props) => {
         <p>User Details</p>
       </div>
 
-      <div className="card-body flex flex-col gap-2 items-centre justify-centre relative min-h-[75px]">
+      <div className="card-body">
         {loading && <LoadingIcon size={50} />}
         {!data && !loading && <p>No data found for user ID: {id}</p>}
         {data && !loading && (
           <ul>
+            <PermissionsWrapper permissions={[9]}>
+              {data._id && (
+                <li className="flex flex-row gap-2">
+                  <p>
+                    <strong>_id:</strong>
+                  </p>
+                  <div
+                    style={{ display: "flex" }}
+                    className="flex-row justify-start items-center z-2 gap-2 link-text"
+                    onClick={(event: any) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      const copied = copyContentToClipboard(data._id || "");
+                      setToastItems((prev) => {
+                        const new_item: ToastItem = {
+                          timeout: 3000,
+                          visible: true,
+                          content: copied.message,
+                          title: copied.title || "",
+                          type: copied.error ? "error" : "success",
+                        };
+                        const new_value = [...prev, new_item];
+                        return new_value;
+                      });
+                    }}
+                  >
+                    <Copy size={16} primary_color={colors.green} />
+                    <p>{data._id}</p>
+                  </div>
+                </li>
+              )}
+            </PermissionsWrapper>
+
             {data.username && (
               <li>
                 <p>
@@ -115,39 +148,6 @@ const user_idCard: React.FC<Props> = (props: Props) => {
                 </p>
               </li>
             )}
-
-            <PermissionsWrapper permission_level={9}>
-              {data._id && (
-                <li className="flex flex cold gap-2 items-center">
-                  <p>
-                    <strong>_id:</strong>
-                  </p>
-                  <div
-                    style={{ display: "flex" }}
-                    className="flex-row justify-start items-center z-2 gap-2 link-text"
-                    onClick={(event: any) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      const copied = copyContentToClipboard(data._id || "");
-                      setToastItems((prev) => {
-                        const new_item: ToastItem = {
-                          timeout: 3000,
-                          visible: true,
-                          content: copied.message,
-                          title: copied.title || "",
-                          type: copied.error ? "error" : "success",
-                        };
-                        const new_value = [...prev, new_item];
-                        return new_value;
-                      });
-                    }}
-                  >
-                    <Copy size={16} primary_color={colors.green} />
-                    <p>{data._id}</p>
-                  </div>
-                </li>
-              )}
-            </PermissionsWrapper>
           </ul>
         )}
       </div>

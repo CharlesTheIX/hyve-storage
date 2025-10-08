@@ -10,7 +10,7 @@ export default async (company_id: string, filters?: Partial<ApiRequestFilters>):
   try {
     const query = Model.find({ company_id });
     const data = await applyMongoFilters(query, filters).lean();
-    if (!data) return NO_CONTENT;
+    if (data.length === 0) return NO_CONTENT;
 
     const collection_count = await Model.countDocuments({ company_id });
 

@@ -12,7 +12,7 @@ export default async (data: Partial<User>): Promise<ApiResponse> => {
   try {
     const existing_doc = await userExists(username || "");
     if (existing_doc.error) return existing_doc;
-    if (existing_doc.status === OK.status) return CONFLICT;
+    if (existing_doc.status === OK.status) return { ...CONFLICT, message: "Username already exists" };
 
     const new_doc = new Model({ username, permissions, company_id: company_id || undefined, first_name, surname });
     if (!new_doc) throw new Error("User could not be created");

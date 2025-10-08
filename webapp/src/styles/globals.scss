@@ -1,14 +1,6 @@
 @use "tailwindcss";
 @use "./hyve";
 
-*,
-::after,
-::before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 button,
 input,
 textarea {

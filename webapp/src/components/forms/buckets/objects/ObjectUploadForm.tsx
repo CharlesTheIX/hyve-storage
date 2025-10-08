@@ -7,6 +7,7 @@ import TextInput from "@/components/inputs/TextInput";
 import FileInput from "@/components/inputs/FileInput";
 import LoadingContainer from "@/components/LoadingIcon";
 import ErrorContainer from "@/components/forms/ErrorContainer";
+import getErrorResponseTitle from "@/lib/getErrorResponseTitle";
 import ButtonContainer from "@/components/forms/ButtonContainer";
 import CompletionContainer from "@/components/forms/CompletionContainer";
 
@@ -64,14 +65,14 @@ const ObjectUploadForm: React.FC<Props> = (props: Props) => {
 
       if (response.error) {
         setLoading(false);
-        return setError({ error: true, message: response.message, title: "Error" });
+        return setError({ error: true, message: response.message, title: getErrorResponseTitle(response.status) });
       }
       if (redirect) return router.push(redirect);
       setComplete(true);
       setLoading(false);
     } catch (err: any) {
       setLoading(false);
-      setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
+      return setError({ error: true, message: "An unexpected error occurred, please try again.", title: `Unexpected Error` });
     }
   };
 
