@@ -7,7 +7,6 @@ export default async (_id: string): Promise<ApiResponse> => {
       headers: header_internal,
       body: JSON.stringify({ _id }),
     }).then((r) => r.json());
-    console.log("function", res);
     return res;
   } catch (err: any) {
     return { ...SERVER_ERROR, data: err };

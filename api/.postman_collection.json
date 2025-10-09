@@ -909,7 +909,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"raw": "{\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"skip\": 8,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -930,7 +930,7 @@
 					"response": []
 				},
 				{
-					"name": "By Company",
+					"name": "By Company id",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -946,7 +946,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": \"sd\",\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"raw": "{\n    \"company_id\": \"68e56ada7f9e1b7ec04a4bb2\",\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1022,7 +1022,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"_id\": \"68e55952e30c0273d0af0471\",\n    \"update\": {\n        \"permissions\": [9]\n    },\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
+							"raw": "{\n    \"_id\": \"68e556288e38f6529de4ee16\",\n    \"update\": {\n        \"permissions\": [1, 2, 9]\n    },\n    \"filters\": {\n        \"fields\": [\n            \"username\",\n            \"company_id\",\n            \"first_name\",\n            \"surname\",\n            \"permissions\"\n        ],\n        \"populate\": [\n            \"company_id\"\n        ],\n        \"limit\": 100,\n        \"sort\": {\n            \"order\": \"asc\",\n            \"field\": \"createdAt\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1060,7 +1060,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"_id\": \"68e55952e30c0273d0af0471\"\n}",
+							"raw": "{\n    \"_id\": \"68e55986e30c0273d0af047d\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1098,7 +1098,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"Tester\",\n    \"first_name\": \"Tester\",\n    \"surname\": \"Admin\",\n    \"company_id\": \"\",\n    \"permissions\": [1,2,3,4,5,6,7,8,9]\n}",
+							"raw": "{\n    \"username\": \"Tester-10\",\n    \"first_name\": \"Tester\",\n    \"surname\": \"Admin\",\n    \"company_id\": \"\",\n    \"permissions\": [1,2,3,4,5,6,7,8,9]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1159,6 +1159,43 @@
 				}
 			],
 			"description": "This set of endpoints is related to the Mongo User model.\n\nThe 'API Only' directory contains endpoints that are only available to admin users.\n\nThe endpoints in the root of this directory are open to other Hyve services."
+		},
+		{
+			"name": "Error",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"error\": true,\n        \"data\": null,\n        \"status\": 400,\n        \"message\": \"This is an error\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/v1/error",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1",
+						"error"
+					]
+				}
+			},
+			"response": []
 		},
 		{
 			"name": "Health",
