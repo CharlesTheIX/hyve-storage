@@ -1,3 +1,4 @@
+import logError from "../lib/logError";
 import { SERVER_ERROR, BAD } from "../globals";
 import createUser from "../lib/mongo/users/createUser";
 import getAllUsers from "../lib/mongo/users/getAllUsers";
@@ -16,7 +17,7 @@ router.route("/").post(async (request: Request, response: Response) => {
     const res = await getAllUsers(filters);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });

@@ -1,5 +1,6 @@
 dist
 node_modules
+.logs
 .dockerignore
 .env.example
 .env.local

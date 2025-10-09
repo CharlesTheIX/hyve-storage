@@ -38,6 +38,12 @@ type Company = MongoDoc & {
   bucket_ids: string[];
 };
 
+/* E */
+type ErrorLog = {
+  message: string;
+  status_code: number;
+};
+
 /* M */
 type MongoDoc = {
   _id: string;
