@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import { isValidObjectId } from "mongoose";
 import getCompanyById from "./getCompanyById";
 import Model from "../../../models/Company.model";
@@ -21,7 +22,7 @@ export default async (_id: string, user_id: string): Promise<ApiResponse> => {
 
     return NO_CONTENT;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

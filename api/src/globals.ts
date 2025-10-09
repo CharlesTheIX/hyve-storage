@@ -1,11 +1,10 @@
 const default_error = { data: null, error: true };
-
 const default_success = { data: null, error: false };
-
 export const status = {
   OK: 200,
   DB_UPDATED: 201,
   NO_CONTENT: 204,
+  PARTIAL_UPDATE: 222,
   BAD: 400,
   UNAUTHORISED: 401,
   FORBIDDEN: 403,
@@ -14,7 +13,6 @@ export const status = {
   SERVER_ERROR: 500,
 };
 
-/* R */
 export const BAD: ApiResponse = {
   ...default_error,
   status: status.BAD,
@@ -55,6 +53,12 @@ export const OK: ApiResponse = {
   ...default_success,
   status: status.OK,
   message: "Success",
+};
+
+export const PARTIAL_UPDATE: ApiResponse = {
+  ...default_success,
+  status: status.PARTIAL_UPDATE,
+  message: "Database partially updated updated",
 };
 
 export const SERVER_ERROR: ApiResponse = {

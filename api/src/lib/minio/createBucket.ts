@@ -1,3 +1,4 @@
+import logError from "../logError";
 import getEnvVars from "../getEnvVars";
 import bucketExists from "./bucketExists";
 import getMinioClient from "./getMinioClient";
@@ -20,7 +21,7 @@ export default async (name: string, options: any = { region: vars.minio.region, 
 
     return DB_UPDATED;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

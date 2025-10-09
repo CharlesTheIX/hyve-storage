@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import Model from "../../../models/User.model";
 import { isValidUsername } from "../../validation";
 import { BAD, NO_CONTENT, OK, SERVER_ERROR } from "../../../globals";
@@ -12,7 +13,7 @@ export default async (username: string): Promise<ApiResponse> => {
 
     return { ...OK, data };
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

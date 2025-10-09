@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import logError from "../lib/logError";
+import { SERVER_ERROR } from "../globals";
 
 const schema = new Schema(
   {
@@ -38,7 +40,7 @@ schema.pre("save", async function (next: any) {
   try {
     next();
   } catch (err: any) {
-    //TODO: handle error
+    logError({ ...SERVER_ERROR, message: err.message });
     console.error(`Mongo bucket pre save error: ${err.message}`);
     next(err);
   }

@@ -1,8 +1,9 @@
+import logError from "../../logError";
 import userExists from "./getUserExists";
 import { isValidObjectId } from "mongoose";
 import Model from "../../../models/User.model";
 import addCompanyUser from "../companies/addCompanyUser";
-import { BAD, CONFLICT, DB_UPDATED, OK, SERVER_ERROR } from "../../../globals";
+import { BAD, CONFLICT, DB_UPDATED, OK, PARTIAL_UPDATE, SERVER_ERROR } from "../../../globals";
 
 export default async (data: Partial<User>): Promise<ApiResponse> => {
   const { username, permissions, company_id, first_name, surname } = data;
@@ -20,11 +21,15 @@ export default async (data: Partial<User>): Promise<ApiResponse> => {
     const created_doc = await new_doc.save();
     if (!created_doc) throw new Error("User could not be created");
 
-    if (company_id) await addCompanyUser(company_id, created_doc._id.toString());
+    var company_update_res = OK;
+    if (company_id) company_update_res = await addCompanyUser(company_id, created_doc._id.toString());
+    if (company_update_res?.error) {
+      logError({ ...PARTIAL_UPDATE, message: `User created, but failed to update company ${company_id} - ${company_update_res.message}` });
+    }
 
     return DB_UPDATED;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

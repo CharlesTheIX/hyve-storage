@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import getBucketById from "./getBucketById";
 import Model from "../../../models/Bucket.model";
 import mongoose, { isValidObjectId } from "mongoose";
@@ -40,7 +41,7 @@ export default async (props: Props): Promise<ApiResponse> => {
 
     return NO_CONTENT;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

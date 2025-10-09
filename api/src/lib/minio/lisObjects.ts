@@ -1,3 +1,4 @@
+import logError from "../logError";
 import bucketExists from "./bucketExists";
 import getMinioClient from "./getMinioClient";
 import { isValidBucketName } from "../validation";
@@ -25,7 +26,7 @@ export default async (name: string, options: any = { prefix: "", recursive: fals
 
     return { ...OK, data };
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

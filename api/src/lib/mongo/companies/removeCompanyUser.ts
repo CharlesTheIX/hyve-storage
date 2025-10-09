@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import { isValidObjectId } from "mongoose";
 import getCompanyById from "./getCompanyById";
 import Model from "../../../models/Company.model";
@@ -9,6 +10,7 @@ export default async (_id: string, user_id: string): Promise<ApiResponse> => {
 
   const user_id_validation = isValidObjectId(user_id);
   if (!user_id_validation) return { ...BAD, message: "Invalid user_id" };
+
   try {
     const company = await getCompanyById(_id);
     if (company.error) return company;
@@ -19,7 +21,7 @@ export default async (_id: string, user_id: string): Promise<ApiResponse> => {
 
     return NO_CONTENT;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

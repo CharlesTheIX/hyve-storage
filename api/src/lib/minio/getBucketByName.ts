@@ -1,3 +1,4 @@
+import logError from "../logError";
 import getMinioClient from "./getMinioClient";
 import { isValidBucketName } from "../validation";
 import { BAD, NOT_FOUND, OK, SERVER_ERROR } from "../../globals";
@@ -14,7 +15,7 @@ export default async (name: string): Promise<ApiResponse> => {
 
     return { ...OK, data };
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

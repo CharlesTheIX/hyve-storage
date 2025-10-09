@@ -1,5 +1,6 @@
 import fs from "fs";
 import multer from "multer";
+import logError from "../lib/logError";
 import { SERVER_ERROR, BAD } from "../globals";
 import { isValidMimeType } from "../lib/validation";
 import express, { Router, Request, Response } from "express";
@@ -19,11 +20,12 @@ const upload = multer({ dest: "/tmp" });
 
 router.route("/").post(async (request: Request, response: Response) => {
   const { filters } = request.body;
+
   try {
     const res = await getAllBuckets(filters);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -31,11 +33,12 @@ router.route("/").post(async (request: Request, response: Response) => {
 router.route("/by-company-id").post(async (request: Request, response: Response) => {
   const { company_id, filters } = request.body;
   if (!company_id) return response.json({ ...BAD, message: "Missing required value(s): company_id" });
+
   try {
     const res = await getBucketsByCompany(company_id, filters);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -43,11 +46,12 @@ router.route("/by-company-id").post(async (request: Request, response: Response)
 router.route("/by-id").delete(async (request: Request, response: Response) => {
   const { _id } = request.body;
   if (!_id) return response.json({ ...BAD, message: "Missing required value(s): _id" });
+
   try {
     const res = await removeBucketById(_id);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -55,11 +59,12 @@ router.route("/by-id").delete(async (request: Request, response: Response) => {
 router.route("/by-id").patch(async (request: Request, response: Response) => {
   const { _id, update, filters } = request.body;
   if (!_id || !update) return response.json({ ...BAD, message: "Missing required value(s): _id, update" });
+
   try {
     const res = await updateBucketById({ _id, update, filters });
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -67,11 +72,12 @@ router.route("/by-id").patch(async (request: Request, response: Response) => {
 router.route("/by-id").post(async (request: Request, response: Response) => {
   const { _id, filters } = request.body;
   if (!_id) return response.json({ ...BAD, message: "Missing required value(s): _id" });
+
   try {
     const res = await getBucketById(_id, filters);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -79,11 +85,12 @@ router.route("/by-id").post(async (request: Request, response: Response) => {
 router.route("/by-name").post(async (request: Request, response: Response) => {
   const { name, filters } = request.body;
   if (!name) return response.json({ ...BAD, message: `Missing required value(s): name` });
+
   try {
     const res = await getBucketByName(name, filters);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -93,11 +100,12 @@ router.route("/create").put(async (request: Request, response: Response) => {
   if (!name || !company_id || !max_size_bytes) {
     return response.json({ ...BAD, message: `Missing required value(s): name, company_id, max_size_bytes` });
   }
+
   try {
     const res = await createBucket({ name, max_size_bytes, company_id, permissions });
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -105,11 +113,12 @@ router.route("/create").put(async (request: Request, response: Response) => {
 router.route("/exists").post(async (request: Request, response: Response) => {
   const { name } = request.body;
   if (!name) return response.json({ ...BAD, message: `Missing required value(s): name` });
+
   try {
     const res = await bucketExists(name);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -117,11 +126,12 @@ router.route("/exists").post(async (request: Request, response: Response) => {
 router.route("/objects").post(async (request: Request, response: Response) => {
   const { bucket_id } = request.body;
   if (!bucket_id) return response.json({ ...BAD, message: `Missing required value(s): bucket_id` });
+
   try {
     const res = await getObjects(bucket_id);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json({ ...SERVER_ERROR, data: err });
   }
 });
@@ -132,17 +142,19 @@ router.route("/objects/upload").put(upload.single("file"), async (request: Reque
   if (!bucket_name || !file) {
     return response.json({ ...BAD, message: "Missing Required value(s): bucket_name, file." });
   }
+
   const valid_mimetype = isValidMimeType(file);
   if (valid_mimetype.error) {
     fs.unlinkSync(file.path);
     return response.json({ ...BAD, message: valid_mimetype.message });
   }
+
   try {
     const res = await uploadBucketObject({ bucket_name, object_name, file, from_source });
     fs.unlinkSync(file.path);
     return response.json(res);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return response.status(SERVER_ERROR.status).json(SERVER_ERROR);
   }
 });

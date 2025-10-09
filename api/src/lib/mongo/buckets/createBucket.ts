@@ -1,5 +1,6 @@
-import bucketExists from "./getBucketExists";
+import logError from "../../logError";
 import { isValidObjectId } from "mongoose";
+import bucketExists from "./getBucketExists";
 import Model from "../../../models/Bucket.model";
 import createBucket from "../../minio/createBucket";
 import { isValidBucketName } from "../../validation";
@@ -38,7 +39,7 @@ export default async (data: Partial<Bucket>): Promise<ApiResponse> => {
 
     return DB_UPDATED;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

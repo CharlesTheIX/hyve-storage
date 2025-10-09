@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import { isValidObjectId } from "mongoose";
 import Model from "../../../models/User.model";
 import applyMongoFilters from "../applyMongoFilters";
@@ -16,7 +17,7 @@ export default async (company_id: string, filters?: Partial<ApiRequestFilters>):
 
     return { ...OK, data, meta: { collection_count } };
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

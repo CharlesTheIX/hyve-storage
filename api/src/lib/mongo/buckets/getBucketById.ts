@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import logError from "../../logError";
 import Model from "../../../models/Bucket.model";
 import applyMongoFilters from "../applyMongoFilters";
 import { NOT_FOUND, OK, SERVER_ERROR } from "../../../globals";
@@ -12,7 +13,7 @@ export default async (_id: string, filters?: Partial<ApiRequestFilters>): Promis
 
     return { ...OK, data };
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

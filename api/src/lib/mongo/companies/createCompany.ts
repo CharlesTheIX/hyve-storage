@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import { isValidObjectId } from "mongoose";
 import companyExists from "./getCompanyExists";
 import Model from "../../../models/Company.model";
@@ -31,7 +32,7 @@ export default async (data: Partial<Company>): Promise<ApiResponse> => {
 
     return DB_UPDATED;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

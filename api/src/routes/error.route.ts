@@ -1,6 +1,7 @@
 import logError from "../lib/logError";
 import { OK, SERVER_ERROR } from "../globals";
 import express, { Router, Request, Response } from "express";
+
 const router: Router = express.Router();
 router.route("/").post(async (request: Request, response: Response) => {
   const { data } = request.body;

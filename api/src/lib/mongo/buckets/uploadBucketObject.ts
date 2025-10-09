@@ -1,4 +1,5 @@
 import fs from "fs";
+import logError from "../../logError";
 import objectExists from "../../minio/objectExists";
 import bucketExists from "../../minio/bucketExists";
 import { isValidObjectName } from "../../validation";
@@ -50,7 +51,7 @@ export default async (props: Props): Promise<ApiResponse> => {
 
     return DB_UPDATED;
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

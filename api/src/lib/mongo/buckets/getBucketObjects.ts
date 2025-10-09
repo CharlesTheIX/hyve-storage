@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import { isValidObjectId } from "mongoose";
 import getBucketById from "./getBucketById";
 import lisObjects from "../../minio/lisObjects";
@@ -19,7 +20,7 @@ export default async (bucket_id: string, options: any = { prefix: "", recursive:
 
     return await lisObjects(name, options);
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };

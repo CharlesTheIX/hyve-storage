@@ -1,3 +1,4 @@
+import logError from "../../logError";
 import Model from "../../../models/User.model";
 import mongoose, { isValidObjectId } from "mongoose";
 import applyMongoFilters from "../applyMongoFilters";
@@ -15,7 +16,7 @@ export default async (_id: string, filters?: Partial<ApiRequestFilters>): Promis
 
     return { ...OK, data };
   } catch (err: any) {
-    //TODO: handle errors
+    logError({ ...SERVER_ERROR, message: err.message });
     return { ...SERVER_ERROR, data: err };
   }
 };
